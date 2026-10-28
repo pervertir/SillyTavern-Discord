@@ -1,0 +1,40 @@
+/* Discord's markdown extras (extras.js): spoilers and subtext */
+
+body.discord-theme #chat .dsc-spoiler {
+    padding: 0 2px;
+    border-radius: 4px;
+    background: var(--dsc-spoiler, #1e1f22);
+    cursor: pointer;
+    transition: background 0.1s;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
+body.discord-theme.dsc-light #chat .dsc-spoiler {
+    background: var(--dsc-spoiler, #c4c9ce);
+}
+
+body.discord-theme #chat .dsc-spoiler:not(.dsc-revealed):hover {
+    background: var(--dsc-spoiler-hover, #111214);
+}
+
+body.discord-theme.dsc-light #chat .dsc-spoiler:not(.dsc-revealed):hover {
+    background: var(--dsc-spoiler-hover, #b3b9bf);
+}
+
+/* everything inside stays hidden, emoji and pictures too, keeping its space */
+body.discord-theme #chat .dsc-spoiler:not(.dsc-revealed) > .dsc-spoiler-text {
+    opacity: 0;
+    user-select: none;
+}
+
+body.discord-theme #chat .dsc-spoiler.dsc-revealed {
+    background: rgba(var(--dsc-mod), 0.2);
+    cursor: text;
+}
+
+body.discord-theme #chat .dsc-subtext {
+    color: var(--dsc-muted);
+    font-size: 0.8125em;
+    line-height: 1.3;
+}

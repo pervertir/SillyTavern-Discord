@@ -111,3 +111,8 @@ test('the joined parts keep every word, in order', () => {
     const words = s => s.replace(/\s+/g, '');
     assert.equal(words(splitMessage(text, one).join(' ')), words(text));
 });
+
+test('a spoiler is never cut', () => {
+    assert.deepEqual(splitMessage('She whispers. ||It was him. All along.|| Then silence.', one), ['She whispers.', '||It was him. All along.||', 'Then silence.']);
+    assert.deepEqual(splitMessage('A lone || pipe. Next.', one), ['A lone || pipe.', 'Next.']);
+});

@@ -8,6 +8,7 @@
 // (on by default) decides, on its own, whether pictures show; off leaves SillyTavern's own
 // handling. The shared rules are in /Volumes/980Pro/Workspace/AI/shared/image-embeds.md.
 
+import { applyExtras } from './extras.js';
 import { findImageLinks } from './lib/image-links.js';
 import { shieldFromOutsideClose, t } from './ui.js';
 
@@ -118,6 +119,7 @@ function hideEmpty(container) {
  */
 export function embedImages(container, raw) {
     container.querySelectorAll(':scope > .dsc-embeds').forEach(x => x.remove());
+    applyExtras(container);
     if (!enabled()) {
         return;
     }

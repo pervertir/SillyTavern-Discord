@@ -4,6 +4,7 @@
 
 import { initCompose, openExtensionsMenu } from './compose.js';
 import { initCustomize } from './customize.js';
+import { initExtras } from './extras.js';
 import { embedAll, initEmbeds } from './embeds.js';
 import { initAppearance, renderAppearance } from './appearance.js';
 import { hideDiscover, initDiscover, showDiscover } from './discover.js';
@@ -459,6 +460,7 @@ async function init() {
     initMessages();
     initMessageTools();
     initReactions();
+    initExtras();
     initOverlays({ connections: () => openSettings('sys-settings-button') });
     initEmbeds({ enabled: () => !!getSettings().enabled && !!getSettings().showImageLinks });
     initSplit({
