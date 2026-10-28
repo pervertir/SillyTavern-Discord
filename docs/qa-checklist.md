@@ -75,6 +75,18 @@ values) and Discord's current client. Status: ✅ right · ❌ wrong (defect) �
 | Keyboard focus rings | ❌→🔧 | Mixed; now Discord's blue ring on Tab | |
 | Keybinds list (Ctrl/⌘+/) | ✅ | | |
 | ↑ edits last message, Esc cancels edit | ✅ | Batch 1 | |
-## Batch 5: overlays and editors — pending
+## Batch 5: overlays and editors
+
+| Component | Status | Defect / fix | Simpler |
+|---|---|---|---|
+| Modals (confirm, chat history, keybinds) | ✅ | Discord modal: surface, 12px radius, border | |
+| Right-click: messages, DMs, channels, servers | ✅ | Messages added in batch 1 | |
+| Long press on phones | ❌→🔧 | iOS has no long-press menu; now a 0.5s hold opens the same menu | |
+| "/" command picker | ❌→🔧 | Showed every argument in monospace; now name + one-line description, Discord colors | Scannable list |
+| Not connected to an AI | ❌→🔧 | Only a placeholder warning; now Discord's red notice bar with Connect | One click to Connections |
+| Jump to Present | ❌→🔧 | Didn't exist; shows when scrolled far up | |
+| Toasts | ✅ | | |
+| Profile (character editor), Server Settings (group editor), lorebooks as channels, personas | ✅ | Earlier passes | |
+| Other extensions' settings | ✅ | Discord cards in Extensions | |
 ## Batch 6: home pages and phone — pending
 ## Batch 7: final sweep — pending

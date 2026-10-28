@@ -11,6 +11,7 @@ import { getCurrentPlace, initData, scheduleRefresh } from './data.js';
 import { refreshTitle, setDisguise } from './disguise.js';
 import { initHeader, openInbox, refreshHeader, refreshPresenceViews, setFriendsTab, togglePinCurrent } from './header.js';
 import { enableDesktopNotifications, initNotify } from './notify.js';
+import { initOverlays } from './overlays.js';
 import { initPresence } from './presence.js';
 import { initSounds, play } from './sounds.js';
 import { initSplit, renderAllParts } from './split.js';
@@ -434,6 +435,7 @@ async function init() {
     setClock(() => !!getSettings().clock24);
     initMessages();
     initMessageTools();
+    initOverlays({ connections: () => openSettings('sys-settings-button') });
     initSplit({
         enabled: () => !!getSettings().enabled && !!getSettings().splitReplies,
         paced: () => !!getSettings().presenceSim,

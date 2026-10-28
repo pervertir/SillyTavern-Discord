@@ -1,0 +1,143 @@
+/* The notice bar, Jump to Present and the "/" command picker (overlays.js; the picker is
+   SillyTavern's own, dressed as Discord's). */
+
+#dsc-notice,
+#dsc-jump {
+    display: none;
+}
+
+body.discord-theme.dsc-offline-api:not(.dsc-friends-mode, .dsc-discover) #dsc-notice {
+    display: flex;
+}
+
+body.discord-theme #dsc-notice {
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex: none;
+    min-height: 36px;
+    margin-right: var(--dsc-aside-w);
+    padding: 6px 16px;
+    box-sizing: border-box;
+    background: var(--dsc-red);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+}
+
+body.discord-theme #dsc-notice button {
+    min-height: 24px;
+    padding: 2px 12px;
+    border: 1px solid #ffffff;
+    border-radius: 4px;
+    background: none;
+    color: #ffffff;
+    font: 500 14px/18px var(--dsc-font);
+    cursor: pointer;
+}
+
+body.discord-theme #dsc-notice button:hover {
+    background: #ffffff;
+    color: var(--dsc-red);
+}
+
+/* the warning now lives in the bar; the message box keeps its plain placeholder */
+body.discord-theme #send_form.no-connection {
+    opacity: 1;
+}
+
+body.discord-theme #dsc-jump {
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: -32px;
+    height: 32px;
+    padding: 0 12px;
+    box-sizing: border-box;
+    border-radius: 8px 8px 0 0;
+    background: var(--dsc-blurple);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 2;
+}
+
+body.discord-theme #dsc-jump.dsc-on {
+    display: flex;
+}
+
+body.discord-theme #dsc-jump button {
+    padding: 0;
+    border: none;
+    background: none;
+    color: #ffffff;
+    font: 600 14px/18px var(--dsc-font);
+    cursor: pointer;
+}
+
+body.discord-theme #dsc-jump button:hover {
+    text-decoration: underline;
+}
+
+/* "/" command picker */
+body.discord-theme {
+    --ac-style-color-background: var(--dsc-floating);
+    --ac-style-color-border: var(--dsc-divider);
+    --ac-style-color-text: var(--dsc-header-2);
+    --ac-style-color-hoveredBackground: var(--dsc-hover);
+    --ac-style-color-hoveredText: var(--dsc-header);
+    --ac-style-color-selectedBackground: var(--dsc-selected);
+    --ac-style-color-selectedText: var(--dsc-header);
+    --ac-style-color-matchedText: var(--dsc-link);
+    --ac-style-color-cmd: var(--dsc-header);
+    --ac-style-color-argName: var(--dsc-link);
+    --ac-style-color-type: var(--dsc-muted);
+    --ac-style-color-notSelectableBackground: var(--dsc-hover);
+    --ac-style-color-notSelectableText: var(--dsc-muted);
+}
+
+body.discord-theme .autoComplete,
+body.discord-theme .autoComplete-details {
+    padding: 8px;
+    border: 1px solid var(--dsc-divider);
+    border-radius: 8px;
+    background: var(--dsc-floating);
+    box-shadow: var(--dsc-elevation-high);
+    font-family: var(--dsc-font);
+    font-size: 14px;
+}
+
+body.discord-theme .autoComplete > .item > * {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+body.discord-theme .autoComplete > .item .name {
+    color: var(--dsc-header);
+    font-family: var(--dsc-font);
+    font-weight: 600;
+}
+
+body.discord-theme .autoComplete > .item .help {
+    color: var(--dsc-muted);
+}
+
+/* Discord lists commands as a name and a one-line description; the full argument list stays
+   in SillyTavern's details panel beside it */
+body.discord-theme .autoComplete > .item .specs > .body {
+    display: none;
+}
+
+body.discord-theme .autoComplete > .item .monospace {
+    font-family: var(--dsc-font);
+}
+
+body.discord-theme .autoComplete > .item > .help {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
