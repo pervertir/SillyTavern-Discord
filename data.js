@@ -2,6 +2,7 @@
 // screen) become direct messages, and its groups become servers whose chats are channels.
 // Also opens a chat from any of those places.
 
+import { imagesLabel } from './lib/image-links.js';
 import { t } from './ui.js';
 
 /** SillyTavern's own pinned chats, kept in account storage by welcome-screen.js */
@@ -62,8 +63,12 @@ export function togglePin(place) {
     refreshData();
 }
 
-/** Plain one-line preview of a message, without markup. */
+/** Plain one-line preview of a message, without markup; "Image" for a picture-only message. */
 function toPreview(text) {
+    const pictures = imagesLabel(text);
+    if (pictures) {
+        return t(pictures);
+    }
     const div = document.createElement('div');
     div.innerHTML = SillyTavern.libs.DOMPurify.sanitize(String(text ?? ''), { ALLOWED_TAGS: [] });
     return (div.textContent || '').replace(/[*_~`#>]+/g, '').replace(/\s+/g, ' ').trim().slice(0, 140);

@@ -3,6 +3,7 @@
 // and quick switcher) and exposes a small settings panel.
 
 import { initCompose, openExtensionsMenu } from './compose.js';
+import { embedAll, initEmbeds } from './embeds.js';
 import { initAppearance, renderAppearance } from './appearance.js';
 import { hideDiscover, initDiscover, showDiscover } from './discover.js';
 import { applyNitroTheme, getNitroTheme, NITRO_THEMES } from './nitro.js';
@@ -67,6 +68,8 @@ const defaultSettings = Object.freeze({
     clock24: false,
     /** SillyTavern's chat background behind the messages (hidden by default, as Discord has none) */
     showBackground: false,
+    /** Image links in messages show as pictures (even with SillyTavern's Forbid External Media on) */
+    showImageLinks: true,
     /** Long replies show as several short messages */
     splitReplies: true,
     /** Your own status: online, idle, dnd or invisible */
@@ -346,6 +349,7 @@ async function renderSettingsPanel() {
     const desktop = byId('dsc_desktop_notifications');
     const split = byId('dsc_split');
     const showBackground = byId('dsc_show_bg');
+    const imageLinks = byId('dsc_image_links');
     const soundVolume = byId('dsc_sound_volume');
     const soundMessage = byId('dsc_sound_message');
     const soundOnline = byId('dsc_sound_online');
@@ -366,6 +370,7 @@ async function renderSettingsPanel() {
     desktop.checked = settings.desktopNotifications;
     split.checked = settings.splitReplies;
     showBackground.checked = settings.showBackground;
+    imageLinks.checked = settings.showImageLinks;
     soundVolume.value = String(settings.soundVolume);
     soundMessage.checked = settings.soundMessage;
     soundOnline.checked = settings.soundOnline;
@@ -381,7 +386,7 @@ async function renderSettingsPanel() {
             after?.();
         });
     };
-    bind(enabled, 'enabled', () => enabled.checked, () => renderAllParts());
+    bind(enabled, 'enabled', () => enabled.checked, () => { renderAllParts(); embedAll(); });
     bind(appearance, 'appearance', () => appearance.value, () => setTheme(appearance.value));
     bind(nitro, 'nitroTheme', () => nitro.value, () => syncThemeFields());
     bind(aside, 'aside', () => aside.checked);
@@ -390,6 +395,8 @@ async function renderSettingsPanel() {
     bind(times, 'discordTimes', () => times.checked, () => labelMessages());
     bind(sounds, 'sounds', () => sounds.checked);
     bind(showBackground, 'showBackground', () => showBackground.checked);
+    // pictures in or out takes a fresh draw of the chat
+    bind(imageLinks, 'showImageLinks', () => imageLinks.checked, () => SillyTavern.getContext().reloadCurrentChat());
     bind(split, 'splitReplies', () => split.checked, () => renderAllParts());
     // turning desktop notifications on asks the browser first
     desktop.addEventListener('input', async () => {
@@ -397,6 +404,7 @@ async function renderSettingsPanel() {
         desktop.checked = settings.desktopNotifications;
     split.checked = settings.splitReplies;
     showBackground.checked = settings.showBackground;
+    imageLinks.checked = settings.showImageLinks;
         saveSettings();
     });
     bind(soundVolume, 'soundVolume', () => Number(soundVolume.value), () => play('message'));
@@ -448,6 +456,7 @@ async function init() {
     initMessages();
     initMessageTools();
     initOverlays({ connections: () => openSettings('sys-settings-button') });
+    initEmbeds({ enabled: () => !!getSettings().enabled && !!getSettings().showImageLinks });
     initSplit({
         enabled: () => !!getSettings().enabled && !!getSettings().splitReplies,
         paced: () => !!getSettings().presenceSim,

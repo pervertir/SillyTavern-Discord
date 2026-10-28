@@ -1,4 +1,4 @@
-// Unit tests for lib/message-splitter.js. Run: node --test test/
+// Unit tests for lib/message-splitter.js. Run: node --test 'test/*.test.mjs'
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { splitMessage } from '../lib/message-splitter.js';

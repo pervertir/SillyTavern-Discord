@@ -5,6 +5,7 @@
 // comes in part by part with the typing dots between, unless it was already streamed in.
 
 import { splitMessage } from './lib/message-splitter.js';
+import { embedImages } from './embeds.js';
 import { clock } from './messages.js';
 import { hideTyping, showTyping } from './presence.js';
 
@@ -13,6 +14,34 @@ let paced = () => true;
 let streamed = false;
 /** reveals in progress, by message id, so a newer render cancels them */
 const reveals = new Map();
+
+/**
+ * What SillyTavern does after formatting a message (addCopyToCodeBlocks): highlight each
+ * code block and give it a copy button. Its own function isn't exported, so the same steps
+ * run here for text the theme formats.
+ */
+function finishCodeBlocks(container) {
+    const { hljs } = SillyTavern.libs;
+    for (const code of container.querySelectorAll('pre code')) {
+        if (code.querySelector('.code-copy')) {
+            continue;
+        }
+        hljs?.highlightElement(code);
+        const copy = document.createElement('i');
+        copy.classList.add('fa-solid', 'fa-copy', 'code-copy', 'interactable');
+        copy.title = SillyTavern.getContext().translate('Copy code');
+        copy.addEventListener('click', event => event.stopPropagation());
+        copy.addEventListener('pointerup', async () => {
+            try {
+                await navigator.clipboard.writeText(code.textContent.replace(/\s+$/, ''));
+                toastr.info(SillyTavern.getContext().translate('Copied!'), '', { timeOut: 2000 });
+            } catch {
+                // the clipboard can be refused
+            }
+        });
+        code.append(copy);
+    }
+}
 
 function shouldSplit(mes, message) {
     return enabled() && !!message && !message.is_user && !message.is_system
@@ -31,12 +60,16 @@ function renderParts(mes, { reveal = false } = {}) {
     if (!text || !shouldSplit(mes, message)) {
         return;
     }
-    const parts = splitMessage(message.mes);
+    // the same text and arguments SillyTavern formats the whole message with
+    const source = message.extra?.display_text || message.mes;
+    const parts = splitMessage(source);
     if (parts.length < 2) {
         delete text.dataset.dscParts;
+        embedImages(text, source);
         return;
     }
-    const html = parts.map(part => context.messageFormatting(part, message.name, false, false, id));
+    const overrides = message.extra?.uses_system_ui ? { MESSAGE_ALLOW_SYSTEM_UI: true } : {};
+    const html = parts.map(part => context.messageFormatting(part, message.name, message.is_system, message.is_user, id, overrides, false));
     const sent = message.send_date ? context.timestampToMoment(message.send_date) : null;
     const time = sent?.isValid?.() ? clock(sent) : '';
     const rows = html.map((partHtml, index) => {
@@ -49,6 +82,10 @@ function renderParts(mes, { reveal = false } = {}) {
     });
     text.replaceChildren(...rows);
     text.dataset.dscParts = String(rows.length);
+    rows.forEach((row, index) => {
+        finishCodeBlocks(row);
+        embedImages(row, parts[index]);
+    });
 
     reveals.get(id)?.cancel();
     if (!reveal || !paced()) {
@@ -100,7 +137,11 @@ function restoreAll() {
         const message = context.chat[id];
         reveals.get(id)?.cancel();
         if (message) {
-            text.innerHTML = context.messageFormatting(message.mes, message.name, !!message.is_system, !!message.is_user, id);
+            const source = message.extra?.display_text || message.mes;
+            const overrides = message.extra?.uses_system_ui ? { MESSAGE_ALLOW_SYSTEM_UI: true } : {};
+            text.innerHTML = context.messageFormatting(source, message.name, message.is_system, message.is_user, id, overrides, false);
+            finishCodeBlocks(text);
+            embedImages(text, source);
         }
         delete text.dataset.dscParts;
     });

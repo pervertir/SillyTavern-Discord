@@ -7,6 +7,7 @@
 //   come back.
 
 import { setUnreadBadge } from './disguise.js';
+import { imagesLabel } from './lib/image-links.js';
 import { openMenu, t } from './ui.js';
 
 const STATUSES = [
@@ -100,7 +101,8 @@ function notifyDesktop(message, character) {
         return;
     }
     const { getThumbnailUrl } = SillyTavern.getContext();
-    const body = String(message?.mes ?? '').replace(/[*_`#>]+/g, '').replace(/\s+/g, ' ').trim().slice(0, 160);
+    const pictures = imagesLabel(message?.mes);
+    const body = pictures ? t(pictures) : String(message?.mes ?? '').replace(/[*_`#>]+/g, '').replace(/\s+/g, ' ').trim().slice(0, 160);
     try {
         const note = new Notification(character?.name ?? message?.name ?? 'Discord', {
             body,

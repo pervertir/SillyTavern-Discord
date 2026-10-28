@@ -1,0 +1,91 @@
+/* Image embeds and the viewer (embeds.js) */
+
+#dsc-viewer {
+    display: none;
+}
+
+body.discord-theme .dsc-embeds {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    margin: 4px 0 2px;
+}
+
+body.discord-theme .dsc-embed {
+    max-width: min(550px, 100%);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--dsc-hover);
+}
+
+/* until the picture's size is known, a box of Discord's usual size holds its place */
+body.discord-theme .dsc-embed.dsc-embed-loading {
+    width: min(400px, 100%);
+    aspect-ratio: 16 / 10;
+}
+
+body.discord-theme .dsc-embed img,
+body.discord-theme #chat .mes_text img.dsc-embed-inline {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: min(550px, 100%);
+    max-height: 350px;
+    object-fit: contain;
+    border-radius: 8px;
+    cursor: zoom-in;
+}
+
+body.discord-theme #chat .mes_text img.dsc-embed-inline {
+    width: auto;
+    height: auto;
+}
+
+/* text the links left empty */
+body.discord-theme .mes_text .dsc-empty {
+    display: none;
+}
+
+/* a split part that is only pictures */
+body.discord-theme #chat .mes .dsc-part:not(:has(> :not(.dsc-empty, .dsc-embeds))) > .dsc-embeds {
+    margin-top: 2px;
+}
+
+/* the viewer: the picture over a dark backdrop, its link underneath */
+body.discord-theme #dsc-viewer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    position: fixed;
+    inset: 0;
+    z-index: 3200;
+    background: rgba(0, 0, 0, 0.85);
+}
+
+body.discord-theme #dsc-viewer img {
+    max-width: 90vw;
+    max-height: 82vh;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+body.discord-theme #dsc-viewer a {
+    color: #ffffff;
+    font: 500 14px/18px var(--dsc-font);
+    opacity: 0.8;
+}
+
+body.discord-theme #dsc-viewer a:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+@media screen and (max-width: 1000px) {
+    body.discord-theme .dsc-embed,
+    body.discord-theme .dsc-embed img {
+        max-width: 100%;
+    }
+}
