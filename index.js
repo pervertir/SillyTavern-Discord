@@ -13,6 +13,7 @@ import { initHeader, openInbox, refreshHeader, refreshPresenceViews, setFriendsT
 import { enableDesktopNotifications, initNotify } from './notify.js';
 import { initPresence } from './presence.js';
 import { initSounds, play } from './sounds.js';
+import { initSplit, renderAllParts } from './split.js';
 import { initMessages, labelMessages } from './messages.js';
 import { initMessageTools } from './msgtools.js';
 import { initMonograms } from './monograms.js';
@@ -56,6 +57,8 @@ const defaultSettings = Object.freeze({
     /** The user panel's mute and deafen */
     muted: false,
     deafened: false,
+    /** Long replies show as several short messages */
+    splitReplies: true,
     /** Your own status: online, idle, dnd or invisible */
     myStatus: 'online',
     /** Desktop notifications for replies that arrive while the window isn't in front */
@@ -328,6 +331,7 @@ async function renderSettingsPanel() {
     const presenceSim = byId('dsc_presence_sim');
     const sounds = byId('dsc_sounds');
     const desktop = byId('dsc_desktop_notifications');
+    const split = byId('dsc_split');
     const soundVolume = byId('dsc_sound_volume');
     const soundMessage = byId('dsc_sound_message');
     const soundOnline = byId('dsc_sound_online');
@@ -345,6 +349,7 @@ async function renderSettingsPanel() {
     presenceSim.checked = settings.presenceSim;
     sounds.checked = settings.sounds;
     desktop.checked = settings.desktopNotifications;
+    split.checked = settings.splitReplies;
     soundVolume.value = String(settings.soundVolume);
     soundMessage.checked = settings.soundMessage;
     soundOnline.checked = settings.soundOnline;
@@ -359,7 +364,7 @@ async function renderSettingsPanel() {
             after?.();
         });
     };
-    bind(enabled, 'enabled', () => enabled.checked);
+    bind(enabled, 'enabled', () => enabled.checked, () => renderAllParts());
     bind(appearance, 'appearance', () => appearance.value, () => setTheme(appearance.value));
     bind(nitro, 'nitroTheme', () => nitro.value, () => syncThemeFields());
     bind(aside, 'aside', () => aside.checked);
@@ -367,10 +372,12 @@ async function renderSettingsPanel() {
     bind(presence, 'presence', () => presence.checked);
     bind(times, 'discordTimes', () => times.checked, () => labelMessages());
     bind(sounds, 'sounds', () => sounds.checked);
+    bind(split, 'splitReplies', () => split.checked, () => renderAllParts());
     // turning desktop notifications on asks the browser first
     desktop.addEventListener('input', async () => {
         settings.desktopNotifications = desktop.checked && await enableDesktopNotifications();
         desktop.checked = settings.desktopNotifications;
+    split.checked = settings.splitReplies;
         saveSettings();
     });
     bind(soundVolume, 'soundVolume', () => Number(soundVolume.value), () => play('message'));
@@ -404,6 +411,10 @@ async function init() {
     trackDrawers();
     initMessages();
     initMessageTools();
+    initSplit({
+        enabled: () => !!getSettings().enabled && !!getSettings().splitReplies,
+        paced: () => !!getSettings().presenceSim,
+    });
     initSounds({ settings: getSettings, save: saveSettings });
     initNotify({ settings: getSettings, save: saveSettings, openSettings });
     initPresence({

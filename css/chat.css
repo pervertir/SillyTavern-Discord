@@ -1144,3 +1144,67 @@ body.discord-theme #chat .mes .mes_block:has(> .mes_text > .edit_textarea)::afte
     font-size: 12px;
     line-height: 16px;
 }
+
+/* Short messages (split.js): each part of a reply reads as its own grouped message, with its
+   own hover row and its time in the gutter */
+body.discord-theme #chat .mes .mes_text[data-dsc-parts] {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+body.discord-theme #chat .mes .dsc-part {
+    position: relative;
+    margin: 0 -48px 0 -72px;
+    padding: 2px 48px 2px 72px;
+}
+
+body.discord-theme #chat .mes .dsc-part + .dsc-part {
+    margin-top: 0;
+}
+
+body.discord-theme #chat .mes .dsc-part > :is(p, blockquote, pre, ul, ol, table):last-child {
+    margin-bottom: 0;
+}
+
+/* the whole row lights up only under the part being pointed at */
+body.discord-theme #chat .mes:has(.dsc-part):hover {
+    background: none;
+}
+
+body.discord-theme #chat .mes .dsc-part:hover {
+    background: var(--dsc-message-hover);
+}
+
+body.discord-theme #chat .mes .dsc-part + .dsc-part::before {
+    content: attr(data-time);
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 56px;
+    color: var(--dsc-muted);
+    font-size: 11px;
+    line-height: 22px;
+    text-align: right;
+    visibility: hidden;
+}
+
+body.discord-theme #chat .mes .dsc-part + .dsc-part:hover::before {
+    visibility: visible;
+}
+
+body.discord-theme #chat .mes .dsc-part.dsc-part-hidden {
+    display: none;
+}
+
+@media screen and (max-width: 1000px) {
+    body.discord-theme #chat .mes .dsc-part {
+        margin: 0 -12px 0 -64px;
+        padding: 2px 12px 2px 64px;
+    }
+}
+
+/* SillyTavern's model icon after the time: Discord shows nothing there */
+body.discord-theme #chat .mes .timestamp-icon {
+    display: none;
+}

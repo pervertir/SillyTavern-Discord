@@ -46,7 +46,18 @@ values) and Discord's current client. Status: ✅ right · ❌ wrong (defect) �
 | Switch Accounts (personas) | ❌→🔧 | Was buried in Persona Management; now in the status menu | Two clicks instead of a full page |
 | Edit Profile | ✅ | In the status menu, opens My Account | |
 | Channel list and categories | ✅ | | |
-## Batch 3: short messages and sounds — sounds ✅ (1646b82); short messages pending
+## Batch 3: short messages and sounds
+
+| Component | Status | Defect / fix | Simpler |
+|---|---|---|---|
+| Sounds: ping, online chime, mute and deafen tones, deafen silences, settings | ✅ | 1646b82 | |
+| Long replies as short messages | ❌→🔧 | Were one wall of text; now parts (shared splitter), each its own row with hover and time | Reads like texting |
+| Fresh reply comes in part by part with typing dots between | ❌→🔧 | First version cleared the dots straight away; reveal now starts after the reply's own handlers | |
+| Streamed reply | ✅ | Shown whole (it was already seen coming in), then split | |
+| Edit a split reply | ✅ | Opens the whole original; saving re-splits | |
+| Swipe, delete, regenerate on split replies | ✅ | Work on the whole message (SillyTavern's data is untouched) | |
+| Model icon after the time | ❌→🔧 | SillyTavern's model icon; hidden | |
+| Setting "Split replies into short messages" | ✅ | On by default; off puts replies back whole at once | |
 ## Batch 4: settings and controls — pending
 ## Batch 5: overlays and editors — pending
 ## Batch 6: home pages and phone — pending
