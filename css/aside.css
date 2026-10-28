@@ -200,3 +200,69 @@ body.discord-theme .dsc-member.dsc-offline .dsc-status {
         --dsc-aside-w: 0px !important;
     }
 }
+
+/* back to the member list from a member's profile */
+body.discord-theme .dsc-prof-back {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    font: 500 13px/16px var(--dsc-font);
+    cursor: pointer;
+}
+
+/* the close button only shows on the phone sheet */
+body.discord-theme .dsc-prof-close {
+    display: none;
+}
+
+body.discord-theme #chat .mes:not([is_user="true"]) :is(.avatar, .name_text) {
+    cursor: pointer;
+}
+
+@media screen and (max-width: 1000px) {
+    /* phones: the profile slides up as a sheet over the chat */
+    body.discord-theme.dsc-profile-sheet #dsc-aside {
+        display: flex !important;
+        top: 12dvh;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: auto;
+        border-left: none;
+        border-radius: 16px 16px 0 0;
+        background: var(--dsc-surface);
+        box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.5);
+        z-index: 3020;
+        --dsc-ring: var(--dsc-surface);
+    }
+
+    body.discord-theme.dsc-profile-sheet .dsc-prof-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: none;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.5);
+        color: #ffffff;
+    }
+
+    body.discord-theme.dsc-profile-sheet .dsc-prof-banner {
+        border-radius: 16px 16px 0 0;
+    }
+}

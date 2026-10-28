@@ -13,7 +13,12 @@ const ASIDE_ID = 'dsc-aside';
 const FRIENDS_ID = 'dsc-friends';
 const TITLE_ID = 'dsc-titlebar';
 
+/** A character whose profile shows in the panel in place of the chat's own (a member of a
+    group, or anyone whose picture was clicked in the chat) */
+let profileOverride = '';
+
 let actions = {
+    showAside: () => {},
     toggleAside: () => {},
     openSwitcher: (_text) => {},
     back: () => {},
@@ -434,7 +439,9 @@ function renderProfile(aside, character) {
     full.textContent = t('View Full Profile');
     full.addEventListener('click', () => viewProfile(character.avatar));
 
-    aside.replaceChildren(banner, avatar, card, extra, full);
+    const close = iconButton('dsc-prof-close', t('Close'), 'close', 20);
+    close.addEventListener('click', closeProfileSheet);
+    aside.replaceChildren(close, banner, avatar, card, extra, full);
     monogramizeAll(aside, '.dsc-prof-avatar img', () => character.name);
 }
 
@@ -445,19 +452,100 @@ export function refreshAside() {
     }
     const group = currentGroup();
     const character = currentCharacter();
-    aside.classList.toggle('dsc-members', !!group);
-    const key = group ? `g:${group.id}:${(group.members ?? []).join(',')}:${(group.disabled_members ?? []).join(',')}` : character ? `c:${character.avatar}:${character.name}` : '';
+    const override = profileOverride ? SillyTavern.getContext().characters.find(x => x.avatar === profileOverride) : null;
+    aside.classList.toggle('dsc-members', !!group && !override);
+    const key = override ? `o:${override.avatar}:${override.name}:${group ? 'g' : 'c'}`
+        : group ? `g:${group.id}:${(group.members ?? []).join(',')}:${(group.disabled_members ?? []).join(',')}` : character ? `c:${character.avatar}:${character.name}` : '';
     if (aside.dataset.key === key) {
         return;
     }
     aside.dataset.key = key;
-    if (group) {
+    if (override) {
+        renderProfile(aside, override);
+        // in a server, the way back to its member list
+        if (group) {
+            const back = document.createElement('button');
+            back.type = 'button';
+            back.className = 'dsc-prof-back';
+            back.append(icon('back', 16), document.createTextNode(t('Members')));
+            back.addEventListener('click', () => {
+                profileOverride = '';
+                refreshAside();
+            });
+            aside.prepend(back);
+        }
+    } else if (group) {
         renderMembers(aside, group);
     } else if (character) {
         renderProfile(aside, character);
     } else {
         aside.replaceChildren();
     }
+}
+
+/** Shows a character's profile in the right-hand panel (a sheet on phones), opening the panel
+    if it's hidden, as Discord does when you click someone's name or picture. */
+export function showProfile(avatar) {
+    const context = SillyTavern.getContext();
+    const current = currentCharacter();
+    profileOverride = current?.avatar === avatar ? '' : avatar;
+    if (!context.characters.some(x => x.avatar === avatar)) {
+        return;
+    }
+    actions.showAside();
+    const aside = document.getElementById(ASIDE_ID);
+    if (aside) {
+        aside.dataset.key = '';
+    }
+    refreshAside();
+    if (window.matchMedia('(max-width: 1000px)').matches) {
+        document.body.classList.add('dsc-profile-sheet');
+    }
+}
+
+function closeProfileSheet() {
+    document.body.classList.remove('dsc-profile-sheet');
+}
+
+/** The character behind a message: its own record for group messages, else by name. */
+function characterOfMessage(mes) {
+    const context = SillyTavern.getContext();
+    const message = context.chat[Number(mes.getAttribute('mesid'))];
+    if (!message || message.is_user || message.is_system) {
+        return null;
+    }
+    if (message.original_avatar) {
+        return context.characters.find(x => x.avatar === message.original_avatar) ?? null;
+    }
+    const current = currentCharacter();
+    if (current && current.name === message.name) {
+        return current;
+    }
+    return context.characters.find(x => x.name === message.name) ?? null;
+}
+
+/** A click on a character's picture or name in the chat opens their profile (caught on the
+    way down, ahead of SillyTavern's own picture zoom, which listens on the chat itself). */
+function initProfileClicks() {
+    document.addEventListener('click', (event) => {
+        if (!document.body.classList.contains('discord-theme')) {
+            return;
+        }
+        const target = /** @type {HTMLElement} */ (event.target);
+        const hit = target.closest?.('#chat .mes .avatar, #chat .mes .name_text');
+        const mes = hit?.closest('.mes');
+        const character = mes && characterOfMessage(mes);
+        if (!character) {
+            return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        showProfile(character.avatar);
+    }, true);
+    SillyTavern.getContext().eventSource.on(SillyTavern.getContext().eventTypes.CHAT_CHANGED, () => {
+        profileOverride = '';
+        closeProfileSheet();
+    });
 }
 
 /* ---------- Friends page ---------- */
@@ -672,6 +760,7 @@ function renderActivity(list, heading) {
 
 /**
  * @param {object} options
+ * @param {() => void} options.showAside
  * @param {() => void} options.toggleAside
  * @param {(text: string) => void} options.openSwitcher
  * @param {() => void} options.back
@@ -682,6 +771,7 @@ export function initHeader(options) {
     createHeader();
     createAside();
     createFriends();
+    initProfileClicks();
     refreshHeader();
     // the Friends page lists the people you talk to, which arrive with the conversation list
     onDataChange(() => {

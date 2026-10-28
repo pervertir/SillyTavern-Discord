@@ -3,7 +3,7 @@
 // round close button. The editors themselves are SillyTavern's, placed in the page's spot;
 // the sidebar's items scroll to their parts or press SillyTavern's own buttons.
 
-import { closeDrawers, icon, t } from './ui.js';
+import { closeDrawers, icon, shieldFromOutsideClose, t } from './ui.js';
 
 const ID = 'dsc-editor';
 
@@ -97,6 +97,7 @@ function build() {
     close.append(closeButton, esc);
     root.append(side, main, close);
     document.body.append(root);
+    shieldFromOutsideClose(root);
     return root;
 }
 

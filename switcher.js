@@ -4,7 +4,7 @@
 import { getChannels, getDirectMessages, getServers, openCharacter, openPlace } from './data.js';
 import { monogramizeAll } from './monograms.js';
 import { selectServer } from './sidebar.js';
-import { closeDrawers, getAcronym, icon, t, toChannelName } from './ui.js';
+import { closeDrawers, getAcronym, icon, shieldFromOutsideClose, t, toChannelName } from './ui.js';
 
 const ID = 'dsc-switcher';
 const LIMIT = 12;
@@ -74,6 +74,7 @@ function build() {
     box.append(input, list, tip);
     root.append(box);
     document.body.append(root);
+    shieldFromOutsideClose(root);
     return root;
 }
 

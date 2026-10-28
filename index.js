@@ -125,6 +125,13 @@ function syncThemeFields() {
     renderAppearance();
 }
 
+/** Opens the profile panel / member list if it's hidden. */
+function showAside() {
+    if (!getSettings().aside) {
+        toggleAside();
+    }
+}
+
 function toggleAside() {
     const settings = getSettings();
     settings.aside = !settings.aside;
@@ -325,7 +332,7 @@ async function init() {
 
     const listLoaded = initData({ max: () => getSettings().recentMax, opened: showChat });
     initSidebar({ showFriends, openSwitcher, openSettings, showChat, showDiscover: openDiscover });
-    initHeader({ toggleAside, openSwitcher, back });
+    initHeader({ showAside, toggleAside, openSwitcher, back });
     initSettings({ setTheme, isDark: () => isDark() });
     initSwitcher({ picked: () => document.body.classList.remove('dsc-friends') });
     initCompose();

@@ -3,7 +3,7 @@
 // SillyTavern's own menus, opened in place; only the frame around them is the theme's.
 
 import { showShortcuts } from './shortcuts.js';
-import { closeDrawers, icon, isPhone, openDrawer, t } from './ui.js';
+import { closeDrawers, icon, isPhone, openDrawer, shieldFromOutsideClose, t } from './ui.js';
 
 const OVERLAY_ID = 'dsc-settings';
 const LAST_KEY = 'dsc-last-settings-section';
@@ -171,6 +171,7 @@ function createOverlay() {
 
     overlay.append(side, main, close);
     document.body.append(overlay);
+    shieldFromOutsideClose(overlay);
     refreshThemeItem();
 
     document.addEventListener('keydown', (event) => {

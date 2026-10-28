@@ -180,6 +180,17 @@ function showTooltip(target) {
     element.style.top = `${Math.round(Math.max(8, top))}px`;
 }
 
+/**
+ * SillyTavern closes every open menu on a mouse or touch press anywhere outside it. The
+ * theme's own layers (the settings and editor frames, menus, the quick switcher) sit
+ * outside SillyTavern's menus while holding them, so presses there stay with the theme.
+ */
+export function shieldFromOutsideClose(element) {
+    for (const type of ['mousedown', 'touchstart']) {
+        element?.addEventListener(type, event => event.stopPropagation(), { passive: true });
+    }
+}
+
 export function initTooltips() {
     document.addEventListener('pointerover', (event) => {
         const target = /** @type {HTMLElement} */ (event.target).closest?.('[data-dsc-tip]');
@@ -220,6 +231,7 @@ function getMenu() {
     menu.setAttribute('role', 'menu');
     menu.hidden = true;
     document.body.append(menu);
+    shieldFromOutsideClose(menu);
     document.addEventListener('pointerdown', (event) => {
         const target = /** @type {Node} */ (event.target);
         if (!menu.hidden && !menu.contains(target) && !menuAnchor?.contains(target)) {
