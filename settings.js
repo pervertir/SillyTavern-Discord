@@ -41,7 +41,8 @@ let currentPart = '';
 
 export const SETTINGS_DRAWERS = [...new Set(SECTIONS.filter(x => x.id).map(x => x.id))];
 
-let actions = { setTheme: (_appearance) => {}, isDark: () => true };
+let actions = { setTheme: (_appearance) => {}, isDark: () => true, drawersChanged: () => {} };
+let switchTimer = 0;
 
 function rememberSection(id, part) {
     try {
@@ -243,6 +244,16 @@ function openBook(value) {
 
 /** Opens one section: one of SillyTavern's menus, or one part of it. */
 export function openSection(drawerId, part = '') {
+    const openId = SETTINGS_DRAWERS.find(id => document.getElementById(id)?.classList.contains('dsc-open'));
+    if (openId && openId !== drawerId) {
+        // SillyTavern closes the open menu before opening this one; hold the settings up meanwhile
+        document.body.classList.add('dsc-settings-switching');
+        clearTimeout(switchTimer);
+        switchTimer = setTimeout(() => {
+            document.body.classList.remove('dsc-settings-switching');
+            actions.drawersChanged();
+        }, 1000);
+    }
     document.body.classList.remove('dsc-settings-list');
     rememberSection(drawerId, part);
     showPart(drawerId, part);
@@ -299,6 +310,7 @@ export function refreshSettings() {
  * @param {object} options
  * @param {(appearance: string) => void} options.setTheme
  * @param {() => boolean} options.isDark
+ * @param {() => void} options.drawersChanged
  */
 export function initSettings(options) {
     actions = { ...actions, ...options };

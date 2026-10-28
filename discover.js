@@ -5,6 +5,7 @@
 
 import { getDirectMessages, getServers, latestChannel, openCharacter, openPlace } from './data.js';
 import { isPlaceholder, monogramizeAll } from './monograms.js';
+import { paintPresence } from './presence.js';
 import { openCharacterPanel, selectServer } from './sidebar.js';
 import { getAcronym, getColorIndex, icon, iconButton, openMenu, t } from './ui.js';
 
@@ -104,7 +105,12 @@ function card(item) {
     foot.className = 'dsc-dv-foot';
     const online = document.createElement('span');
     online.className = 'dsc-dv-online';
-    online.textContent = item.kind === 'group' ? `${item.members} ${t('Online')}` : t('Online');
+    if (item.kind === 'group') {
+        online.textContent = `${item.members} ${t('Online')}`;
+    } else {
+        online.dataset.dscPresence = item.key;
+        online.dataset.dscPresenceText = item.key;
+    }
     const members = document.createElement('span');
     members.className = 'dsc-dv-members';
     members.textContent = item.kind === 'group' ? `${item.members} ${t('Members')}` : t(item.recent ? 'Recent' : 'Friend');
@@ -259,6 +265,7 @@ export function render() {
         const cards = list.slice(from, from + PAGE).map(card);
         grid.append(...cards);
         for (const element of cards) {
+            paintPresence(element);
             monogramizeAll(element, '.dsc-dv-icon .dsc-avatar img', img => img.parentElement?.dataset.name ?? '');
         }
         if (from + PAGE < list.length) {

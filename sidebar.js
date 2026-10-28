@@ -4,6 +4,7 @@
 
 import { getChannels, getCurrentPlace, getDirectMessages, getGroup, getServers, isCurrent, isPinned, latestChannel, onDataChange, openPlace, togglePin } from './data.js';
 import { isPlaceholder, monogramizeAll } from './monograms.js';
+import { paintPresence } from './presence.js';
 import { clickOption, closeDrawers, getAcronym, getColorIndex, getInitials, icon, iconButton, isDrawerOpen, openDrawer, openMenu, t, toChannelName } from './ui.js';
 import { formatKeys, SHORTCUTS } from './shortcuts.js';
 
@@ -290,7 +291,8 @@ function navRow(key, label, iconName, tip) {
     return row;
 }
 
-function avatarFor(src, name, withStatus = true) {
+/** A round picture with a status dot; presence names the character whose status it shows. */
+function avatarFor(src, name, presence = '') {
     const avatar = document.createElement('span');
     avatar.className = 'dsc-avatar';
     const img = document.createElement('img');
@@ -299,11 +301,12 @@ function avatarFor(src, name, withStatus = true) {
     img.decoding = 'async';
     img.src = src;
     avatar.append(img);
-    if (withStatus) {
-        const status = document.createElement('span');
-        status.className = 'dsc-status';
-        avatar.append(status);
+    const status = document.createElement('span');
+    status.className = 'dsc-status';
+    if (presence) {
+        status.dataset.dscPresence = presence;
     }
+    avatar.append(status);
     avatar.dataset.name = name;
     return avatar;
 }
@@ -331,7 +334,7 @@ function buildDm(dm) {
     close.className = 'dsc-dm-close';
     close.setAttribute('aria-label', t('Close DM'));
     close.append(icon('close', 16));
-    row.append(avatarFor(getThumbnailUrl('avatar', dm.character.avatar), dm.character.name), text, close);
+    row.append(avatarFor(getThumbnailUrl('avatar', dm.character.avatar), dm.character.name, dm.character.avatar), text, close);
     if (dm.pinned) {
         row.classList.add('dsc-pinned');
     }
@@ -373,6 +376,7 @@ function renderHome(scroll) {
         list.append(empty);
     }
     scroll.replaceChildren(...rows, head, list);
+    paintPresence(list);
     monogramizeAll(list, '.dsc-avatar img', img => img.parentElement?.dataset.name ?? '');
 }
 

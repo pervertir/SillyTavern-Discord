@@ -4,6 +4,7 @@
 import { channelLabel, getCurrentPlace, getDirectMessages, getGroup, isPinned, onDataChange, openCharacter, togglePin } from './data.js';
 import { formatListTime } from './messages.js';
 import { isPlaceholder, monogramizeAll } from './monograms.js';
+import { paintPresence, statusOf } from './presence.js';
 import { SHORTCUTS, showShortcuts, withShortcut } from './shortcuts.js';
 import { openCharacterPanel, selectServer } from './sidebar.js';
 import { clickOption, getColorIndex, icon, iconButton, openMenu, t, toChannelName, toUsername } from './ui.js';
@@ -210,6 +211,13 @@ export function refreshHeader() {
         glyph.append(icon('at'));
         name.textContent = character.name;
     }
+    const headStatus = /** @type {HTMLElement} */ (head.querySelector('.dsc-head-status'));
+    if (character && !group) {
+        headStatus.dataset.dscPresence = character.avatar;
+        paintPresence(head);
+    } else {
+        delete headStatus.dataset.dscPresence;
+    }
     // the title bar names the place: the server for a channel, else the header's own title
     const titleGlyph = document.querySelector(`#${TITLE_ID} .dsc-tb-glyph`);
     const titleName = document.querySelector(`#${TITLE_ID} .dsc-tb-name`);
@@ -328,6 +336,7 @@ function memberRow(character, online) {
     img.src = getThumbnailUrl('avatar', character.avatar);
     const status = document.createElement('span');
     status.className = 'dsc-status';
+    status.dataset.dscPresence = character.avatar;
     avatar.append(img, status);
     const name = document.createElement('span');
     name.className = 'dsc-row-name';
@@ -340,8 +349,9 @@ function renderMembers(aside, group) {
     const { characters } = SillyTavern.getContext();
     const disabled = new Set(group.disabled_members ?? []);
     const members = (group.members ?? []).map(avatar => characters.find(x => x.avatar === avatar)).filter(Boolean);
-    const online = members.filter(x => !disabled.has(x.avatar));
-    const offline = members.filter(x => disabled.has(x.avatar));
+    const isOnline = x => !disabled.has(x.avatar) && statusOf(x.avatar) !== 'offline';
+    const online = members.filter(isOnline);
+    const offline = members.filter(x => !isOnline(x));
     const parts = [];
     const heading = (label, count) => {
         const h = document.createElement('h3');
@@ -356,6 +366,7 @@ function renderMembers(aside, group) {
         parts.push(heading('Offline', offline.length), ...offline.map(x => memberRow(x, false)));
     }
     aside.replaceChildren(...parts);
+    paintPresence(aside);
     monogramizeAll(aside, '.dsc-avatar img', img => img.parentElement?.dataset.name ?? '');
 }
 
@@ -373,6 +384,7 @@ function renderProfile(aside, character) {
     img.src = src;
     const status = document.createElement('span');
     status.className = 'dsc-status';
+    status.dataset.dscPresence = character.avatar;
     avatar.append(img, status);
     isPlaceholder(src).then((placeholder) => {
         if (!placeholder) {
@@ -442,6 +454,7 @@ function renderProfile(aside, character) {
     const close = iconButton('dsc-prof-close', t('Close'), 'close', 20);
     close.addEventListener('click', closeProfileSheet);
     aside.replaceChildren(close, banner, avatar, card, extra, full);
+    paintPresence(aside);
     monogramizeAll(aside, '.dsc-prof-avatar img', () => character.name);
 }
 
@@ -480,6 +493,18 @@ export function refreshAside() {
         renderProfile(aside, character);
     } else {
         aside.replaceChildren();
+    }
+}
+
+/** Presence changed: regroup the member list and the Friends page. */
+export function refreshPresenceViews() {
+    const aside = document.getElementById(ASIDE_ID);
+    if (aside?.classList.contains('dsc-members')) {
+        aside.dataset.key = '';
+        refreshAside();
+    }
+    if (document.body.classList.contains('dsc-friends-mode')) {
+        renderFriends();
     }
 }
 
@@ -668,6 +693,7 @@ function friendRow(character) {
     img.src = getThumbnailUrl('avatar', character.avatar);
     const status = document.createElement('span');
     status.className = 'dsc-status';
+    status.dataset.dscPresence = character.avatar;
     avatar.append(img, status);
     const text = document.createElement('span');
     text.className = 'dsc-friend-text';
@@ -679,7 +705,7 @@ function friendRow(character) {
     user.textContent = toUsername(character.name);
     const sub = document.createElement('span');
     sub.className = 'dsc-friend-sub';
-    sub.textContent = t('Online');
+    sub.dataset.dscPresenceText = character.avatar;
     text.append(name, user, sub);
     const tools = document.createElement('span');
     tools.className = 'dsc-friend-tools';
@@ -707,13 +733,15 @@ function renderFriends() {
     }
     if (friendsTab === 'activity') {
         renderActivity(list, heading);
+        paintPresence(list);
         return;
     }
     const { characters } = SillyTavern.getContext();
     const needle = friendsFilter.trim().toLowerCase();
+    const byName = (a, b) => String(a.name).localeCompare(String(b.name));
     let people = friendsTab === 'online'
-        ? getDirectMessages().map(dm => dm.character)
-        : [...characters].sort((a, b) => String(a.name).localeCompare(String(b.name)));
+        ? characters.filter(x => statusOf(x.avatar) !== 'offline').sort(byName)
+        : [...characters].sort(byName);
     if (needle) {
         people = people.filter(x => String(x.name).toLowerCase().includes(needle));
     }
@@ -721,6 +749,7 @@ function renderFriends() {
     const draw = (from) => {
         const rows = people.slice(from, from + FRIENDS_PAGE).map(friendRow);
         list.append(...rows);
+        rows.forEach(row => paintPresence(row));
         monogramizeAll(list, '.dsc-friend:not([data-mono-done]) .dsc-avatar img', img => img.parentElement?.dataset.name ?? '');
         rows.forEach(row => row.setAttribute('data-mono-done', ''));
         if (from + FRIENDS_PAGE < people.length) {
@@ -748,7 +777,9 @@ function renderActivity(list, heading) {
     list.replaceChildren(...dms.map((dm) => {
         const row = friendRow(dm.character);
         row.classList.add('dsc-activity-row');
-        row.querySelector('.dsc-friend-sub').textContent = dm.preview;
+        const sub = /** @type {HTMLElement} */ (row.querySelector('.dsc-friend-sub'));
+        delete sub.dataset.dscPresenceText;
+        sub.textContent = dm.preview;
         const time = document.createElement('span');
         time.className = 'dsc-activity-time';
         time.textContent = formatListTime(dm.lastMes);

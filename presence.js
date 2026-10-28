@@ -1,0 +1,226 @@
+// Presence: characters are online, idle, do-not-disturb or offline, as Discord shows people.
+// Someone you talked with in the last quarter hour is online; within two hours idle (or, on
+// some days, do-not-disturb); otherwise offline. Every status dot with data-dsc-presence
+// (a character's avatar) shows it.
+//
+// Writing to someone who isn't online holds their reply: after a moment their dot turns
+// online, then "X is typing…" shows while the reply is written. The hold happens inside
+// SillyTavern's own awaited events (USER_MESSAGE_RENDERED for one-on-one chats,
+// GROUP_MEMBER_DRAFTED per member in groups), so generation itself is untouched; swipes,
+// regenerations and continues never wait.
+
+import { getDirectMessages, onDataChange } from './data.js';
+import { t } from './ui.js';
+
+const STORE_KEY = 'dsc-presence-v1';
+const ONLINE_MS = 15 * 60 * 1000;
+const IDLE_MS = 2 * 60 * 60 * 1000;
+const TYPING_ID = 'dsc-typing';
+
+let options = {
+    enabled: () => true,
+    delay: () => 3,
+    changed: () => {},
+};
+
+/** @type {Record<string, number>} last time each character was active (ms) */
+let lastActive = {};
+
+function load() {
+    try {
+        lastActive = JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {};
+    } catch {
+        lastActive = {};
+    }
+}
+
+function save() {
+    try {
+        localStorage.setItem(STORE_KEY, JSON.stringify(lastActive));
+    } catch {
+        // storage can be refused in private windows
+    }
+}
+
+/** Marks a character active now (they wrote, or just came online). */
+export function touch(avatar) {
+    if (!avatar) {
+        return;
+    }
+    lastActive[avatar] = Date.now();
+    save();
+    paintPresence();
+    options.changed();
+}
+
+/** The latest activity known for a character: our record or their newest message. */
+function activityOf(avatar) {
+    const dm = getDirectMessages().find(x => x.avatar === avatar);
+    return Math.max(lastActive[avatar] ?? 0, dm?.lastMes ?? 0);
+}
+
+function dayHash(avatar) {
+    const day = Math.floor(Date.now() / 86400000);
+    let hash = day;
+    for (const char of String(avatar)) {
+        hash = (hash * 31 + char.codePointAt(0)) >>> 0;
+    }
+    return hash;
+}
+
+/** @returns {'online'|'idle'|'dnd'|'offline'} */
+export function statusOf(avatar) {
+    if (!options.enabled()) {
+        return 'online';
+    }
+    const age = Date.now() - activityOf(avatar);
+    if (age < ONLINE_MS) {
+        return 'online';
+    }
+    if (age < IDLE_MS) {
+        return dayHash(avatar) % 6 === 0 ? 'dnd' : 'idle';
+    }
+    return 'offline';
+}
+
+export const STATUS_LABELS = { online: 'Online', idle: 'Idle', dnd: 'Do Not Disturb', offline: 'Offline' };
+
+export function statusLabel(avatar) {
+    return t(STATUS_LABELS[statusOf(avatar)]);
+}
+
+/** Paints every status dot (and status text) under a root. */
+export function paintPresence(root = document) {
+    root.querySelectorAll('[data-dsc-presence]').forEach((element) => {
+        const status = statusOf(/** @type {HTMLElement} */ (element).dataset.dscPresence);
+        if (/** @type {HTMLElement} */ (element).dataset.status !== status) {
+            /** @type {HTMLElement} */ (element).dataset.status = status;
+        }
+    });
+    root.querySelectorAll('[data-dsc-presence-text]').forEach((element) => {
+        element.textContent = statusLabel(/** @type {HTMLElement} */ (element).dataset.dscPresenceText);
+    });
+}
+
+/* ---------- "X is typing…" under the message box ---------- */
+
+function typingBar() {
+    let bar = document.getElementById(TYPING_ID);
+    if (!bar) {
+        const form = document.getElementById('form_sheld');
+        if (!form) {
+            return null;
+        }
+        bar = document.createElement('div');
+        bar.id = TYPING_ID;
+        bar.setAttribute('aria-live', 'polite');
+        form.append(bar);
+    }
+    return bar;
+}
+
+export function showTyping(name) {
+    const bar = typingBar();
+    if (!bar) {
+        return;
+    }
+    const dots = document.createElement('span');
+    dots.className = 'dsc-typing-dots';
+    dots.append(document.createElement('i'), document.createElement('i'), document.createElement('i'));
+    const who = document.createElement('strong');
+    who.textContent = name;
+    bar.replaceChildren(dots, who, document.createTextNode(` ${t('is typing…')}`));
+    bar.classList.add('dsc-on');
+}
+
+export function hideTyping() {
+    document.getElementById(TYPING_ID)?.classList.remove('dsc-on');
+}
+
+/* ---------- holding replies ---------- */
+
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+/** Brings a character online if needed (waiting the set delay), then shows them typing. */
+async function wake(avatar, name) {
+    if (options.enabled() && statusOf(avatar) !== 'online') {
+        await delay(Math.max(0, Number(options.delay()) || 0) * 1000);
+    }
+    touch(avatar);
+    showTyping(name);
+}
+
+/** A one-on-one reply of the normal kind is on its way (not a swipe, regenerate or continue) */
+let pendingReply = false;
+/** The kind of reply a group is producing */
+let groupType = '';
+
+export function initPresence(opts) {
+    options = { ...options, ...opts };
+    load();
+    const { eventSource, eventTypes } = SillyTavern.getContext();
+
+    eventSource.on(eventTypes.GENERATION_STARTED, (type, params, dryRun) => {
+        const context = SillyTavern.getContext();
+        const normal = !dryRun && (type === undefined || type === 'normal') && !params?.quiet_prompt;
+        pendingReply = normal && !context.groupId;
+        // replies that don't wait show the typing line straight away
+        if (!dryRun && type !== 'quiet' && type !== 'impersonate' && !pendingReply && !context.groupId) {
+            const character = context.characters[context.characterId];
+            if (character) {
+                touch(character.avatar);
+                showTyping(character.name);
+            }
+        }
+    });
+
+    // one-on-one: the user's message is on screen; hold the reply here if they're away
+    eventSource.on(eventTypes.USER_MESSAGE_RENDERED, async () => {
+        const context = SillyTavern.getContext();
+        if (!pendingReply || context.groupId) {
+            return;
+        }
+        pendingReply = false;
+        const character = context.characters[context.characterId];
+        if (character) {
+            await wake(character.avatar, character.name);
+        }
+    });
+
+    // groups: each member in turn
+    eventSource.on(eventTypes.GROUP_WRAPPER_STARTED, (data) => {
+        groupType = data?.type ?? '';
+    });
+    eventSource.on(eventTypes.GROUP_MEMBER_DRAFTED, async (chId) => {
+        const character = SillyTavern.getContext().characters[chId];
+        if (!character) {
+            return;
+        }
+        if (['swipe', 'regenerate', 'continue', 'impersonate', 'quiet'].includes(groupType)) {
+            touch(character.avatar);
+            showTyping(character.name);
+            return;
+        }
+        await wake(character.avatar, character.name);
+    });
+
+    for (const type of [eventTypes.STREAM_TOKEN_RECEIVED, eventTypes.CHARACTER_MESSAGE_RENDERED, eventTypes.GENERATION_ENDED, eventTypes.GENERATION_STOPPED, eventTypes.CHAT_CHANGED]) {
+        if (type) {
+            eventSource.on(type, hideTyping);
+        }
+    }
+    eventSource.on(eventTypes.CHARACTER_MESSAGE_RENDERED, (mesId) => {
+        const message = SillyTavern.getContext().chat[Number(mesId)];
+        const character = message?.original_avatar
+            ?? SillyTavern.getContext().characters.find(x => x.name === message?.name)?.avatar;
+        if (character) {
+            touch(character);
+        }
+    });
+
+    onDataChange(() => paintPresence());
+    setInterval(() => {
+        paintPresence();
+        options.changed();
+    }, 60 * 1000);
+}

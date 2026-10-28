@@ -9,7 +9,8 @@ import { applyNitroTheme, getNitroTheme, NITRO_THEMES } from './nitro.js';
 import { initEditor, refreshEditor } from './editor.js';
 import { getCurrentPlace, initData, scheduleRefresh } from './data.js';
 import { refreshTitle, setDisguise } from './disguise.js';
-import { initHeader, openInbox, refreshHeader, setFriendsTab, togglePinCurrent } from './header.js';
+import { initHeader, openInbox, refreshHeader, refreshPresenceViews, setFriendsTab, togglePinCurrent } from './header.js';
+import { initPresence } from './presence.js';
 import { initMessages, labelMessages } from './messages.js';
 import { initMonograms } from './monograms.js';
 import { initSettings, openSettings, refreshSettings, SETTINGS_DRAWERS } from './settings.js';
@@ -39,6 +40,10 @@ const defaultSettings = Object.freeze({
     presence: true,
     /** "Today at 4:20 PM" in place of SillyTavern's long dates */
     discordTimes: true,
+    /** Characters come and go online; a reply to someone away waits for them to come online */
+    presenceSim: true,
+    /** Seconds before someone away comes online to reply */
+    wakeDelay: 3,
     recentMax: 50,
 });
 
@@ -214,6 +219,12 @@ function trackDrawers() {
             chars ||= open && drawer.id === 'rightNavHolder';
         }
         const body = document.body.classList;
+        // moving between sections closes one menu before the next opens: the settings stay
+        // up through that gap (settings.js marks it) so the chat never flashes through
+        if (settings) {
+            body.remove('dsc-settings-switching');
+        }
+        settings ||= body.contains('dsc-settings-switching');
         body.toggle('dsc-settings-open', settings);
         if (settings) {
             body.remove('dsc-settings-list');
@@ -228,6 +239,7 @@ function trackDrawers() {
         }
     };
     const observer = new MutationObserver(update);
+    trackDrawers.update = update;
     for (const drawer of drawers) {
         const content = drawer.querySelector(':scope > .drawer-content');
         if (content) {
@@ -297,6 +309,8 @@ async function renderSettingsPanel() {
     const presence = byId('dsc_presence');
     const times = byId('dsc_times');
     const recentMax = byId('dsc_recent_max');
+    const presenceSim = byId('dsc_presence_sim');
+    const wakeDelay = byId('dsc_wake_delay');
 
     enabled.checked = settings.enabled;
     appearance.value = settings.appearance;
@@ -306,6 +320,8 @@ async function renderSettingsPanel() {
     presence.checked = settings.presence;
     times.checked = settings.discordTimes;
     recentMax.value = String(settings.recentMax);
+    presenceSim.checked = settings.presenceSim;
+    wakeDelay.value = String(settings.wakeDelay);
 
     const bind = (element, key, read, after) => {
         element.addEventListener('input', () => {
@@ -322,6 +338,8 @@ async function renderSettingsPanel() {
     bind(display, 'messageDisplay', () => display.value);
     bind(presence, 'presence', () => presence.checked);
     bind(times, 'discordTimes', () => times.checked, () => labelMessages());
+    bind(presenceSim, 'presenceSim', () => presenceSim.checked, () => refreshPresenceViews());
+    bind(wakeDelay, 'wakeDelay', () => Math.min(30, Math.max(0, Number(wakeDelay.value) || 0)));
     bind(recentMax, 'recentMax', () => Math.min(500, Math.max(5, Number(recentMax.value) || defaultSettings.recentMax)), () => scheduleRefresh());
 }
 
@@ -333,7 +351,7 @@ async function init() {
     const listLoaded = initData({ max: () => getSettings().recentMax, opened: showChat });
     initSidebar({ showFriends, openSwitcher, openSettings, showChat, showDiscover: openDiscover });
     initHeader({ showAside, toggleAside, openSwitcher, back });
-    initSettings({ setTheme, isDark: () => isDark() });
+    initSettings({ setTheme, isDark: () => isDark(), drawersChanged: () => trackDrawers.update?.() });
     initSwitcher({ picked: () => document.body.classList.remove('dsc-friends') });
     initCompose();
     initEditor();
@@ -346,6 +364,11 @@ async function init() {
     createPhoneTabs();
     trackDrawers();
     initMessages();
+    initPresence({
+        enabled: () => !!getSettings().enabled && !!getSettings().presenceSim,
+        delay: () => getSettings().wakeDelay,
+        changed: refreshPresenceViews,
+    });
     initMonograms();
     initShortcuts({
         enabled: () => !!getSettings().enabled,
