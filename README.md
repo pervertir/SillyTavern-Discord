@@ -16,6 +16,7 @@ A SillyTavern extension that makes SillyTavern look and work like Discord after 
 - **Discover** (the compass on the rail) shows every character and server as Discord discovery cards. It has search, the All / Favorites / Recent / Servers tabs, and buttons for New Character, Import, Import from URL and New Server.
 - **Friends page.** It shows when no chat is open. The Online and All tabs list your characters with message and more buttons. Add Friend starts a new character, and the Active Now column sits on the right.
 - **Settings like Discord's.** They open full screen with the sections on the left and the close button with ESC. The sections are My Account, Connections, Appearance, Chat, Advanced, Backgrounds and Keybinds, then AI Config, Context Template, Instruct Template, System Prompt, World Info and Extensions; long menus are split so each page holds one topic, and your lorebooks are listed as channels under World Info. A character opens as a Profile page (Profile, Definitions, Lorebook, Export, Duplicate, Delete Character) and a group as Server Settings (Overview, Members, Add Members, Scenario, Delete Server). Each section is SillyTavern's own menu, laid out as a Discord form: one column, uppercase titles, Discord fields, and green switches in rows with dividers.
+- **Nitro color themes.** The Appearance page shows Discord's theme picker. The first row has round swatches for Light, Ash, Dark, Onyx and Sync. Under **Color** come all 23 Nitro gradient themes: Mint Apple, Citrus Sherbert, Retro Raincloud, Hanami, Sunrise, Cotton Candy, Lofi Vibes, Desert Khaki, Easter Egg, Sunset, Chroma Glow, Forest, Crimson Moon, Midnight Blurple, Mars, Dusk, Under the Sea, Retro Storm, Neon Nights, Strawberry Lemonade, Aurora, Sepia and Blurple Twilight. They use Discord's own gradient colors, with see-through, tinted panels over the gradient, on desktop and phones.
 - **Quick Switcher** (Ctrl+K, or ⌘K on a Mac). It jumps to anyone, any channel or any server. Start with @, # or * to narrow the results.
 - **Keyboard shortcuts** follow Discord's set and show the right keys for your OS: Ctrl/⌘+K, Ctrl/⌘+/ for the keybinds list, Ctrl/⌘+, for settings, Alt+↑/↓ for conversations, Ctrl/⌘+Alt+↑/↓ for servers, Ctrl/⌘+' for a new chat, Ctrl/⌘+P to pin, Ctrl/⌘+U for the member list, Ctrl/⌘+I for chat history and Ctrl/⌘+E for extensions.
 - **Phones** follow Discord mobile. You see the server rail with your conversations and the Home / Notifications / You tabs; Notifications lists recent messages. A conversation slides in full screen with a pill message box and a send button. Tapping a message shows its actions, and You opens the settings as a list.
@@ -39,6 +40,7 @@ Then open **Extensions**, find **Discord Theme** and set it up:
 
 - **Enable theme**
 - **Appearance**: Dark, Ash, Onyx, Light, or sync with your computer
+- **Color theme (Nitro)**: any of Discord's 23 gradient color themes, or none
 - **Message display**: cozy or compact
 - **Show the profile panel and member list**
 - **Show characters as online**

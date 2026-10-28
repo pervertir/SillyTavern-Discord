@@ -103,6 +103,10 @@ border-muted 4% (Onyx 16%, Light 20%). [CSS]
 - Quick switcher: ≈570px, padding 12px 20px 0, radius 8px, input 70px tall, 22px. [CSS, est]
 - Notices / toasts: surface-high, 1px border-subtle, radius 16px, padding 12px. [CSS]
 
+## Nitro color themes
+
+Discord's stylesheet defines each gradient's stops as `--bg-gradient-<theme>-N-hsl` (23 themes, from Mint Apple to Blurple Twilight, plus Dusk and Easter Egg). The angles, stop positions, light or dark base and main color come from Discord's theme definitions. For example, Chroma Glow is 128.92deg on a dark base and Mint Apple is 180deg on a light base. Dusk's and Easter Egg's angles are estimated. The app background is the gradient, and the surfaces are translucent over it and tinted toward the theme's main color. The values are in nitro.js. [CSS, web]
+
 ## Mobile
 
 - Bottom tabs: Home (server rail beside DMs or channels), Notifications, You. [web, est]

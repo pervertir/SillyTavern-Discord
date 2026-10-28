@@ -3,7 +3,9 @@
 // and quick switcher) and exposes a small settings panel.
 
 import { initCompose, openExtensionsMenu } from './compose.js';
+import { initAppearance, renderAppearance } from './appearance.js';
 import { hideDiscover, initDiscover, showDiscover } from './discover.js';
+import { applyNitroTheme, getNitroTheme, NITRO_THEMES } from './nitro.js';
 import { initEditor, refreshEditor } from './editor.js';
 import { getCurrentPlace, initData, scheduleRefresh } from './data.js';
 import { refreshTitle, setDisguise } from './disguise.js';
@@ -27,6 +29,8 @@ const defaultSettings = Object.freeze({
     enabled: true,
     /** Discord's themes: dark, ash, onyx or light; or system (light or dark with the OS) */
     appearance: 'dark',
+    /** A Nitro color theme (nitro.js id), or '' for none; it brings its own light or dark base */
+    nitroTheme: '',
     /** The profile panel in DMs and the member list in servers */
     aside: true,
     /** cozy (pictures and names) or compact (one line per message) */
@@ -65,10 +69,12 @@ function isDark(settings = getSettings()) {
 /** The body classes for a theme: Dark has none, Ash, Onyx and Light one each. */
 function applyThemeClasses(settings, on) {
     const body = document.body.classList;
-    const dark = isDark(settings);
+    const nitro = on ? getNitroTheme(settings.nitroTheme) : null;
+    const dark = nitro ? nitro.base === 'dark' : isDark(settings);
     body.toggle('dsc-light', on && !dark);
-    body.toggle('dsc-ash', on && dark && settings.appearance === 'ash');
-    body.toggle('dsc-onyx', on && dark && settings.appearance === 'onyx');
+    body.toggle('dsc-ash', on && !nitro && dark && settings.appearance === 'ash');
+    body.toggle('dsc-onyx', on && !nitro && dark && settings.appearance === 'onyx');
+    applyNitroTheme(nitro);
 }
 
 function applySettings() {
@@ -86,15 +92,37 @@ function applySettings() {
     refreshHeader();
 }
 
+/** Picks a base theme (Light, Ash, Dark, Onyx, Sync); a Nitro color theme gives way to it. */
 function setTheme(appearance) {
     const settings = getSettings();
     settings.appearance = appearance;
+    settings.nitroTheme = '';
     applySettings();
     saveSettings();
+    syncThemeFields();
+}
+
+/** Picks a Nitro color theme. */
+function setNitroTheme(id) {
+    const settings = getSettings();
+    settings.nitroTheme = getNitroTheme(id) ? id : '';
+    applySettings();
+    saveSettings();
+    syncThemeFields();
+}
+
+/** Shows the current choice in the extension's panel and on the Appearance page. */
+function syncThemeFields() {
+    const settings = getSettings();
     const select = /** @type {HTMLSelectElement} */ (document.getElementById('dsc_appearance'));
     if (select) {
-        select.value = appearance;
+        select.value = settings.appearance;
     }
+    const nitro = /** @type {HTMLSelectElement} */ (document.getElementById('dsc_nitro'));
+    if (nitro) {
+        nitro.value = settings.nitroTheme;
+    }
+    renderAppearance();
 }
 
 function toggleAside() {
@@ -253,6 +281,10 @@ async function renderSettingsPanel() {
     const byId = id => /** @type {HTMLInputElement} */ (document.getElementById(id));
     const enabled = byId('dsc_enabled');
     const appearance = byId('dsc_appearance');
+    const nitro = /** @type {HTMLSelectElement} */ (document.getElementById('dsc_nitro'));
+    for (const theme of NITRO_THEMES) {
+        nitro.append(new Option(theme.name, theme.id));
+    }
     const aside = byId('dsc_aside');
     const display = byId('dsc_message_display');
     const presence = byId('dsc_presence');
@@ -261,6 +293,7 @@ async function renderSettingsPanel() {
 
     enabled.checked = settings.enabled;
     appearance.value = settings.appearance;
+    nitro.value = settings.nitroTheme;
     aside.checked = settings.aside;
     display.value = settings.messageDisplay;
     presence.checked = settings.presence;
@@ -276,7 +309,8 @@ async function renderSettingsPanel() {
         });
     };
     bind(enabled, 'enabled', () => enabled.checked);
-    bind(appearance, 'appearance', () => appearance.value);
+    bind(appearance, 'appearance', () => appearance.value, () => setTheme(appearance.value));
+    bind(nitro, 'nitroTheme', () => nitro.value, () => syncThemeFields());
     bind(aside, 'aside', () => aside.checked);
     bind(display, 'messageDisplay', () => display.value);
     bind(presence, 'presence', () => presence.checked);
@@ -296,6 +330,11 @@ async function init() {
     initSwitcher({ picked: () => document.body.classList.remove('dsc-friends') });
     initCompose();
     initEditor();
+    initAppearance({
+        current: () => ({ appearance: getSettings().appearance, nitroTheme: getSettings().nitroTheme }),
+        setBase: setTheme,
+        setNitro: setNitroTheme,
+    });
     initDiscover({ shown: () => { refreshHeader(); refreshTitle(); markCurrent(); } });
     createPhoneTabs();
     trackDrawers();
