@@ -10,6 +10,7 @@ import { initEditor, refreshEditor } from './editor.js';
 import { getCurrentPlace, initData, scheduleRefresh } from './data.js';
 import { refreshTitle, setDisguise } from './disguise.js';
 import { initHeader, openInbox, refreshHeader, refreshPresenceViews, setFriendsTab, togglePinCurrent } from './header.js';
+import { enableDesktopNotifications, initNotify } from './notify.js';
 import { initPresence } from './presence.js';
 import { initSounds, play } from './sounds.js';
 import { initMessages, labelMessages } from './messages.js';
@@ -55,6 +56,10 @@ const defaultSettings = Object.freeze({
     /** The user panel's mute and deafen */
     muted: false,
     deafened: false,
+    /** Your own status: online, idle, dnd or invisible */
+    myStatus: 'online',
+    /** Desktop notifications for replies that arrive while the window isn't in front */
+    desktopNotifications: false,
     recentMax: 50,
 });
 
@@ -322,6 +327,7 @@ async function renderSettingsPanel() {
     const recentMax = byId('dsc_recent_max');
     const presenceSim = byId('dsc_presence_sim');
     const sounds = byId('dsc_sounds');
+    const desktop = byId('dsc_desktop_notifications');
     const soundVolume = byId('dsc_sound_volume');
     const soundMessage = byId('dsc_sound_message');
     const soundOnline = byId('dsc_sound_online');
@@ -338,6 +344,7 @@ async function renderSettingsPanel() {
     recentMax.value = String(settings.recentMax);
     presenceSim.checked = settings.presenceSim;
     sounds.checked = settings.sounds;
+    desktop.checked = settings.desktopNotifications;
     soundVolume.value = String(settings.soundVolume);
     soundMessage.checked = settings.soundMessage;
     soundOnline.checked = settings.soundOnline;
@@ -360,6 +367,12 @@ async function renderSettingsPanel() {
     bind(presence, 'presence', () => presence.checked);
     bind(times, 'discordTimes', () => times.checked, () => labelMessages());
     bind(sounds, 'sounds', () => sounds.checked);
+    // turning desktop notifications on asks the browser first
+    desktop.addEventListener('input', async () => {
+        settings.desktopNotifications = desktop.checked && await enableDesktopNotifications();
+        desktop.checked = settings.desktopNotifications;
+        saveSettings();
+    });
     bind(soundVolume, 'soundVolume', () => Number(soundVolume.value), () => play('message'));
     bind(soundMessage, 'soundMessage', () => soundMessage.checked);
     bind(soundOnline, 'soundOnline', () => soundOnline.checked);
@@ -392,6 +405,7 @@ async function init() {
     initMessages();
     initMessageTools();
     initSounds({ settings: getSettings, save: saveSettings });
+    initNotify({ settings: getSettings, save: saveSettings, openSettings });
     initPresence({
         enabled: () => !!getSettings().enabled && !!getSettings().presenceSim,
         delay: () => getSettings().wakeDelay,

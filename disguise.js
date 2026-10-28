@@ -12,6 +12,29 @@ const PLACEHOLDER_ATTRS = ['placeholder', 'connected_text', 'no_connection_text'
 
 let original = null;
 let active = false;
+let unread = 0;
+
+/** Discord's tab icon with a red unread badge */
+function badgedIcon() {
+    return `data:image/svg+xml,${encodeURIComponent(decodeURIComponent(ICON.slice('data:image/svg+xml,'.length)).replace('</svg>', "<circle cx='24' cy='24' r='8' fill='#f23f43' stroke='#000' stroke-opacity='.25'/></svg>"))}`;
+}
+
+function setIcons(href) {
+    for (const link of getIconLinks()) {
+        link.setAttribute('href', href);
+        link.setAttribute('type', 'image/svg+xml');
+    }
+}
+
+/** "(n) Discord | …" and a badge on the tab icon while replies wait unread. */
+export function setUnreadBadge(count) {
+    unread = count;
+    if (!active) {
+        return;
+    }
+    setIcons(count ? badgedIcon() : ICON);
+    refreshTitle();
+}
 
 function getIconLinks() {
     return [...document.querySelectorAll('link[rel~="icon"]')];
@@ -52,7 +75,7 @@ export function refreshTitle() {
     const where = describe();
     const body = document.body.classList;
     const page = body.contains('dsc-discover') ? [t('Discover')] : body.contains('dsc-friends') ? [t('Friends')] : where.title;
-    document.title = [APP, ...page].join(' | ');
+    document.title = `${unread ? `(${unread}) ` : ''}${[APP, ...page].join(' | ')}`;
     const textarea = document.getElementById('send_textarea');
     if (textarea) {
         const text = where.box ? `${t('Message')} ${where.box}` : t('Message');
@@ -67,10 +90,7 @@ export function setDisguise(enabled) {
     if (enabled) {
         remember();
         active = true;
-        for (const link of getIconLinks()) {
-            link.setAttribute('href', ICON);
-            link.setAttribute('type', 'image/svg+xml');
-        }
+        setIcons(unread ? badgedIcon() : ICON);
         refreshTitle();
         return;
     }

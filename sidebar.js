@@ -4,6 +4,7 @@
 
 import { getChannels, getCurrentPlace, getDirectMessages, getGroup, getServers, isCurrent, isPinned, latestChannel, onDataChange, openPlace, togglePin } from './data.js';
 import { isPlaceholder, monogramizeAll } from './monograms.js';
+import { repaintUnread } from './notify.js';
 import { paintPresence } from './presence.js';
 import { clickOption, closeDrawers, getAcronym, getColorIndex, getInitials, icon, iconButton, isDrawerOpen, openDrawer, openMenu, t, toChannelName } from './ui.js';
 import { formatKeys, SHORTCUTS } from './shortcuts.js';
@@ -377,6 +378,7 @@ function renderHome(scroll) {
     }
     scroll.replaceChildren(...rows, head, list);
     paintPresence(list);
+    repaintUnread();
     monogramizeAll(list, '.dsc-avatar img', img => img.parentElement?.dataset.name ?? '');
 }
 
@@ -544,7 +546,7 @@ function createUserPanel() {
     const mono = document.createElement('span');
     mono.className = 'dsc-monogram dsc-me-mono';
     const status = document.createElement('span');
-    status.className = 'dsc-status dsc-status-on';
+    status.className = 'dsc-status dsc-status-on dsc-my-status';
     avatar.append(img, mono, status);
     const names = document.createElement('span');
     names.className = 'dsc-user-names';
@@ -555,7 +557,6 @@ function createUserPanel() {
     sub.textContent = t('Online');
     names.append(name, sub);
     me.append(avatar, names);
-    me.addEventListener('click', () => actions.openSettings('persona-management-button'));
 
     const tools = document.createElement('div');
     tools.className = 'dsc-user-tools';

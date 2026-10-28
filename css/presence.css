@@ -168,3 +168,47 @@ body.discord-theme #chat .mes.dsc-pending {
         font-size: 13px;
     }
 }
+
+/* status shapes in the status menu */
+body.discord-theme .dsc-menu-item.dsc-menu-status {
+    justify-content: flex-start;
+    gap: 10px;
+    --dsc-ring: var(--dsc-floating);
+}
+
+body.discord-theme .dsc-menu-item.dsc-menu-status:hover {
+    --dsc-ring: color-mix(in srgb, var(--dsc-floating), rgb(var(--dsc-mod)) 12%);
+}
+
+body.discord-theme .dsc-menu-dot {
+    display: block;
+    position: relative;
+    right: auto;
+    bottom: auto;
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border: none;
+}
+
+body.discord-theme .dsc-menu-item .dsc-menu-label {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 2px;
+}
+
+body.discord-theme .dsc-menu-item .dsc-menu-label small {
+    color: var(--dsc-muted);
+    font-size: 12px;
+    line-height: 14px;
+    font-weight: 400;
+}
+
+body.discord-theme .dsc-menu-item:hover .dsc-menu-label small {
+    color: inherit;
+}
+
+body.discord-theme .dsc-menu-status .dsc-menu-check {
+    border-radius: 50%;
+}

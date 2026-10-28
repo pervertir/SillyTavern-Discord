@@ -55,8 +55,8 @@ export function play(name, { force = false } = {}) {
     if (!notes || !settings.enabled || !settings.sounds || !settings[TOGGLES[name]]) {
         return false;
     }
-    // deafened: nothing at all, except the undeafen tone itself
-    if (settings.deafened && !force) {
+    // deafened: nothing at all, except the undeafen tone itself; Do Not Disturb: no pings
+    if ((settings.deafened && !force) || (settings.myStatus === 'dnd' && (name === 'message' || name === 'online'))) {
         return false;
     }
     const ctx = context();

@@ -851,3 +851,21 @@ body.discord-theme #right-nav-panel .floating_panel_maximize,
 body.discord-theme :is(#lm_button_panel_pin_div, #WI_panel_pin_div, #rm_button_panel_pin_div) {
     display: none;
 }
+
+/* a DM with an unread reply: bold and bright, with Discord's white pill at the edge */
+body.discord-theme .dsc-dm.dsc-unread {
+    color: var(--dsc-header);
+    font-weight: 600;
+}
+
+body.discord-theme .dsc-dm.dsc-unread::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    width: 4px;
+    height: 8px;
+    margin-top: -4px;
+    border-radius: 0 4px 4px 0;
+    background: var(--dsc-header);
+}

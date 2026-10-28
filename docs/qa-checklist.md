@@ -33,7 +33,19 @@ values) and Discord's current client. Status: ✅ right · ❌ wrong (defect) �
 | DM context menu | ✅ | | |
 | Rail tooltip | ✅ | | |
 
-## Batch 2: navigation — pending
+## Batch 2: navigation
+
+| Component | Status | Defect / fix | Simpler |
+|---|---|---|---|
+| Server rail, pill, tooltips, Add a Server, Discover | ✅ | | |
+| DM rows: hover, selected, close × | ✅ | | |
+| Unread DM (bold + pill) | ❌→🔧 | Didn't exist; replies that land while you're away mark the DM | |
+| Tab title "(n) Discord" and tab icon badge | ❌→🔧 | Didn't exist | |
+| Desktop notifications when away | ❌→🔧 | Didn't exist; opt-in switch asks the browser | |
+| Your status (Online, Idle, Do Not Disturb, Invisible) | ❌→🔧 | Panel was always "Online"; now Discord's status menu with shapes and notes; DND silences pings and notifications | |
+| Switch Accounts (personas) | ❌→🔧 | Was buried in Persona Management; now in the status menu | Two clicks instead of a full page |
+| Edit Profile | ✅ | In the status menu, opens My Account | |
+| Channel list and categories | ✅ | | |
 ## Batch 3: short messages and sounds — sounds ✅ (1646b82); short messages pending
 ## Batch 4: settings and controls — pending
 ## Batch 5: overlays and editors — pending

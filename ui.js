@@ -251,7 +251,7 @@ function getMenu() {
  * Opens a Discord menu at a button (or at the pointer for a right click); a second click on
  * the same button closes it.
  * @param {HTMLElement} anchor
- * @param {Array<{label: string, icon?: string, danger?: boolean, checked?: boolean, run: () => void}|'separator'>} items
+ * @param {Array<{label: string, icon?: string, danger?: boolean, checked?: boolean, dot?: string, note?: string, run: () => void}|'separator'>} items
  * @param {{x: number, y: number}|'below'|'below-end'|'right'} [at]
  */
 export function openMenu(anchor, items, at = 'below') {
@@ -274,7 +274,21 @@ export function openMenu(anchor, items, at = 'below') {
         row.setAttribute('role', 'menuitem');
         row.classList.toggle('dsc-menu-danger', !!item.danger);
         const label = document.createElement('span');
+        label.className = 'dsc-menu-label';
         label.textContent = t(item.label);
+        if (item.note) {
+            const note = document.createElement('small');
+            note.textContent = t(item.note);
+            label.append(note);
+        }
+        if (item.dot) {
+            // a status shape before the label, as in Discord's status menu
+            const dot = document.createElement('span');
+            dot.className = 'dsc-status dsc-menu-dot';
+            dot.dataset.status = item.dot;
+            row.classList.add('dsc-menu-status');
+            row.append(dot);
+        }
         row.append(label);
         if (item.checked !== undefined) {
             const box = document.createElement('span');
