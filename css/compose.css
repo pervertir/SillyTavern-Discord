@@ -1,0 +1,256 @@
+/* The message box: Discord's rounded field with the + on the left and gift, GIF, sticker and
+   emoji on the right. Enter sends, so the send button only shows on phones. */
+
+body.discord-theme #form_sheld {
+    width: auto;
+    margin: 0 var(--dsc-aside-w) 0 0;
+    padding: 0 16px 24px;
+    box-sizing: border-box;
+    background: var(--dsc-chat);
+    white-space: normal;
+}
+
+body.discord-theme #send_form {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    background: var(--dsc-input);
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+body.discord-theme #send_form.no-connection {
+    background: var(--dsc-input);
+}
+
+body.discord-theme #nonQRFormItems {
+    align-items: flex-start;
+    column-gap: 0;
+    min-height: 44px;
+    padding: 0 8px 0 0;
+    box-sizing: border-box;
+}
+
+body.discord-theme #send_textarea {
+    order: 1;
+    min-height: 44px;
+    height: 44px;
+    max-height: 50dvh;
+    padding: 11px 10px 11px 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: var(--dsc-text);
+    font: 400 16px/22px var(--dsc-font);
+    text-align: start;
+    text-shadow: none;
+    resize: none;
+    box-shadow: none;
+    outline: none;
+}
+
+body.discord-theme #send_textarea::placeholder {
+    text-align: start;
+    color: var(--dsc-muted);
+    opacity: 1;
+}
+
+body.discord-theme #leftSendForm {
+    order: 0;
+}
+
+body.discord-theme #rightSendForm {
+    order: 2;
+}
+
+body.discord-theme #leftSendForm,
+body.discord-theme #rightSendForm {
+    display: flex;
+    align-items: center;
+    flex: none;
+    flex-wrap: nowrap;
+    gap: 0;
+    width: auto;
+    height: 44px;
+}
+
+/* the round + : SillyTavern's chat options */
+body.discord-theme #options_button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 44px;
+    margin: 0;
+    color: var(--dsc-icon);
+    font-size: 0;
+    opacity: 1;
+    filter: none;
+}
+
+body.discord-theme #options_button::before {
+    content: '';
+    width: 24px;
+    height: 24px;
+    background-color: currentColor;
+    -webkit-mask: var(--dsc-i-plus-circle) center / 24px 24px no-repeat;
+    mask: var(--dsc-i-plus-circle) center / 24px 24px no-repeat;
+}
+
+body.discord-theme #options_button:hover {
+    color: var(--dsc-icon-hover);
+}
+
+/* the wand is reached from the emoji button (SillyTavern shows it with an inline style) */
+body.discord-theme #leftSendForm > #extensionsMenuButton {
+    display: none !important;
+}
+
+body.discord-theme #rightSendForm > #dsc-compose-tools {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: auto;
+    height: 44px;
+    opacity: 1;
+    filter: none;
+    cursor: default;
+}
+
+body.discord-theme .dsc-compose-tool {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 44px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: none;
+    color: var(--dsc-icon);
+    cursor: pointer;
+    transition: color var(--dsc-fast) var(--dsc-ease);
+}
+
+body.discord-theme .dsc-compose-tool:hover {
+    color: var(--dsc-icon-hover);
+}
+
+/* the emoji face grows a little and turns yellow on hover, as Discord's does */
+body.discord-theme .dsc-compose-tool:last-child:hover {
+    color: var(--dsc-yellow);
+}
+
+body.discord-theme .dsc-compose-tool:last-child:hover .dsc-ico {
+    transform: scale(1.14);
+}
+
+body.discord-theme .dsc-compose-tool .dsc-ico {
+    transition: transform var(--dsc-fast) var(--dsc-ease);
+}
+
+/* SillyTavern's own buttons on the right */
+body.discord-theme #rightSendForm > div:not(#dsc-compose-tools) {
+    width: 40px;
+    height: 44px;
+    color: var(--dsc-icon);
+    font-size: 18px;
+    opacity: 1;
+    filter: none;
+}
+
+body.discord-theme #rightSendForm > div:not(#dsc-compose-tools):hover {
+    color: var(--dsc-icon-hover);
+}
+
+body.discord-theme #send_but {
+    display: none !important;
+}
+
+body.discord-theme #mes_stop {
+    color: var(--dsc-red);
+}
+
+body.discord-theme #mes_stop i::before {
+    content: '';
+    display: block;
+    width: 22px;
+    height: 22px;
+    background-color: currentColor;
+    -webkit-mask: var(--dsc-i-stop) center / 22px 22px no-repeat;
+    mask: var(--dsc-i-stop) center / 22px 22px no-repeat;
+}
+
+/* Typing note and attachments */
+body.discord-theme #file_form {
+    padding: 16px 16px 0;
+}
+
+body.discord-theme #file_form .file_attached {
+    gap: 8px;
+    padding: 8px;
+    border-radius: 4px;
+    background: var(--dsc-side);
+    font-size: 14px;
+}
+
+body.discord-theme #dialogue_del_mes {
+    gap: 8px;
+    padding: 0 0 8px;
+}
+
+/* Chat options (+) and extensions menus open above the box, like Discord's upload menu */
+body.discord-theme #options .options-content,
+body.discord-theme #extensionsMenu {
+    padding: 6px 8px;
+    border: none;
+    border-radius: 4px;
+    background: var(--dsc-floating);
+    color: var(--dsc-header-2);
+    box-shadow: var(--dsc-elevation-high);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+body.discord-theme #options .options-content a,
+body.discord-theme #extensionsMenu .list-group-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+    margin: 2px 0;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 2px;
+    background: none;
+    color: var(--dsc-header-2);
+    font: 500 14px/18px var(--dsc-font);
+    opacity: 1;
+}
+
+body.discord-theme #options .options-content a:hover,
+body.discord-theme #extensionsMenu .list-group-item:hover {
+    background: var(--dsc-blurple);
+    color: #ffffff;
+}
+
+body.discord-theme #options .options-content a:hover i,
+body.discord-theme #extensionsMenu .list-group-item:hover :is(i, .extensionsMenuExtensionButton) {
+    color: #ffffff;
+}
+
+body.discord-theme #options .options-content a i,
+body.discord-theme #extensionsMenu .list-group-item .extensionsMenuExtensionButton {
+    width: 18px;
+    font-size: 14px;
+    color: var(--dsc-icon);
+}
+
+body.discord-theme #options hr {
+    margin: 4px;
+    border-color: var(--dsc-divider);
+}

@@ -1,0 +1,624 @@
+// The chat side: the header above the messages (@name or #channel and its tools), the profile
+// panel or member list on the right, and the Friends page that stands in when no chat is open.
+
+import { channelLabel, getCurrentPlace, getDirectMessages, getGroup, isPinned, onDataChange, openCharacter, togglePin } from './data.js';
+import { isPlaceholder, monogramizeAll } from './monograms.js';
+import { SHORTCUTS, showShortcuts, withShortcut } from './shortcuts.js';
+import { openCharacterPanel, selectServer } from './sidebar.js';
+import { clickOption, getColorIndex, icon, iconButton, openMenu, t, toChannelName, toUsername } from './ui.js';
+
+const HEAD_ID = 'dsc-head';
+const ASIDE_ID = 'dsc-aside';
+const FRIENDS_ID = 'dsc-friends';
+
+let actions = {
+    toggleAside: () => {},
+    openSwitcher: (_text) => {},
+    back: () => {},
+};
+
+/** Which Friends tab is showing: online (characters you talk to), all, or add */
+let friendsTab = 'online';
+let friendsFilter = '';
+
+function currentCharacter() {
+    const context = SillyTavern.getContext();
+    return !context.groupId && context.characterId !== undefined ? context.characters[context.characterId] : null;
+}
+
+function currentGroup() {
+    const context = SillyTavern.getContext();
+    return context.groupId ? getGroup(context.groupId) : null;
+}
+
+/* ---------- header ---------- */
+
+function headButton(className, label, iconName, run) {
+    const button = iconButton(`dsc-head-tool ${className}`, label, iconName);
+    button.dataset.dscTipSide = 'bottom';
+    button.addEventListener('click', run);
+    return button;
+}
+
+function createHeader() {
+    const sheld = document.getElementById('sheld');
+    if (!sheld || document.getElementById(HEAD_ID)) {
+        return;
+    }
+    const head = document.createElement('section');
+    head.id = HEAD_ID;
+
+    const back = iconButton('dsc-head-back', t('Back'), 'burger');
+    back.addEventListener('click', () => actions.back());
+
+    const title = document.createElement('div');
+    title.className = 'dsc-head-title';
+    const glyph = document.createElement('span');
+    glyph.className = 'dsc-head-glyph';
+    const name = document.createElement('h1');
+    name.className = 'dsc-head-name';
+    const status = document.createElement('span');
+    status.className = 'dsc-status dsc-head-status';
+    const topic = document.createElement('span');
+    topic.className = 'dsc-head-topic';
+    title.append(glyph, name, status, topic);
+    title.addEventListener('click', () => {
+        if (!document.body.classList.contains('dsc-friends-mode')) {
+            actions.toggleAside();
+        }
+    });
+
+    // Friends page tabs
+    const tabs = document.createElement('nav');
+    tabs.className = 'dsc-head-tabs';
+    for (const [key, label] of [['online', 'Online'], ['all', 'All'], ['add', 'Add Friend']]) {
+        const tab = document.createElement('button');
+        tab.type = 'button';
+        tab.className = 'dsc-head-tab';
+        tab.dataset.tab = key;
+        tab.textContent = t(label);
+        tab.addEventListener('click', () => setFriendsTab(key));
+        tabs.append(tab);
+    }
+
+    const tools = document.createElement('div');
+    tools.className = 'dsc-head-tools';
+    tools.append(
+        headButton('dsc-for-dm', withShortcut(t('Start a New Chat'), SHORTCUTS.newChat), 'phone', () => clickOption('option_start_new_chat')),
+        headButton('dsc-for-dm', t('Chat History'), 'video', () => clickOption('option_select_chat')),
+        headButton('dsc-for-channel', t('Chat History'), 'threads', () => clickOption('option_select_chat')),
+        headButton('dsc-for-chat dsc-pin-tool', withShortcut(t('Pin Chat'), SHORTCUTS.pin), 'pin', togglePinCurrent),
+        headButton('dsc-for-dm dsc-convert', t('Convert to Group'), 'person-add', () => clickOption('option_convert_to_group')),
+        headButton('dsc-for-dm dsc-aside-tool', withShortcut(t('Show User Profile'), SHORTCUTS.members), 'profile', () => actions.toggleAside()),
+        headButton('dsc-for-channel dsc-aside-tool', withShortcut(t('Show Member List'), SHORTCUTS.members), 'members', () => actions.toggleAside()),
+    );
+    const search = document.createElement('label');
+    search.className = 'dsc-head-search';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = t('Search');
+    input.setAttribute('aria-label', withShortcut(t('Search'), SHORTCUTS.switcher));
+    input.readOnly = true;
+    input.addEventListener('focus', () => {
+        input.blur();
+        actions.openSwitcher('');
+    });
+    search.append(input, icon('search', 16));
+    const inbox = headButton('dsc-for-all', withShortcut(t('Inbox'), SHORTCUTS.inbox), 'inbox', (event) => openInbox(/** @type {HTMLElement} */ (event.currentTarget)));
+    const help = headButton('dsc-for-all', withShortcut(t('Help'), SHORTCUTS.keybinds), 'help', () => showShortcuts());
+    tools.append(search, inbox, help);
+
+    head.append(back, title, tabs, tools);
+    sheld.prepend(head);
+}
+
+/** Inbox: the chat's own records, a menu like Discord's inbox tabs */
+export function openInbox(anchor) {
+    const target = anchor ?? document.querySelector(`#${HEAD_ID} .dsc-for-all`);
+    if (!target) {
+        return;
+    }
+    openMenu(/** @type {HTMLElement} */ (target), [
+        { label: 'Chat History', icon: 'history', run: () => clickOption('option_select_chat') },
+        { label: 'Start a New Chat', icon: 'phone', run: () => clickOption('option_start_new_chat') },
+        { label: 'Close Chat', icon: 'close', run: () => clickOption('option_close_chat') },
+    ], 'below-end');
+}
+
+export function togglePinCurrent() {
+    const place = getCurrentPlace();
+    if (place) {
+        togglePin(place);
+        refreshHeader();
+    }
+}
+
+/** Fills the header for the open chat, a channel, or the Friends page. */
+export function refreshHeader() {
+    const head = document.getElementById(HEAD_ID);
+    if (!head) {
+        return;
+    }
+    const body = document.body.classList;
+    const group = currentGroup();
+    const character = currentCharacter();
+    const hasChat = !!(group || character) && !!SillyTavern.getContext().getCurrentChatId();
+    body.toggle('dsc-no-chat', !hasChat);
+    body.toggle('dsc-channel', !!group);
+    const friends = body.contains('dsc-friends') || !hasChat;
+    body.toggle('dsc-friends-mode', friends);
+
+    const glyph = head.querySelector('.dsc-head-glyph');
+    const name = head.querySelector('.dsc-head-name');
+    const topic = head.querySelector('.dsc-head-topic');
+    glyph.replaceChildren();
+    topic.textContent = '';
+    if (friends) {
+        glyph.append(icon('friends'));
+        name.textContent = t('Friends');
+    } else if (group) {
+        glyph.append(icon('hash'));
+        const chatId = SillyTavern.getContext().getCurrentChatId() ?? '';
+        name.textContent = toChannelName(channelLabel(group, chatId));
+        topic.textContent = group.name;
+    } else if (character) {
+        glyph.append(icon('at'));
+        name.textContent = character.name;
+    }
+    for (const tab of head.querySelectorAll('.dsc-head-tab')) {
+        tab.classList.toggle('dsc-selected', tab.dataset.tab === friendsTab);
+    }
+    const pin = head.querySelector('.dsc-pin-tool');
+    const pinned = !friends && isPinned(getCurrentPlace());
+    pin?.classList.toggle('dsc-on', pinned);
+    if (pin) {
+        const label = withShortcut(t(pinned ? 'Unpin Chat' : 'Pin Chat'), SHORTCUTS.pin);
+        pin.dataset.dscTip = label;
+        pin.setAttribute('aria-label', label);
+    }
+    const asideOn = body.contains('dsc-aside-on');
+    for (const tool of head.querySelectorAll('.dsc-aside-tool')) {
+        tool.classList.toggle('dsc-on', asideOn);
+        const base = tool.classList.contains('dsc-for-dm') ? (asideOn ? 'Hide User Profile' : 'Show User Profile') : (asideOn ? 'Hide Member List' : 'Show Member List');
+        const label = withShortcut(t(base), SHORTCUTS.members);
+        tool.dataset.dscTip = label;
+        tool.setAttribute('aria-label', label);
+    }
+    refreshAside();
+    if (friends) {
+        renderFriends();
+    }
+}
+
+/* ---------- profile panel and member list ---------- */
+
+/** The average color of a picture, for the profile banner, as Discord picks one. */
+const bannerColors = new Map();
+
+async function bannerColor(src) {
+    if (!bannerColors.has(src)) {
+        bannerColors.set(src, (async () => {
+            const img = new Image();
+            img.src = src;
+            await img.decode();
+            const canvas = document.createElement('canvas');
+            canvas.width = canvas.height = 1;
+            const context = canvas.getContext('2d', { willReadFrequently: true });
+            context.drawImage(img, 0, 0, 1, 1);
+            const [r, g, b] = context.getImageData(0, 0, 1, 1).data;
+            return `rgb(${r}, ${g}, ${b})`;
+        })().catch(() => ''));
+    }
+    return bannerColors.get(src);
+}
+
+const DEFAULT_BANNERS = ['#5865f2', '#757e8a', '#3ba55c', '#faa61a', '#ed4245', '#eb459f'];
+
+function createAside() {
+    if (document.getElementById(ASIDE_ID)) {
+        return;
+    }
+    const aside = document.createElement('aside');
+    aside.id = ASIDE_ID;
+    aside.addEventListener('click', (event) => {
+        const row = /** @type {HTMLElement} */ (event.target).closest('.dsc-member');
+        if (row?.dataset.avatar) {
+            openCharacter(row.dataset.avatar);
+        }
+    });
+    aside.addEventListener('contextmenu', (event) => {
+        const row = /** @type {HTMLElement} */ (event.target).closest('.dsc-member');
+        if (!row?.dataset.avatar) {
+            return;
+        }
+        event.preventDefault();
+        openMenu(row, [
+            { label: 'Message', icon: 'chat', run: () => openCharacter(row.dataset.avatar) },
+            { label: 'Profile', icon: 'profile', run: () => viewProfile(row.dataset.avatar) },
+        ], { x: event.clientX, y: event.clientY });
+    });
+    document.body.append(aside);
+}
+
+/** Opens a character's card in SillyTavern's character panel. */
+async function viewProfile(avatar) {
+    const current = currentCharacter();
+    if (current?.avatar !== avatar) {
+        await openCharacter(avatar);
+    }
+    openCharacterPanel('');
+    document.getElementById('rm_button_selected_ch')?.click();
+}
+
+/** Plain text of a card field, with {{char}} and {{user}} filled in. */
+function plain(text, max = 300) {
+    const { substituteParams } = SillyTavern.getContext();
+    const div = document.createElement('div');
+    div.innerHTML = SillyTavern.libs.DOMPurify.sanitize(substituteParams(String(text ?? '')), { ALLOWED_TAGS: [] });
+    const value = (div.textContent || '').replace(/\s+/g, ' ').trim();
+    return value.length > max ? `${value.slice(0, max - 1)}…` : value;
+}
+
+function memberRow(character, online) {
+    const { getThumbnailUrl } = SillyTavern.getContext();
+    const row = document.createElement('div');
+    row.className = 'dsc-member';
+    row.classList.toggle('dsc-offline', !online);
+    row.setAttribute('role', 'button');
+    row.tabIndex = 0;
+    row.dataset.avatar = character.avatar;
+    const avatar = document.createElement('span');
+    avatar.className = 'dsc-avatar';
+    avatar.dataset.name = character.name;
+    const img = document.createElement('img');
+    img.alt = '';
+    img.loading = 'lazy';
+    img.src = getThumbnailUrl('avatar', character.avatar);
+    const status = document.createElement('span');
+    status.className = 'dsc-status';
+    avatar.append(img, status);
+    const name = document.createElement('span');
+    name.className = 'dsc-row-name';
+    name.textContent = character.name;
+    row.append(avatar, name);
+    return row;
+}
+
+function renderMembers(aside, group) {
+    const { characters } = SillyTavern.getContext();
+    const disabled = new Set(group.disabled_members ?? []);
+    const members = (group.members ?? []).map(avatar => characters.find(x => x.avatar === avatar)).filter(Boolean);
+    const online = members.filter(x => !disabled.has(x.avatar));
+    const offline = members.filter(x => disabled.has(x.avatar));
+    const parts = [];
+    const heading = (label, count) => {
+        const h = document.createElement('h3');
+        h.className = 'dsc-members-heading';
+        h.textContent = `${t(label)} — ${count}`;
+        return h;
+    };
+    if (online.length) {
+        parts.push(heading('Online', online.length), ...online.map(x => memberRow(x, true)));
+    }
+    if (offline.length) {
+        parts.push(heading('Offline', offline.length), ...offline.map(x => memberRow(x, false)));
+    }
+    aside.replaceChildren(...parts);
+    monogramizeAll(aside, '.dsc-avatar img', img => img.parentElement?.dataset.name ?? '');
+}
+
+function renderProfile(aside, character) {
+    const { getThumbnailUrl, groups, timestampToMoment } = SillyTavern.getContext();
+    const src = getThumbnailUrl('avatar', character.avatar);
+    const banner = document.createElement('div');
+    banner.className = 'dsc-prof-banner';
+    banner.style.background = DEFAULT_BANNERS[getColorIndex(character.name)];
+    const avatar = document.createElement('span');
+    avatar.className = 'dsc-avatar dsc-prof-avatar';
+    avatar.dataset.name = character.name;
+    const img = document.createElement('img');
+    img.alt = '';
+    img.src = src;
+    const status = document.createElement('span');
+    status.className = 'dsc-status';
+    avatar.append(img, status);
+    isPlaceholder(src).then((placeholder) => {
+        if (!placeholder) {
+            bannerColor(src).then((color) => {
+                if (color) {
+                    banner.style.background = color;
+                }
+            });
+        }
+    });
+
+    const card = document.createElement('div');
+    card.className = 'dsc-prof-card';
+    const name = document.createElement('h2');
+    name.className = 'dsc-prof-name';
+    name.textContent = character.name;
+    const user = document.createElement('div');
+    user.className = 'dsc-prof-user';
+    user.textContent = toUsername(character.name);
+    card.append(name, user);
+
+    const section = (label, content) => {
+        const block = document.createElement('section');
+        block.className = 'dsc-prof-section';
+        const h = document.createElement('h3');
+        h.textContent = t(label);
+        block.append(h, content);
+        return block;
+    };
+    const about = plain(character.creator_notes || character.data?.creator_notes || character.description);
+    if (about) {
+        const p = document.createElement('p');
+        p.textContent = about;
+        card.append(section('About Me', p));
+    }
+    const since = character.create_date ? timestampToMoment(character.create_date) : null;
+    if (since?.isValid?.()) {
+        const p = document.createElement('p');
+        p.textContent = since.format('ll');
+        card.append(section('Member Since', p));
+    }
+
+    const mutual = groups.filter(group => (group.members ?? []).includes(character.avatar));
+    const extra = document.createElement('div');
+    extra.className = 'dsc-prof-card dsc-prof-links';
+    const mutualRow = document.createElement('button');
+    mutualRow.type = 'button';
+    mutualRow.className = 'dsc-prof-link';
+    mutualRow.textContent = `${t('Mutual Servers')} — ${mutual.length}`;
+    mutualRow.append(icon('chevron', 16));
+    mutualRow.addEventListener('click', (event) => {
+        if (!mutual.length) {
+            return;
+        }
+        openMenu(/** @type {HTMLElement} */ (event.currentTarget), mutual.map(group => ({
+            label: group.name, run: () => selectServer(String(group.id), true),
+        })), 'below');
+    });
+    extra.append(mutualRow);
+
+    const full = document.createElement('button');
+    full.type = 'button';
+    full.className = 'dsc-prof-full';
+    full.textContent = t('View Full Profile');
+    full.addEventListener('click', () => viewProfile(character.avatar));
+
+    aside.replaceChildren(banner, avatar, card, extra, full);
+    monogramizeAll(aside, '.dsc-prof-avatar img', () => character.name);
+}
+
+export function refreshAside() {
+    const aside = document.getElementById(ASIDE_ID);
+    if (!aside) {
+        return;
+    }
+    const group = currentGroup();
+    const character = currentCharacter();
+    aside.classList.toggle('dsc-members', !!group);
+    const key = group ? `g:${group.id}:${(group.members ?? []).join(',')}:${(group.disabled_members ?? []).join(',')}` : character ? `c:${character.avatar}:${character.name}` : '';
+    if (aside.dataset.key === key) {
+        return;
+    }
+    aside.dataset.key = key;
+    if (group) {
+        renderMembers(aside, group);
+    } else if (character) {
+        renderProfile(aside, character);
+    } else {
+        aside.replaceChildren();
+    }
+}
+
+/* ---------- Friends page ---------- */
+
+function createFriends() {
+    const sheld = document.getElementById('sheld');
+    if (!sheld || document.getElementById(FRIENDS_ID)) {
+        return;
+    }
+    const page = document.createElement('div');
+    page.id = FRIENDS_ID;
+
+    const main = document.createElement('div');
+    main.className = 'dsc-fr-main';
+    const searchRow = document.createElement('label');
+    searchRow.className = 'dsc-fr-search';
+    const search = document.createElement('input');
+    search.type = 'search';
+    search.placeholder = t('Search');
+    search.addEventListener('input', () => {
+        friendsFilter = search.value;
+        renderFriends();
+    });
+    searchRow.append(search, icon('search', 18));
+    const heading = document.createElement('h2');
+    heading.className = 'dsc-fr-heading';
+    const list = document.createElement('div');
+    list.className = 'dsc-fr-list';
+    list.addEventListener('click', (event) => {
+        const target = /** @type {HTMLElement} */ (event.target);
+        const row = /** @type {HTMLElement} */ (target.closest('.dsc-friend'));
+        if (!row) {
+            return;
+        }
+        if (target.closest('.dsc-fr-more')) {
+            openMenu(/** @type {HTMLElement} */ (target.closest('.dsc-fr-more')), [
+                { label: 'Message', icon: 'chat', run: () => openCharacter(row.dataset.avatar) },
+                { label: 'Profile', icon: 'profile', run: () => viewProfile(row.dataset.avatar) },
+            ], 'below-end');
+            return;
+        }
+        openCharacter(row.dataset.avatar);
+    });
+
+    // Add Friend: Discord's form, which makes a new character here
+    const add = document.createElement('form');
+    add.className = 'dsc-fr-add';
+    const addTitle = document.createElement('h2');
+    addTitle.textContent = t('Add Friend');
+    const addText = document.createElement('p');
+    addText.textContent = t('You can add friends with their name.');
+    const field = document.createElement('div');
+    field.className = 'dsc-fr-add-field';
+    const addInput = document.createElement('input');
+    addInput.type = 'text';
+    addInput.placeholder = t('You can add friends with their name.');
+    addInput.autocomplete = 'off';
+    const addButton = document.createElement('button');
+    addButton.type = 'submit';
+    addButton.className = 'dsc-button';
+    addButton.textContent = t('Send Friend Request');
+    addButton.disabled = true;
+    addInput.addEventListener('input', () => {
+        addButton.disabled = !addInput.value.trim();
+    });
+    field.append(addInput, addButton);
+    add.append(addTitle, addText, field);
+    add.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const value = addInput.value.trim();
+        openCharacterPanel('rm_button_create');
+        const pole = /** @type {HTMLInputElement} */ (document.getElementById('character_name_pole'));
+        if (pole && value) {
+            pole.value = value;
+            pole.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        addInput.value = '';
+        addButton.disabled = true;
+    });
+
+    main.append(searchRow, heading, list, add);
+
+    const active = document.createElement('aside');
+    active.className = 'dsc-fr-active';
+    const activeTitle = document.createElement('h2');
+    activeTitle.textContent = t('Active Now');
+    const activeCard = document.createElement('div');
+    activeCard.className = 'dsc-fr-active-card';
+    const quiet = document.createElement('h3');
+    quiet.textContent = t('It\'s quiet for now...');
+    const quietText = document.createElement('p');
+    quietText.textContent = t('When a friend starts an activity—like playing a game or hanging out on voice—we\'ll show it here!');
+    activeCard.append(quiet, quietText);
+    active.append(activeTitle, activeCard);
+
+    page.append(main, active);
+    sheld.append(page);
+}
+
+export function setFriendsTab(tab) {
+    friendsTab = tab;
+    document.body.classList.add('dsc-friends');
+    refreshHeader();
+}
+
+function friendRow(character) {
+    const { getThumbnailUrl } = SillyTavern.getContext();
+    const row = document.createElement('div');
+    row.className = 'dsc-friend';
+    row.setAttribute('role', 'button');
+    row.tabIndex = 0;
+    row.dataset.avatar = character.avatar;
+    const avatar = document.createElement('span');
+    avatar.className = 'dsc-avatar';
+    avatar.dataset.name = character.name;
+    const img = document.createElement('img');
+    img.alt = '';
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.src = getThumbnailUrl('avatar', character.avatar);
+    const status = document.createElement('span');
+    status.className = 'dsc-status';
+    avatar.append(img, status);
+    const text = document.createElement('span');
+    text.className = 'dsc-friend-text';
+    const name = document.createElement('span');
+    name.className = 'dsc-friend-name';
+    name.textContent = character.name;
+    const user = document.createElement('span');
+    user.className = 'dsc-friend-user';
+    user.textContent = toUsername(character.name);
+    const sub = document.createElement('span');
+    sub.className = 'dsc-friend-sub';
+    sub.textContent = t('Online');
+    text.append(name, user, sub);
+    const tools = document.createElement('span');
+    tools.className = 'dsc-friend-tools';
+    const message = iconButton('dsc-fr-tool dsc-fr-message', t('Message'), 'threads', 20);
+    const more = iconButton('dsc-fr-tool dsc-fr-more', t('More'), 'more', 20);
+    tools.append(message, more);
+    row.append(avatar, text, tools);
+    return row;
+}
+
+/** How many friend rows to draw at once; more follow as the list scrolls */
+const FRIENDS_PAGE = 60;
+
+function renderFriends() {
+    const page = document.getElementById(FRIENDS_ID);
+    if (!page) {
+        return;
+    }
+    page.dataset.tab = friendsTab;
+    const list = page.querySelector('.dsc-fr-list');
+    const heading = page.querySelector('.dsc-fr-heading');
+    if (friendsTab === 'add') {
+        list.replaceChildren();
+        return;
+    }
+    const { characters } = SillyTavern.getContext();
+    const needle = friendsFilter.trim().toLowerCase();
+    let people = friendsTab === 'online'
+        ? getDirectMessages().map(dm => dm.character)
+        : [...characters].sort((a, b) => String(a.name).localeCompare(String(b.name)));
+    if (needle) {
+        people = people.filter(x => String(x.name).toLowerCase().includes(needle));
+    }
+    heading.textContent = `${t(friendsTab === 'online' ? 'Online' : 'All Friends')} — ${people.length}`;
+    const draw = (from) => {
+        const rows = people.slice(from, from + FRIENDS_PAGE).map(friendRow);
+        list.append(...rows);
+        monogramizeAll(list, '.dsc-friend:not([data-mono-done]) .dsc-avatar img', img => img.parentElement?.dataset.name ?? '');
+        rows.forEach(row => row.setAttribute('data-mono-done', ''));
+        if (from + FRIENDS_PAGE < people.length) {
+            const more = document.createElement('div');
+            more.className = 'dsc-fr-sentinel';
+            list.append(more);
+            const observer = new IntersectionObserver((entries) => {
+                if (entries.some(entry => entry.isIntersecting)) {
+                    observer.disconnect();
+                    more.remove();
+                    draw(from + FRIENDS_PAGE);
+                }
+            }, { root: list });
+            observer.observe(more);
+        }
+    };
+    list.replaceChildren();
+    draw(0);
+}
+
+/**
+ * @param {object} options
+ * @param {() => void} options.toggleAside
+ * @param {(text: string) => void} options.openSwitcher
+ * @param {() => void} options.back
+ */
+export function initHeader(options) {
+    actions = { ...actions, ...options };
+    createHeader();
+    createAside();
+    createFriends();
+    refreshHeader();
+    // the Friends page lists the people you talk to, which arrive with the conversation list
+    onDataChange(() => {
+        if (document.body.classList.contains('dsc-friends-mode')) {
+            renderFriends();
+        }
+    });
+}
+

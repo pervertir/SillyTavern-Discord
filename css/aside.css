@@ -1,0 +1,202 @@
+/* The right-hand panel: a DM's user profile (banner, picture, name, About Me, Member Since,
+   Mutual Servers) or a server's member list. It sits under the header, beside the messages. */
+
+body.discord-theme.dsc-aside-on:not(.dsc-friends-mode, .dsc-no-chat) #dsc-aside {
+    display: flex;
+}
+
+body.discord-theme #dsc-aside {
+    flex-direction: column;
+    position: fixed;
+    top: var(--dsc-head-h);
+    right: 0;
+    bottom: 0;
+    width: var(--dsc-aside-w);
+    box-sizing: border-box;
+    background: var(--dsc-side);
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 31;
+    --dsc-ring: var(--dsc-side);
+}
+
+/* Profile */
+body.discord-theme #dsc-aside:not(.dsc-members) {
+    background: var(--dsc-panel);
+    --dsc-ring: var(--dsc-panel);
+}
+
+body.discord-theme .dsc-prof-banner {
+    flex: none;
+    height: 120px;
+    background: var(--dsc-blurple);
+}
+
+body.discord-theme .dsc-prof-avatar {
+    flex: none;
+    width: 80px;
+    height: 80px;
+    margin: -40px 0 0 16px;
+    border: 6px solid var(--dsc-panel);
+    background: var(--dsc-panel);
+}
+
+body.discord-theme .dsc-prof-avatar .dsc-status {
+    right: 0;
+    bottom: 0;
+    width: 16px;
+    height: 16px;
+    border-width: 5px;
+    --dsc-ring: var(--dsc-panel);
+}
+
+body.discord-theme .dsc-prof-card {
+    margin: 12px 16px 0;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--dsc-floating);
+}
+
+body.discord-theme.dsc-light .dsc-prof-card {
+    background: #ffffff;
+}
+
+body.discord-theme .dsc-prof-name {
+    margin: 0;
+    overflow-wrap: anywhere;
+    color: var(--dsc-header);
+    font: 700 20px/24px var(--dsc-font-display);
+}
+
+body.discord-theme .dsc-prof-user {
+    color: var(--dsc-header);
+    font-size: 14px;
+    line-height: 18px;
+}
+
+body.discord-theme .dsc-prof-section {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--dsc-divider);
+}
+
+body.discord-theme .dsc-prof-section h3 {
+    margin: 0 0 6px;
+    color: var(--dsc-header);
+    font: 700 12px/16px var(--dsc-font);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+body.discord-theme .dsc-prof-section p {
+    margin: 0;
+    color: var(--dsc-text);
+    font-size: 14px;
+    line-height: 18px;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+body.discord-theme .dsc-prof-links {
+    padding: 0;
+    overflow: hidden;
+}
+
+body.discord-theme .dsc-prof-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0;
+    padding: 12px;
+    border: none;
+    background: none;
+    color: var(--dsc-header);
+    font: 500 14px/18px var(--dsc-font);
+    text-align: left;
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-prof-link .dsc-ico {
+    transform: rotate(-90deg);
+}
+
+body.discord-theme .dsc-prof-link:hover {
+    background: var(--dsc-hover);
+}
+
+body.discord-theme .dsc-prof-full {
+    margin: auto 16px 16px;
+    padding: 12px 0 0;
+    border: none;
+    border-top: 1px solid var(--dsc-divider);
+    background: none;
+    color: var(--dsc-header-2);
+    font: 500 14px/18px var(--dsc-font);
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-prof-full:hover {
+    color: var(--dsc-header);
+    text-decoration: underline;
+}
+
+/* Member list */
+body.discord-theme #dsc-aside.dsc-members {
+    padding: 0 8px 20px;
+}
+
+body.discord-theme .dsc-members-heading {
+    margin: 0;
+    padding: 24px 8px 0 8px;
+    height: 40px;
+    box-sizing: border-box;
+    color: var(--dsc-channel);
+    font: 600 12px/16px var(--dsc-font);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+body.discord-theme .dsc-member {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: none;
+    height: 42px;
+    margin: 1px 0;
+    padding: 0 8px;
+    border-radius: 4px;
+    color: var(--dsc-channel);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-member:hover {
+    background: var(--dsc-hover);
+    color: var(--dsc-icon-hover);
+    --dsc-ring: color-mix(in srgb, var(--dsc-side), var(--dsc-text) 8%);
+}
+
+body.discord-theme .dsc-member.dsc-offline {
+    opacity: 0.3;
+}
+
+body.discord-theme .dsc-member.dsc-offline:hover {
+    opacity: 1;
+}
+
+body.discord-theme .dsc-member.dsc-offline .dsc-status {
+    display: none;
+}
+
+/* Too narrow for the panel and the messages: the panel steps aside, as Discord's does */
+@media (max-width: 1100px) {
+    body.discord-theme.dsc-aside-on:not(.dsc-friends-mode, .dsc-no-chat) #dsc-aside {
+        display: none;
+    }
+
+    body.discord-theme.dsc-aside-on {
+        --dsc-aside-w: 0px !important;
+    }
+}

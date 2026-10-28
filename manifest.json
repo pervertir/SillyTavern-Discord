@@ -1,0 +1,13 @@
+{
+    "display_name": "Discord Theme",
+    "description": "Makes SillyTavern look like Discord: a server rail, direct messages and channels, Discord's message flow and message box, a profile panel and member list, settings and quick switcher, in dark or light.",
+    "loading_order": 10,
+    "minimum_client_version": "1.19.0",
+    "js": "index.js",
+    "css": "style.css",
+    "author": "pervertir",
+    "version": "1.0.0",
+    "license": "MIT",
+    "homepage": "https://github.com/pervertir/SillyTavern-Discord",
+    "auto_update": true
+}

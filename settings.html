@@ -1,0 +1,53 @@
+<div class="dsc-settings-panel">
+    <div class="inline-drawer">
+        <div class="inline-drawer-toggle inline-drawer-header">
+            <b>Discord Theme</b>
+            <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+        </div>
+        <div class="inline-drawer-content">
+            <label class="checkbox_label" for="dsc_enabled">
+                <input id="dsc_enabled" type="checkbox" />
+                <span>Enable theme</span>
+            </label>
+
+            <div class="dsc-setting-row">
+                <label for="dsc_appearance">Appearance</label>
+                <select id="dsc_appearance" class="text_pole">
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                    <option value="system">Follow the system</option>
+                </select>
+            </div>
+
+            <div class="dsc-setting-row">
+                <label for="dsc_message_display">Message display</label>
+                <select id="dsc_message_display" class="text_pole">
+                    <option value="cozy">Cozy</option>
+                    <option value="compact">Compact</option>
+                </select>
+            </div>
+
+            <label class="checkbox_label" for="dsc_aside">
+                <input id="dsc_aside" type="checkbox" />
+                <span>Show the profile panel and member list</span>
+            </label>
+
+            <label class="checkbox_label" for="dsc_presence">
+                <input id="dsc_presence" type="checkbox" />
+                <span>Show characters as online</span>
+            </label>
+
+            <label class="checkbox_label" for="dsc_times">
+                <input id="dsc_times" type="checkbox" />
+                <span>Discord-style message times</span>
+            </label>
+
+            <div class="dsc-setting-row">
+                <label for="dsc_recent_max">Conversations in the list</label>
+                <input id="dsc_recent_max" class="text_pole" type="number" min="5" max="500" step="5" />
+            </div>
+
+            <small class="dsc-note">Turn off other UI themes (such as Moonlit Echoes, Yodayo Tavern or Microsoft Teams) while this one is on. The background image is hidden while the theme is on.</small>
+        </div>
+    </div>
+</div>

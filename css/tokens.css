@@ -1,0 +1,216 @@
+/* Design tokens: Discord's palette, type and shapes, plus SillyTavern's own theme variables
+   pointed at them. Dark is the default; body.dsc-light switches to the light palette. */
+
+body.discord-theme {
+    /* Brand */
+    --dsc-blurple: #5865f2;
+    --dsc-blurple-hover: #4752c4;
+    --dsc-blurple-active: #3c45a5;
+    --dsc-on-blurple: #ffffff;
+    --dsc-green: #23a55a;
+    --dsc-green-hover: #1a8346;
+    --dsc-red: #f23f43;
+    --dsc-red-hover: #da373c;
+    --dsc-yellow: #f0b232;
+    --dsc-link: #00a8fc;
+
+    /* Surfaces, from the far left inwards */
+    --dsc-rail: #1e1f22;
+    --dsc-side: #2b2d31;
+    --dsc-chat: #313338;
+    --dsc-panel: #232428;
+    --dsc-floating: #111214;
+    --dsc-input: #383a40;
+    --dsc-field: #1e1f22;
+    --dsc-message-hover: #2e3035;
+    --dsc-mention: rgba(250, 168, 26, 0.1);
+    --dsc-rail-item: #313338;
+    --dsc-separator: #35363c;
+
+    /* Interactive states in lists */
+    --dsc-hover: rgba(78, 80, 88, 0.3);
+    --dsc-active: rgba(78, 80, 88, 0.48);
+    --dsc-selected: #404249;
+
+    /* Text */
+    --dsc-header: #f2f3f5;
+    --dsc-header-2: #b5bac1;
+    --dsc-text: #dbdee1;
+    --dsc-muted: #949ba4;
+    --dsc-channel: #80848e;
+    --dsc-icon: #b5bac1;
+    --dsc-icon-hover: #dbdee1;
+    --dsc-icon-active: #ffffff;
+
+    /* Lines and depth */
+    --dsc-divider: rgba(78, 80, 88, 0.48);
+    --dsc-border: #1e1f22;
+    --dsc-header-shadow: 0 1px 0 rgba(4, 4, 5, 0.2), 0 1.5px 0 rgba(6, 6, 7, 0.05), 0 2px 0 rgba(4, 4, 5, 0.05);
+    --dsc-elevation-high: 0 8px 16px rgba(0, 0, 0, 0.24);
+    --dsc-scroll-thumb: #1a1b1e;
+    --dsc-scroll-track: #2b2d31;
+    --dsc-secondary-button: #4e5058;
+    --dsc-secondary-button-hover: #6d6f78;
+    --dsc-backdrop: rgba(0, 0, 0, 0.85);
+
+    /* Shapes and motion */
+    --dsc-radius-xs: 3px;
+    --dsc-radius: 4px;
+    --dsc-radius-md: 8px;
+    --dsc-radius-lg: 16px;
+    --dsc-fast: 100ms;
+    --dsc-normal: 170ms;
+    --dsc-ease: ease-out;
+
+    /* Type: gg sans when it's installed, else Noto Sans (loaded from Google Fonts) */
+    --dsc-font: "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --dsc-font-display: "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --dsc-mono: "gg mono", "Source Code Pro", Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", Monaco, monospace;
+
+    /* Frame sizes */
+    --dsc-rail-w: 72px;
+    --dsc-side-w: 240px;
+    --dsc-head-h: 48px;
+    --dsc-panel-h: 52px;
+    --dsc-aside-w: 0px;
+    --dsc-content-left: calc(var(--dsc-rail-w) + var(--dsc-side-w));
+
+    /* SillyTavern's theme variables, so its own panels follow the palette */
+    --SmartThemeBodyColor: var(--dsc-text);
+    --SmartThemeEmColor: var(--dsc-muted);
+    --SmartThemeUnderlineColor: var(--dsc-link);
+    --SmartThemeQuoteColor: var(--dsc-text);
+    --SmartThemeBlurTintColor: var(--dsc-chat);
+    --SmartThemeChatTintColor: var(--dsc-chat);
+    --SmartThemeUserMesBlurTintColor: transparent;
+    --SmartThemeBotMesBlurTintColor: transparent;
+    --SmartThemeShadowColor: transparent;
+    --SmartThemeBorderColor: var(--dsc-divider);
+    --SmartThemeBlurStrength: 0px;
+    --SmartThemeFastUIBGColor: var(--dsc-chat);
+    --SmartThemeCheckboxBgColor: var(--dsc-field);
+    --SmartThemeCheckboxTickColor: #ffffff;
+    --interactable-outline-color: var(--dsc-blurple);
+    --interactable-outline-color-faint: var(--dsc-divider);
+    --mainFontFamily: var(--dsc-font);
+    --mainFontSize: 16px;
+    --shadowWidth: 0;
+    --topBarBlockSize: 0px;
+    --black30a: rgba(0, 0, 0, 0.3);
+    --black50a: rgba(0, 0, 0, 0.5);
+    --black70a: rgba(0, 0, 0, 0.7);
+    --white20a: rgba(255, 255, 255, 0.2);
+    --white30a: rgba(255, 255, 255, 0.3);
+    --white50a: rgba(255, 255, 255, 0.5);
+    --grey30: var(--dsc-muted);
+
+    font-family: var(--dsc-font);
+    color: var(--dsc-text);
+    background: var(--dsc-rail);
+    color-scheme: dark;
+}
+
+body.discord-theme.dsc-light {
+    --dsc-link: #006ce7;
+    --dsc-rail: #e3e5e8;
+    --dsc-side: #f2f3f5;
+    --dsc-chat: #ffffff;
+    --dsc-panel: #ebedef;
+    --dsc-floating: #ffffff;
+    --dsc-input: #ebedef;
+    --dsc-field: #e3e5e8;
+    --dsc-message-hover: #f7f7f8;
+    --dsc-rail-item: #ffffff;
+    --dsc-separator: #c4c9ce;
+
+    --dsc-hover: rgba(116, 127, 141, 0.16);
+    --dsc-active: rgba(116, 127, 141, 0.24);
+    --dsc-selected: rgba(116, 127, 141, 0.3);
+
+    --dsc-header: #060607;
+    --dsc-header-2: #4e5058;
+    --dsc-text: #313338;
+    --dsc-muted: #5c5e66;
+    --dsc-channel: #5c5e66;
+    --dsc-icon: #4e5058;
+    --dsc-icon-hover: #313338;
+    --dsc-icon-active: #060607;
+
+    --dsc-divider: rgba(79, 84, 92, 0.16);
+    --dsc-border: #e1e2e4;
+    --dsc-header-shadow: 0 1px 0 rgba(6, 6, 7, 0.08), 0 1.5px 0 rgba(6, 6, 7, 0.02), 0 2px 0 rgba(6, 6, 7, 0.02);
+    --dsc-elevation-high: 0 8px 16px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(6, 6, 7, 0.08);
+    --dsc-scroll-thumb: #c4c9ce;
+    --dsc-scroll-track: #f2f3f5;
+    --dsc-secondary-button: #6d6f78;
+    --dsc-secondary-button-hover: #4e5058;
+    --dsc-backdrop: rgba(0, 0, 0, 0.7);
+
+    color-scheme: light;
+}
+
+body.discord-theme.dsc-aside-on:not(.dsc-no-chat, .dsc-friends) {
+    --dsc-aside-w: 340px;
+}
+
+body.discord-theme.dsc-aside-on.dsc-channel:not(.dsc-no-chat, .dsc-friends) {
+    --dsc-aside-w: 240px;
+}
+
+/* Icons, drawn as masks in Discord's style and painted with the current text color */
+body.discord-theme {
+    --dsc-i-bubble: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 3C6.75 3 2.5 6.6 2.5 11.05c0 2.36 1.2 4.48 3.1 5.95L4.9 21l4.32-2.27c.9.2 1.83.32 2.78.32 5.25 0 9.5-3.6 9.5-8S17.25 3 12 3zM8 12.6a1.55 1.55 0 1 1 0-3.1 1.55 1.55 0 0 1 0 3.1zm4 0a1.55 1.55 0 1 1 0-3.1 1.55 1.55 0 0 1 0 3.1zm4 0a1.55 1.55 0 1 1 0-3.1 1.55 1.55 0 0 1 0 3.1z'/></svg>");
+    --dsc-i-friends: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='8.5' cy='7.5' r='3.75'/><path d='M1.5 19.25c0-3.5 3.13-6 7-6s7 2.5 7 6c0 .97-.78 1.75-1.75 1.75h-10.5c-.97 0-1.75-.78-1.75-1.75z'/><circle cx='16.5' cy='8' r='3'/><path d='M17 13.3c3.06.3 5.5 2.4 5.5 5.2 0 .83-.67 1.5-1.5 1.5h-3.32c.2-.48.32-1.03.32-1.6 0-1.95-.8-3.75-2.1-5.05.36-.04.73-.06 1.1-.05z'/></svg>");
+    --dsc-i-nitro: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2.5l2.6 5.6 6.15.75-4.55 4.2 1.2 6.07L12 16.1l-5.4 3.02 1.2-6.07-4.55-4.2 6.15-.75z'/></svg>");
+    --dsc-i-shop: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3.6 3h16.8l1.6 5.2c0 1.7-1.4 3.05-3.1 3.05-1.2 0-2.25-.7-2.75-1.7-.5 1-1.55 1.7-2.75 1.7s-2.25-.7-2.75-1.7c-.5 1-1.55 1.7-2.75 1.7-1.7 0-3.1-1.35-3.1-3.05z'/><path d='M4 12.7c.57.2 1.17.3 1.8.3 1.05 0 2.05-.3 2.9-.85.85.55 1.85.85 2.9.85h.8c1.05 0 2.05-.3 2.9-.85.85.55 1.85.85 2.9.85.63 0 1.23-.1 1.8-.3V20a1 1 0 0 1-1 1h-5v-5h-4v5H5a1 1 0 0 1-1-1z'/></svg>");
+    --dsc-i-plus: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M13 5a1 1 0 1 0-2 0v6H5a1 1 0 1 0 0 2h6v6a1 1 0 1 0 2 0v-6h6a1 1 0 1 0 0-2h-6z'/></svg>");
+    --dsc-i-plus-circle: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M12 23a11 11 0 1 0 0-22 11 11 0 0 0 0 22zm1-16a1 1 0 1 0-2 0v4H7a1 1 0 1 0 0 2h4v4a1 1 0 1 0 2 0v-4h4a1 1 0 1 0 0-2h-4z'/></svg>");
+    --dsc-i-compass: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M12 23a11 11 0 1 0 0-22 11 11 0 0 0 0 22zm4.4-15.4-2.1 6.7-6.7 2.1 2.1-6.7zM12 13.4a1.4 1.4 0 1 0 0-2.8 1.4 1.4 0 0 0 0 2.8z'/></svg>");
+    --dsc-i-mic: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2a4 4 0 0 0-4 4v5a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4z'/><path d='M5.5 10a1 1 0 0 1 1 1 5.5 5.5 0 0 0 11 0 1 1 0 1 1 2 0 7.5 7.5 0 0 1-6.5 7.43V21h2.5a1 1 0 1 1 0 2h-7a1 1 0 1 1 0-2H11v-2.57A7.5 7.5 0 0 1 4.5 11a1 1 0 0 1 1-1z'/></svg>");
+    --dsc-i-headset: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 3a9 9 0 0 0-9 9v6.5A2.5 2.5 0 0 0 5.5 21H7a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2H5v-1a7 7 0 0 1 14 0v1h-2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h1.5a2.5 2.5 0 0 0 2.5-2.5V12a9 9 0 0 0-9-9z'/></svg>");
+    --dsc-i-gear: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M10.56 1.1c-.46.05-.7.53-.64.98.18 1.16-.19 2.2-.98 2.53-.8.33-1.79-.15-2.49-1.1-.27-.36-.78-.52-1.14-.24-.77.59-1.45 1.27-2.04 2.04-.28.36-.12.87.24 1.14.96.7 1.43 1.7 1.1 2.49-.33.8-1.37 1.16-2.53.98-.45-.07-.93.18-.99.64a11.1 11.1 0 0 0 0 2.88c.06.46.54.7.99.64 1.16-.18 2.2.19 2.53.98.33.8-.14 1.79-1.1 2.49-.36.27-.52.78-.24 1.14.59.77 1.27 1.45 2.04 2.04.36.28.87.12 1.14-.24.7-.95 1.7-1.43 2.49-1.1.8.33 1.16 1.37.98 2.53-.07.45.18.93.64.99a11.1 11.1 0 0 0 2.88 0c.46-.06.7-.54.64-.99-.18-1.16.19-2.2.98-2.53.8-.33 1.79.14 2.49 1.1.27.36.78.52 1.14.24.77-.59 1.45-1.27 2.04-2.04.28-.36.12-.87-.24-1.14-.95-.7-1.43-1.7-1.1-2.49.33-.8 1.37-1.16 2.53-.98.45.07.93-.18.99-.64a11.1 11.1 0 0 0 0-2.88c-.06-.46-.54-.7-.99-.64-1.16.18-2.2-.19-2.53-.98-.33-.8.14-1.79 1.1-2.49.36-.27.52-.78.24-1.14a11.07 11.07 0 0 0-2.04-2.04c-.36-.28-.87-.12-1.14.24-.7.96-1.7 1.43-2.49 1.1-.8-.33-1.16-1.37-.98-2.53.07-.45-.18-.93-.64-.99a11.1 11.1 0 0 0-2.88 0zM16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z'/></svg>");
+    --dsc-i-phone: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M2 7.4A5.4 5.4 0 0 1 7.4 2h.08c.9 0 1.67.65 1.82 1.53l.55 3.3a1.85 1.85 0 0 1-1.07 1.98l-1.36.6c.83 2.86 3.1 5.13 5.96 5.96l.6-1.36a1.85 1.85 0 0 1 1.98-1.07l3.3.55c.88.15 1.53.92 1.53 1.82v.08A5.4 5.4 0 0 1 16.6 22C8.6 22 2 15.4 2 7.4z'/></svg>");
+    --dsc-i-video: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 5h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H4a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3z'/><path d='M18.5 9.2l3.42-2.05A.72.72 0 0 1 23 7.77v8.46a.72.72 0 0 1-1.08.62L18.5 14.8z'/></svg>");
+    --dsc-i-pin: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M19.38 11.38a3 3 0 0 0 4.24 0l.03-.03a.5.5 0 0 0 0-.7L13.35.35a.5.5 0 0 0-.7 0l-.03.03a3 3 0 0 0 0 4.24L13 5l-2.92 2.92-3.65-.34a2 2 0 0 0-1.6.58l-.62.63a1 1 0 0 0 0 1.42l9.58 9.58a1 1 0 0 0 1.42 0l.63-.63a2 2 0 0 0 .58-1.6l-.34-3.64L19 11z'/><path d='M9.04 15.37a.5.5 0 0 1 .7 0l-.03.03-6.7 6.7a1 1 0 0 1-1.42-1.42l6.74-6.73z'/></svg>");
+    --dsc-i-person-add: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='9.5' cy='7' r='4.5'/><path d='M1 20.25C1 16.5 4.8 13.5 9.5 13.5c1.4 0 2.72.27 3.9.75A6.48 6.48 0 0 0 12.52 22H2.75C1.78 22 1 21.22 1 20.25z'/><path d='M19 13a1 1 0 0 0-2 0v3h-3a1 1 0 1 0 0 2h3v3a1 1 0 1 0 2 0v-3h3a1 1 0 1 0 0-2h-3z'/></svg>");
+    --dsc-i-profile: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M5 2a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3zm10 3.5a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h3.5a1 1 0 0 0 1-1v-11a1 1 0 0 0-1-1z'/></svg>");
+    --dsc-i-members: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='14.5' cy='7.5' r='4.5'/><path d='M7 20.5c0-3.87 3.36-7 7.5-7s7.5 3.13 7.5 7a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 7 20.5z'/><path d='M7.2 4.3a5.98 5.98 0 0 0 .4 7.42C4.4 12.5 2 15 2 18.1V19a1 1 0 0 0 1 1h2.1c-.07-.32-.1-.65-.1-1 0-1.7.53-3.3 1.43-4.6A6.5 6.5 0 0 1 3 9a4.5 4.5 0 0 1 4.2-4.7z'/></svg>");
+    --dsc-i-inbox: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M5 2a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3zM4 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8h-3.17a1.5 1.5 0 0 0-1.42 1.03l-.32.94a1.5 1.5 0 0 1-1.42 1.03h-3.34a1.5 1.5 0 0 1-1.42-1.03l-.32-.94A1.5 1.5 0 0 0 7.17 13H4z'/></svg>");
+    --dsc-i-help: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M12 23a11 11 0 1 0 0-22 11 11 0 0 0 0 22zm-.28-16c-.98 0-1.81.47-2.27 1.14A1 1 0 1 1 7.8 7.01 4.73 4.73 0 0 1 11.72 5c2.5 0 4.65 1.88 4.65 4.38 0 2.1-1.54 3.77-3.52 4.24l.14 1a1 1 0 0 1-1.98.27l-.28-2a1 1 0 0 1 .99-1.14c1.54 0 2.65-1.14 2.65-2.38 0-1.23-1.1-2.37-2.65-2.37zM13 19a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0z'/></svg>");
+    --dsc-i-search: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M15.62 17.03a9 9 0 1 1 1.41-1.41l4.68 4.67a1 1 0 0 1-1.42 1.42zM17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0z'/></svg>");
+    --dsc-i-hash: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M10.99 3.16A1 1 0 1 0 9 2.84L8.15 8H4a1 1 0 0 0 0 2h3.82l-.67 4H3a1 1 0 1 0 0 2h3.82l-.8 4.84a1 1 0 0 0 1.97.32L8.85 16h4.97l-.8 4.84a1 1 0 0 0 1.97.32l.86-5.16H20a1 1 0 1 0 0-2h-3.82l.67-4H21a1 1 0 1 0 0-2h-3.82l.8-4.84a1 1 0 1 0-1.97-.32L15.15 8h-4.97zM14.15 14l.67-4H9.85l-.67 4z'/></svg>");
+    --dsc-i-at: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M12 1a11 11 0 1 0 5.06 20.77 1 1 0 1 0-.92-1.78A9 9 0 1 1 21 12v1.5a2 2 0 0 1-4 0V7a1 1 0 1 0-2 0v.53A5 5 0 1 0 15.6 15.4 4 4 0 0 0 23 13.5V12A11 11 0 0 0 12 1zm3 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z'/></svg>");
+    --dsc-i-chevron: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M5.3 9.3a1 1 0 0 1 1.4 0l5.3 5.29 5.3-5.3a1 1 0 1 1 1.4 1.42l-6 6a1 1 0 0 1-1.4 0l-6-6a1 1 0 0 1 0-1.42z'/></svg>");
+    --dsc-i-close: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M17.3 18.7a1 1 0 0 0 1.4-1.4L13.42 12l5.3-5.3a1 1 0 0 0-1.42-1.4L12 10.58l-5.3-5.3a1 1 0 0 0-1.4 1.42L10.58 12l-5.3 5.3a1 1 0 1 0 1.42 1.4L12 13.42z'/></svg>");
+    --dsc-i-gift: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 6a4 4 0 0 1 4-4h.09c1.8 0 3.18 1.08 3.91 2.5C12.73 3.08 14.1 2 15.91 2H16a4 4 0 0 1 3.46 6H21a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-8V8h-2v4H3a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1h1.54A3.98 3.98 0 0 1 4 6zm6.82 2C10.6 5.85 9.6 4 8.09 4H8a2 2 0 1 0 0 4zm2.36 0H16a2 2 0 1 0 0-4h-.09c-1.5 0-2.51 1.85-2.73 4z'/><path d='M3 14a1 1 0 0 1 1-1h7v9H6a2 2 0 0 1-2-2zm10-1h7a1 1 0 0 1 1 1v6a2 2 0 0 1-2 2h-6z'/></svg>");
+    --dsc-i-gif: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M2 5a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3zm13.35 3.4a.75.75 0 0 0-.75.75v5.7c0 .41.34.75.75.75s.75-.34.75-.75V12.8h1.8a.7.7 0 1 0 0-1.4h-1.8V9.8h2.2a.7.7 0 1 0 0-1.4zm-3.25.75a.75.75 0 0 0-1.5 0v5.7a.75.75 0 0 0 1.5 0zM7.6 8.4C6.1 8.4 5 9.75 5 11.5v1c0 1.75 1.1 3.1 2.6 3.1 1.3 0 2.3-1 2.3-2.4v-.95a.7.7 0 0 0-.7-.7H7.9a.7.7 0 1 0 0 1.4h.5v.25c0 .6-.35 1-.8 1-.55 0-1.1-.6-1.1-1.7v-1c0-1.1.55-1.7 1.1-1.7.3 0 .57.17.75.48a.7.7 0 1 0 1.2-.7A2.25 2.25 0 0 0 7.6 8.4z'/></svg>");
+    --dsc-i-sticker: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M5 2a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h7.17a3 3 0 0 0 2.12-.88l6.83-6.83a3 3 0 0 0 .88-2.12V5a3 3 0 0 0-3-3zm7 18H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v7h-4a4 4 0 0 0-4 4zm2-.83V16a2 2 0 0 1 2-2h3.17zM8.5 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm8.5-1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z'/></svg>");
+    --dsc-i-emoji: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M12 23a11 11 0 1 0 0-22 11 11 0 0 0 0 22zM6.5 13a.5.5 0 0 0-.5.5c0 3 2.69 5.5 6 5.5s6-2.5 6-5.5a.5.5 0 0 0-.5-.5zM7 9.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm8.5-1.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z'/></svg>");
+    --dsc-i-send: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3.25 2.3a1 1 0 0 0-1.36 1.18L4.5 12l-2.6 8.52a1 1 0 0 0 1.35 1.18l18.5-8.8a1 1 0 0 0 0-1.8zM6.24 13H12a1 1 0 1 0 0-2H6.24L4.4 5.08 18.73 12 4.4 18.92z'/></svg>");
+    --dsc-i-stop: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M12 23a11 11 0 1 0 0-22 11 11 0 0 0 0 22zM9 8a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1z'/></svg>");
+    --dsc-i-reply: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M2.3 7.3a1 1 0 0 0 0 1.4l5 5a1 1 0 0 0 1.4-1.4L5.42 9H11a7 7 0 0 1 7 7v4a1 1 0 1 0 2 0v-4a9 9 0 0 0-9-9H5.41l3.3-3.3a1 1 0 0 0-1.42-1.4z'/></svg>");
+    --dsc-i-edit: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='m13.96 5.46 4.58 4.58a1 1 0 0 0 1.42 0l1.38-1.38a2 2 0 0 0 0-2.82l-3.18-3.18a2 2 0 0 0-2.82 0l-1.38 1.38a1 1 0 0 0 0 1.42zM2.11 20.16l.73-4.22a3 3 0 0 1 .83-1.61l7.87-7.87a1 1 0 0 1 1.42 0l4.58 4.58a1 1 0 0 1 0 1.42l-7.87 7.87a3 3 0 0 1-1.6.83l-4.23.73a1.5 1.5 0 0 1-1.73-1.73z'/></svg>");
+    --dsc-i-more: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M4 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm10-2a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm8 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0z'/></svg>");
+    --dsc-i-reaction: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M12 23a11 11 0 1 0 0-22 11 11 0 0 0 0 22zm-5.5-9.5c.3 2.6 2.66 4.5 5.5 4.5s5.2-1.9 5.5-4.5zM8.5 11a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm8.5-1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z'/></svg>");
+    --dsc-i-threads: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2.8a8.1 8.1 0 0 0-8.1 8.1c0 1.8.6 3.45 1.6 4.8L4 20.2l4.8-1.4a8.1 8.1 0 1 0 3.2-16zM8 9.5h8M8 13h5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    --dsc-i-bell: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M9.7 2.89c.18-.07.32-.24.37-.43a2 2 0 0 1 3.86 0c.05.2.19.36.37.43A7 7 0 0 1 19 9.5v2.09c0 .12.05.24.13.33l1.1 1.22c.5.55.77 1.27.77 2.01v.35a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 15.5v-.35c0-.74.27-1.46.77-2.01l1.1-1.22a.5.5 0 0 0 .13-.33V9.5a7 7 0 0 1 4.7-6.61zM9 19.25c0-.14.11-.25.25-.25h5.5c.14 0 .25.11.25.25a3 3 0 1 1-6 0z'/></svg>");
+    --dsc-i-burger: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 5a1 1 0 0 0 0 2h16a1 1 0 1 0 0-2zm0 6a1 1 0 1 0 0 2h16a1 1 0 1 0 0-2zm0 6a1 1 0 1 0 0 2h16a1 1 0 1 0 0-2z'/></svg>");
+    --dsc-i-back: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3.3 11.3a1 1 0 0 0 0 1.4l7 7a1 1 0 0 0 1.4-1.4L6.42 13H20a1 1 0 1 0 0-2H6.41l5.3-5.3a1 1 0 0 0-1.42-1.4z'/></svg>");
+    --dsc-i-chat: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 22a10 10 0 1 0-8.45-4.64c.13.19.11.44-.04.61l-2.06 2.37A1 1 0 0 0 2.2 22z'/></svg>");
+    --dsc-i-sun: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='4.5'/><path d='M12 1.5v2.5M12 20v2.5M1.5 12H4M20 12h2.5M4.6 4.6l1.75 1.75M17.65 17.65l1.75 1.75M4.6 19.4l1.75-1.75M17.65 6.35 19.4 4.6' stroke='black' stroke-width='2' stroke-linecap='round'/></svg>");
+    --dsc-i-moon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M20.5 14.5A9 9 0 0 1 9.5 3.5a9 9 0 1 0 11 11z'/></svg>");
+    --dsc-i-keyboard: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M4 5a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h16a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3zm2 4a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2zm3 1a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H10a1 1 0 0 1-1-1zm5-1a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2zm3 1a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H18a1 1 0 0 1-1-1zM8 14a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2z'/></svg>");
+    --dsc-i-history: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 3a9 9 0 1 1-8.94 10.06 1 1 0 1 1 1.98-.24A7 7 0 1 0 6.4 7.8H8.5a1 1 0 0 1 0 2H4a1 1 0 0 1-1-1V4.3a1 1 0 0 1 2 0v1.95A8.97 8.97 0 0 1 12 3z'/><path d='M12 7a1 1 0 0 1 1 1v3.6l2.7 1.55a1 1 0 1 1-1 1.73l-3.2-1.84A1 1 0 0 1 11 12V8a1 1 0 0 1 1-1z'/></svg>");
+    --dsc-i-trash: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M14.25 1c.41 0 .75.34.75.75V3h5.25c.41 0 .75.34.75.75v.5c0 .41-.34.75-.75.75H3.75A.75.75 0 0 1 3 4.25v-.5c0-.41.34-.75.75-.75H9V1.75c0-.41.34-.75.75-.75z'/><path fill-rule='evenodd' d='M5.06 7a1 1 0 0 0-1 1.06l.76 12.13a3 3 0 0 0 3 2.81h8.36a3 3 0 0 0 3-2.81l.75-12.13a1 1 0 0 0-1-1.06zm6.1 3.5a1 1 0 1 0-2 .06l.25 7a1 1 0 0 0 2-.06zm3.75.06a1 1 0 1 0-2-.07l-.25 7a1 1 0 0 0 2 .07z'/></svg>");
+}
+
+/* An icon from the set above: set --dsc-icon-url on the element (ui.js icon()) */
+body.discord-theme .dsc-ico {
+    display: inline-block;
+    flex: none;
+    width: 24px;
+    height: 24px;
+    background-color: currentColor;
+    -webkit-mask: var(--dsc-icon-url) center / contain no-repeat;
+    mask: var(--dsc-icon-url) center / contain no-repeat;
+}

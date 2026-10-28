@@ -1,0 +1,852 @@
+/* The Discord frame on desktop: the server rail down the far left, the conversation list
+   beside it with your panel at its foot, and the chat in the rest. SillyTavern's top bar is
+   hidden; its menus open as Discord's settings (settings.css) or, for characters, in the
+   chat's place. Phones are in mobile.css.
+
+   #top-settings-holder never gets transform, filter or backdrop-filter: any of them makes it
+   the containing block for its fixed drawer panels. */
+
+#dsc-guilds,
+#dsc-side,
+#dsc-head,
+#dsc-aside,
+#dsc-friends,
+#dsc-settings,
+#dsc-switcher,
+#dsc-tooltip,
+#dsc-menu,
+#dsc-tabs,
+#dsc-compose-tools {
+    display: none;
+}
+
+.dsc-hidden-card {
+    display: none !important;
+}
+
+body.discord-theme #top-bar,
+body.discord-theme #sheldheader,
+body.discord-theme #bg1,
+body.discord-theme #bg_custom,
+body.discord-theme #version_display {
+    display: none;
+}
+
+body.discord-theme ::selection {
+    background: color-mix(in srgb, var(--dsc-blurple) 45%, transparent);
+}
+
+/* Discord's thin scrollbars: a rounded thumb on a track of the surface's own color */
+body.discord-theme :is(#dsc-side, #dsc-aside, #dsc-friends, #dsc-settings, #top-settings-holder, #chat, #dsc-switcher) * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--dsc-scroll-thumb) transparent;
+}
+
+body.discord-theme #chat {
+    scrollbar-width: auto;
+    scrollbar-color: var(--dsc-scroll-thumb) var(--dsc-scroll-track);
+}
+
+body.discord-theme #chat::-webkit-scrollbar {
+    width: 16px;
+}
+
+body.discord-theme #chat::-webkit-scrollbar-track {
+    background: var(--dsc-scroll-track);
+    border: 4px solid var(--dsc-chat);
+    border-radius: 8px;
+}
+
+body.discord-theme #chat::-webkit-scrollbar-thumb {
+    min-height: 40px;
+    background: var(--dsc-scroll-thumb);
+    border: 4px solid transparent;
+    border-radius: 8px;
+    background-clip: padding-box;
+}
+
+/* SillyTavern's menu bar: kept in the page (its menus live inside it), drawn nowhere */
+body.discord-theme #top-settings-holder {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    box-shadow: none;
+    overflow: visible;
+    visibility: hidden;
+    z-index: 3005;
+}
+
+body.discord-theme #top-settings-holder > .drawer > .drawer-toggle {
+    display: none;
+}
+
+body.discord-theme #top-settings-holder .drawer-content.openDrawer {
+    visibility: visible;
+}
+
+/* ---------- shared small parts ---------- */
+
+body.discord-theme .dsc-avatar {
+    position: relative;
+    display: inline-flex;
+    flex: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+body.discord-theme .dsc-avatar > img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top center;
+}
+
+/* Status: a green dot cut out of the avatar's corner, in the surface's color */
+body.discord-theme .dsc-status {
+    display: none;
+    position: absolute;
+    right: -3px;
+    bottom: -3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--dsc-green);
+    border: 3px solid var(--dsc-ring, var(--dsc-side));
+    z-index: 2;
+}
+
+body.discord-theme.dsc-presence .dsc-status,
+body.discord-theme .dsc-status.dsc-status-on {
+    display: block;
+}
+
+/* Default avatars: Discord's six colors */
+body.discord-theme .dsc-monogram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1;
+    user-select: none;
+}
+
+body.discord-theme .dsc-monogram[data-dsc-color="0"] { background: #5865f2; }
+body.discord-theme .dsc-monogram[data-dsc-color="1"] { background: #757e8a; }
+body.discord-theme .dsc-monogram[data-dsc-color="2"] { background: #3ba55c; }
+body.discord-theme .dsc-monogram[data-dsc-color="3"] { background: #faa61a; }
+body.discord-theme .dsc-monogram[data-dsc-color="4"] { background: #ed4245; }
+body.discord-theme .dsc-monogram[data-dsc-color="5"] { background: #eb459f; }
+
+.dsc-mono-mark {
+    display: none;
+}
+
+body.discord-theme .dsc-mono {
+    position: relative;
+    container-type: inline-size;
+}
+
+body.discord-theme .dsc-mono > img {
+    visibility: hidden;
+}
+
+body.discord-theme .dsc-mono > .dsc-mono-mark {
+    display: flex;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    font-size: clamp(10px, 38cqw, 40px);
+    pointer-events: none;
+}
+
+/* Tooltips */
+body.discord-theme #dsc-tooltip:not([hidden]) {
+    display: block;
+    position: fixed;
+    z-index: 3100;
+    max-width: 190px;
+    padding: 6px 10px;
+    border-radius: 5px;
+    background: var(--dsc-floating);
+    color: var(--dsc-header);
+    box-shadow: var(--dsc-elevation-high);
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 500;
+    pointer-events: none;
+    overflow-wrap: break-word;
+}
+
+body.discord-theme #dsc-tooltip[data-side="right"] {
+    max-width: 196px;
+    padding: 8px 12px;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+}
+
+body.discord-theme #dsc-tooltip::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+}
+
+body.discord-theme #dsc-tooltip[data-side="top"]::after {
+    top: 100%;
+    left: calc(50% - 5px);
+    border-top-color: var(--dsc-floating);
+}
+
+body.discord-theme #dsc-tooltip[data-side="bottom"]::after {
+    bottom: 100%;
+    left: calc(50% - 5px);
+    border-bottom-color: var(--dsc-floating);
+}
+
+body.discord-theme #dsc-tooltip[data-side="right"]::after {
+    right: 100%;
+    top: calc(50% - 5px);
+    border-right-color: var(--dsc-floating);
+}
+
+/* Context menus */
+body.discord-theme #dsc-menu:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    z-index: 3101;
+    min-width: 188px;
+    max-width: 320px;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    background: var(--dsc-floating);
+    box-shadow: var(--dsc-elevation-high);
+}
+
+body.discord-theme .dsc-menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 32px;
+    margin: 2px 0;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 2px;
+    background: none;
+    color: var(--dsc-header-2);
+    font: 500 14px/18px var(--dsc-font);
+    text-align: left;
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-menu-item:is(:hover, :focus-visible) {
+    background: var(--dsc-blurple);
+    color: #ffffff;
+    outline: none;
+}
+
+body.discord-theme .dsc-menu-item.dsc-menu-danger {
+    color: var(--dsc-red);
+}
+
+body.discord-theme .dsc-menu-item.dsc-menu-danger:is(:hover, :focus-visible) {
+    background: var(--dsc-red);
+    color: #ffffff;
+}
+
+body.discord-theme .dsc-menu-item .dsc-ico {
+    width: 18px;
+    height: 18px;
+}
+
+body.discord-theme .dsc-menu-sep {
+    height: 1px;
+    margin: 4px;
+    background: var(--dsc-divider);
+}
+
+body.discord-theme .dsc-menu-check {
+    width: 18px;
+    height: 18px;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+body.discord-theme .dsc-menu-check.dsc-on {
+    border-color: var(--dsc-blurple);
+    background: var(--dsc-blurple);
+}
+
+/* ---------- server rail ---------- */
+
+body.discord-theme #dsc-guilds {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--dsc-rail-w);
+    padding: 12px 0;
+    box-sizing: border-box;
+    background: var(--dsc-rail);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    z-index: 40;
+}
+
+body.discord-theme #dsc-guilds::-webkit-scrollbar {
+    display: none;
+}
+
+body.discord-theme .dsc-guild-list {
+    display: contents;
+}
+
+body.discord-theme .dsc-guild {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex: none;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+body.discord-theme .dsc-guild-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--dsc-rail-item);
+    color: var(--dsc-text);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-radius var(--dsc-normal) var(--dsc-ease), background-color var(--dsc-normal) var(--dsc-ease), color var(--dsc-normal) var(--dsc-ease);
+}
+
+body.discord-theme .dsc-guild-icon > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.discord-theme .dsc-guild:is(:hover, .dsc-selected) .dsc-guild-icon {
+    border-radius: 16px;
+}
+
+body.discord-theme .dsc-guild:is(.dsc-server, .dsc-home):is(:hover, .dsc-selected) .dsc-guild-icon {
+    background: var(--dsc-blurple);
+    color: #ffffff;
+}
+
+body.discord-theme .dsc-acronym {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+body.discord-theme .dsc-acronym[data-len="3"] { font-size: 16px; }
+body.discord-theme .dsc-acronym[data-len="4"] { font-size: 12px; }
+
+/* Add a Server and Discover: green on the rail, white on green when pointed at */
+body.discord-theme .dsc-guild-action .dsc-guild-icon {
+    color: var(--dsc-green);
+}
+
+body.discord-theme .dsc-guild-action:hover .dsc-guild-icon {
+    background: var(--dsc-green);
+    color: #ffffff;
+}
+
+/* The pill on the rail's edge: a dot for unread, taller on hover, tallest when picked */
+body.discord-theme .dsc-pill {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 8px;
+    height: 0;
+    margin-left: -4px;
+    border-radius: 0 4px 4px 0;
+    background: var(--dsc-header);
+    transform: translateY(-50%);
+    transition: height var(--dsc-normal) var(--dsc-ease);
+}
+
+body.discord-theme .dsc-guild.dsc-unread .dsc-pill { height: 8px; }
+body.discord-theme .dsc-guild:hover .dsc-pill { height: 20px; }
+body.discord-theme .dsc-guild.dsc-selected .dsc-pill { height: 40px; }
+body.discord-theme .dsc-guild-action .dsc-pill { display: none; }
+
+body.discord-theme .dsc-guild-sep {
+    flex: none;
+    width: 32px;
+    height: 2px;
+    margin: 0 0 8px;
+    border-radius: 1px;
+    background: var(--dsc-separator);
+}
+
+/* ---------- the conversation list ---------- */
+
+body.discord-theme #dsc-side {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: var(--dsc-rail-w);
+    bottom: 0;
+    width: var(--dsc-side-w);
+    background: var(--dsc-side);
+    z-index: 39;
+}
+
+body.discord-theme .dsc-side-head {
+    display: flex;
+    align-items: center;
+    flex: none;
+    height: var(--dsc-head-h);
+    padding: 0 10px;
+    box-sizing: border-box;
+    box-shadow: var(--dsc-header-shadow);
+    z-index: 2;
+}
+
+body.discord-theme .dsc-find {
+    width: 100%;
+    height: 28px;
+    margin: 0;
+    padding: 0 6px;
+    border: none;
+    border-radius: 4px;
+    background: var(--dsc-rail);
+    color: var(--dsc-muted);
+    font: 500 14px/28px var(--dsc-font);
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-server-head {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    width: calc(100% + 20px);
+    height: 100%;
+    margin: 0 -10px;
+    padding: 0 16px;
+    border: none;
+    background: none;
+    color: var(--dsc-header);
+    font: 600 16px/20px var(--dsc-font);
+    text-align: left;
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-server-head:hover,
+body.discord-theme .dsc-server-head.dsc-menu-open {
+    background: var(--dsc-hover);
+}
+
+body.discord-theme .dsc-server-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.discord-theme #dsc-side.dsc-side-server .dsc-find {
+    display: none;
+}
+
+body.discord-theme #dsc-side.dsc-side-server .dsc-server-head {
+    display: flex;
+}
+
+body.discord-theme .dsc-side-scroll {
+    flex: 1;
+    min-height: 0;
+    padding: 8px 0 8px 8px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+}
+
+/* Friends, Nitro and Shop rows; DMs; channels */
+body.discord-theme :is(.dsc-nav-row, .dsc-dm, .dsc-channel) {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 2px;
+    padding: 0 8px;
+    border-radius: 4px;
+    color: var(--dsc-channel);
+    cursor: pointer;
+    user-select: none;
+}
+
+body.discord-theme .dsc-nav-row {
+    height: 42px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+body.discord-theme .dsc-dm {
+    height: 42px;
+    --dsc-ring: var(--dsc-side);
+}
+
+body.discord-theme .dsc-channel {
+    gap: 6px;
+    height: 32px;
+    margin-bottom: 1px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+body.discord-theme :is(.dsc-nav-row, .dsc-dm, .dsc-channel):hover {
+    background: var(--dsc-hover);
+    color: var(--dsc-icon-hover);
+    --dsc-ring: color-mix(in srgb, var(--dsc-side), var(--dsc-text) 8%);
+}
+
+body.discord-theme :is(.dsc-nav-row, .dsc-dm, .dsc-channel).dsc-selected {
+    background: var(--dsc-selected);
+    color: var(--dsc-header);
+    --dsc-ring: var(--dsc-selected);
+}
+
+body.discord-theme :is(.dsc-nav-row, .dsc-dm, .dsc-channel):focus-visible {
+    outline: 2px solid var(--dsc-blurple);
+    outline-offset: -2px;
+}
+
+body.discord-theme .dsc-row-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.discord-theme .dsc-dm-text {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+}
+
+body.discord-theme .dsc-dm-preview {
+    display: none;
+}
+
+body.discord-theme .dsc-pinned .dsc-row-name::after {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-left: 6px;
+    vertical-align: -1px;
+    background-color: currentColor;
+    opacity: 0.7;
+    -webkit-mask: var(--dsc-i-pin) center / contain no-repeat;
+    mask: var(--dsc-i-pin) center / contain no-repeat;
+}
+
+body.discord-theme .dsc-dm-close {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: none;
+    color: var(--dsc-channel);
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-dm:hover .dsc-dm-close {
+    display: flex;
+}
+
+body.discord-theme .dsc-dm-close:hover {
+    color: var(--dsc-header);
+}
+
+/* "DIRECT MESSAGES" and category headings */
+body.discord-theme .dsc-side-heading,
+body.discord-theme .dsc-category {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+    padding: 18px 8px 4px 10px;
+    color: var(--dsc-channel);
+    font: 600 12px/16px var(--dsc-font);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor: default;
+}
+
+body.discord-theme .dsc-side-heading:hover,
+body.discord-theme .dsc-category:hover {
+    color: var(--dsc-icon-hover);
+}
+
+body.discord-theme .dsc-category {
+    justify-content: flex-start;
+    gap: 2px;
+    padding: 16px 8px 4px 0;
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-category > span {
+    flex: 1;
+}
+
+body.discord-theme .dsc-category > .dsc-ico {
+    width: 12px;
+    height: 12px;
+    transition: transform var(--dsc-fast) var(--dsc-ease);
+}
+
+body.discord-theme .dsc-category.dsc-collapsed > .dsc-ico {
+    transform: rotate(-90deg);
+}
+
+body.discord-theme .dsc-category.dsc-collapsed + .dsc-channel-list .dsc-channel:not(.dsc-selected) {
+    display: none;
+}
+
+body.discord-theme .dsc-heading-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-heading-add:hover {
+    color: var(--dsc-header);
+}
+
+/* No DMs yet: Discord's grey placeholder rows */
+body.discord-theme .dsc-dm-ghost {
+    height: 42px;
+    margin: 0 8px 2px 0;
+    background:
+        radial-gradient(circle at 24px 21px, var(--dsc-hover) 16px, transparent 16.5px),
+        linear-gradient(var(--dsc-hover), var(--dsc-hover)) 52px 15px / 55% 12px no-repeat;
+    border-radius: 4px;
+}
+
+/* ---------- your panel ---------- */
+
+body.discord-theme #dsc-user {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: none;
+    height: var(--dsc-panel-h);
+    padding: 0 8px;
+    box-sizing: border-box;
+    background: var(--dsc-panel);
+    --dsc-ring: var(--dsc-panel);
+}
+
+body.discord-theme .dsc-user-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    height: 39px;
+    margin: 0 0 0 -2px;
+    padding: 0 0 0 2px;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-user-me:hover {
+    background: var(--dsc-hover);
+    --dsc-ring: color-mix(in srgb, var(--dsc-panel), var(--dsc-text) 8%);
+}
+
+body.discord-theme .dsc-me-mono {
+    display: none;
+}
+
+body.discord-theme #dsc-user.dsc-me-placeholder .dsc-avatar > img {
+    display: none;
+}
+
+body.discord-theme #dsc-user.dsc-me-placeholder .dsc-me-mono {
+    display: flex;
+}
+
+body.discord-theme .dsc-user-names {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+body.discord-theme .dsc-user-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--dsc-header);
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 600;
+}
+
+body.discord-theme .dsc-user-sub {
+    color: var(--dsc-header-2);
+    font-size: 12px;
+    line-height: 13px;
+}
+
+body.discord-theme .dsc-user-tools {
+    display: flex;
+    flex: none;
+}
+
+body.discord-theme .dsc-user-tool {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    color: var(--dsc-icon);
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-user-tool:hover {
+    background: var(--dsc-hover);
+    color: var(--dsc-icon-hover);
+}
+
+/* muted / deafened: red with a slash */
+body.discord-theme .dsc-user-tool.dsc-off {
+    color: var(--dsc-red);
+}
+
+body.discord-theme .dsc-user-tool.dsc-off::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 24px;
+    border-radius: 1px;
+    background: var(--dsc-red);
+    box-shadow: 0 0 0 2px var(--dsc-panel);
+    transform: rotate(-45deg);
+}
+
+/* ---------- the chat column ---------- */
+
+body.discord-theme #sheld {
+    position: fixed;
+    top: 0;
+    left: var(--dsc-content-left);
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    max-height: none;
+    max-width: none;
+    min-width: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--dsc-chat);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    resize: none;
+    z-index: 30;
+}
+
+/* SillyTavern's movable panels: keep the chat in its place */
+body.discord-theme.movingUI #sheld {
+    inset: 0 0 0 var(--dsc-content-left) !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* the character panel (Friends, Discover) takes the chat's place */
+body.discord-theme #right-nav-panel.openDrawer {
+    position: fixed;
+    top: 0 !important;
+    left: var(--dsc-content-left) !important;
+    right: 0 !important;
+    width: auto !important;
+    height: 100dvh !important;
+    max-height: none;
+    max-width: none;
+    margin: 0;
+    padding: 12px 24px;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
+    background: var(--dsc-chat);
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    z-index: 3002;
+}
+
+body.discord-theme #right-nav-panel .drag-grabber,
+body.discord-theme #right-nav-panel .floating_panel_maximize,
+body.discord-theme :is(#lm_button_panel_pin_div, #WI_panel_pin_div, #rm_button_panel_pin_div) {
+    display: none;
+}

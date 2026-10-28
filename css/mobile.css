@@ -1,0 +1,427 @@
+/* Phones and narrow windows, at SillyTavern's own 1000px breakpoint: Discord mobile. One pane
+   at a time: the server rail with the conversation list and the bottom tabs (Home, Friends,
+   You), or the open chat (body.dsc-m-chat) with a menu button in its header that slides back
+   to the lists. Settings are a list of sections, each opening full screen. */
+
+@media screen and (max-width: 1000px) {
+    /* SillyTavern puts translateZ(0) on <html> on phones, which makes it the frame for fixed
+       elements; give it the screen's height so things pinned to the bottom land on screen */
+    html.dsc-html {
+        height: 100dvh;
+    }
+
+    body.discord-theme {
+        --dsc-tabbar-h: calc(56px + env(safe-area-inset-bottom, 0px));
+        --dsc-safe-top: env(safe-area-inset-top, 0px);
+        --dsc-side-w: calc(100vw - var(--dsc-rail-w));
+        --dsc-aside-w: 0px !important;
+        --dsc-set-side: 100vw;
+    }
+
+    /* ---------- home: rail, list, tabs ---------- */
+
+    body.discord-theme #dsc-guilds {
+        top: var(--dsc-safe-top);
+        bottom: var(--dsc-tabbar-h);
+    }
+
+    body.discord-theme #dsc-side {
+        top: var(--dsc-safe-top);
+        bottom: var(--dsc-tabbar-h);
+        border-radius: 8px 0 0 0;
+    }
+
+    /* your panel lives under You on phones */
+    body.discord-theme #dsc-user {
+        display: none;
+    }
+
+    body.discord-theme .dsc-dm {
+        height: 56px;
+    }
+
+    body.discord-theme .dsc-dm .dsc-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    body.discord-theme .dsc-dm-preview {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: var(--dsc-muted);
+        font-size: 14px;
+        line-height: 18px;
+        font-weight: 400;
+    }
+
+    body.discord-theme .dsc-dm-close {
+        display: none !important;
+    }
+
+    body.discord-theme #dsc-tabs {
+        display: flex;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: var(--dsc-tabbar-h);
+        padding: 0 0 env(safe-area-inset-bottom, 0px);
+        box-sizing: border-box;
+        background: var(--dsc-panel);
+        border-top: 1px solid var(--dsc-divider);
+        z-index: 3007;
+    }
+
+    body.discord-theme .dsc-tab {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        flex: 1;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: none;
+        color: var(--dsc-icon);
+        font: 600 11px/14px var(--dsc-font);
+        cursor: pointer;
+    }
+
+    body.discord-theme:not(.dsc-settings-list, .dsc-settings-open, .dsc-friends) .dsc-tab[data-tab="home"],
+    body.discord-theme.dsc-friends:not(.dsc-settings-list, .dsc-settings-open) .dsc-tab[data-tab="friends"],
+    body.discord-theme:is(.dsc-settings-list, .dsc-settings-open) .dsc-tab[data-tab="you"] {
+        color: var(--dsc-header);
+    }
+
+    /* ---------- the chat, full screen ---------- */
+
+    body.discord-theme #sheld {
+        top: 0 !important;
+        left: 0 !important;
+        right: 0;
+        bottom: 0;
+        width: 100dvw !important;
+        height: 100dvh;
+        max-height: 100dvh;
+        padding-top: var(--dsc-safe-top);
+        box-sizing: border-box;
+        transform: translateX(100%);
+        visibility: hidden;
+        transition: transform 0.25s ease-out, visibility 0s linear 0.25s;
+        z-index: 3003;
+    }
+
+    body.discord-theme.dsc-m-chat #sheld {
+        transform: none;
+        visibility: visible;
+        transition: transform 0.25s ease-out;
+    }
+
+    body.discord-theme.dsc-m-chat:not(.dsc-settings-list, .dsc-settings-open) #dsc-tabs {
+        display: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        body.discord-theme #sheld {
+            transition: none;
+        }
+    }
+
+    body.discord-theme #dsc-head {
+        gap: 4px;
+        padding: 0 8px 0 4px;
+    }
+
+    body.discord-theme .dsc-head-back {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        margin: 0;
+        border: none;
+        background: none;
+        color: var(--dsc-icon);
+        cursor: pointer;
+    }
+
+    body.discord-theme .dsc-head-tools {
+        gap: 12px;
+        padding-right: 4px;
+    }
+
+    /* only the essentials in the header on a phone */
+    body.discord-theme .dsc-head-tools > :is(.dsc-head-search, .dsc-aside-tool, .dsc-for-all, .dsc-convert),
+    body.discord-theme .dsc-head-topic {
+        display: none !important;
+    }
+
+    body.discord-theme .dsc-head-tabs {
+        margin-left: 0;
+        padding-left: 8px;
+        gap: 4px;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    body.discord-theme .dsc-head-tab {
+        padding: 2px 6px;
+        font-size: 14px;
+    }
+
+    body.discord-theme .dsc-fr-search,
+    body.discord-theme .dsc-fr-heading {
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+
+    body.discord-theme .dsc-fr-list {
+        padding: 0 8px 8px;
+    }
+
+    body.discord-theme .dsc-fr-add {
+        padding: 4px 16px 20px;
+    }
+
+    body.discord-theme .dsc-fr-add-field {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0 0 12px;
+    }
+
+    body.discord-theme .dsc-fr-add-field .dsc-button {
+        margin: 0 12px;
+    }
+
+    /* the profile panel and member list don't fit beside the messages */
+    body.discord-theme #dsc-aside {
+        display: none !important;
+    }
+
+    body.discord-theme #chat {
+        margin-right: 0;
+    }
+
+    body.discord-theme #chat .mes {
+        padding: 2px 12px 2px 64px;
+    }
+
+    body.discord-theme #chat .mes .mesAvatarWrapper {
+        left: 12px;
+    }
+
+    body.discord-theme #chat .mes.dsc-cont::before {
+        width: 52px;
+    }
+
+    body.discord-theme.dsc-compact #chat .mes {
+        padding-left: 12px;
+    }
+
+    /* no hover on touch screens: a tap on a message shows its actions (messages.js) */
+    @media (hover: none) {
+        body.discord-theme #chat .mes:hover {
+            background: none;
+        }
+
+        body.discord-theme #chat .mes:hover .mes_buttons {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        body.discord-theme #chat .mes.dsc-tapped {
+            background: var(--dsc-message-hover);
+        }
+
+        body.discord-theme #chat .mes.dsc-tapped .mes_buttons {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        body.discord-theme #chat .mes.dsc-cont:hover::before {
+            visibility: hidden;
+        }
+    }
+
+    body.discord-theme #chat .mes .edit_textarea {
+        min-width: 0;
+    }
+
+    /* Message box: a pill with + outside it on the left, emoji inside and a send button */
+    body.discord-theme #form_sheld {
+        margin: 0;
+        padding: 6px 8px calc(8px + env(safe-area-inset-bottom, 0px));
+    }
+
+    body.discord-theme #send_form {
+        border-radius: 22px;
+    }
+
+    body.discord-theme .dsc-compose-tool:not(:last-child) {
+        display: none;
+    }
+
+    body.discord-theme #options_button {
+        width: 44px;
+    }
+
+    body.discord-theme #send_but {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 32px !important;
+        height: 32px !important;
+        margin: 6px 0 0 4px;
+        border-radius: 50%;
+        background: var(--dsc-blurple);
+        color: #ffffff !important;
+        font-size: 0 !important;
+    }
+
+    body.discord-theme #send_but::before {
+        content: '';
+        width: 18px;
+        height: 18px;
+        background-color: currentColor;
+        -webkit-mask: var(--dsc-i-send) center / 18px 18px no-repeat;
+        mask: var(--dsc-i-send) center / 18px 18px no-repeat;
+    }
+
+    /* SillyTavern keeps the button hidden while it's busy; so does Discord's send */
+    body.discord-theme #send_but.displayNone {
+        display: none !important;
+    }
+
+    /* ---------- settings: a list of sections, each full screen ---------- */
+
+    body.discord-theme #dsc-settings {
+        top: 0;
+        bottom: var(--dsc-tabbar-h);
+        flex-direction: column;
+        animation: none;
+        z-index: 3004;
+    }
+
+    body.discord-theme.dsc-settings-open #dsc-settings {
+        bottom: 0;
+        z-index: 3008;
+    }
+
+    body.discord-theme .dsc-set-side {
+        width: 100%;
+        justify-content: stretch;
+        padding-top: var(--dsc-safe-top);
+        box-sizing: border-box;
+        background: var(--dsc-chat);
+    }
+
+    body.discord-theme .dsc-set-nav {
+        width: 100%;
+        padding: 0 12px 24px;
+    }
+
+    body.discord-theme .dsc-set-phone-head {
+        display: flex;
+        align-items: center;
+        height: 56px;
+        padding: 0 4px;
+    }
+
+    body.discord-theme .dsc-set-phone-head h1 {
+        margin: 0;
+        color: var(--dsc-header);
+        font: 700 20px/24px var(--dsc-font-display);
+    }
+
+    body.discord-theme .dsc-set-item {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    body.discord-theme .dsc-set-main,
+    body.discord-theme .dsc-set-close {
+        display: none;
+    }
+
+    body.discord-theme.dsc-settings-open .dsc-set-side {
+        display: none;
+    }
+
+    body.discord-theme.dsc-settings-open .dsc-set-main {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: none;
+        height: calc(56px + var(--dsc-safe-top));
+        padding: var(--dsc-safe-top) 12px 0 4px;
+        box-sizing: border-box;
+        border-bottom: 1px solid var(--dsc-divider);
+    }
+
+    body.discord-theme .dsc-set-back {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        margin: 0;
+        border: none;
+        background: none;
+        color: var(--dsc-icon);
+        cursor: pointer;
+    }
+
+    body.discord-theme .dsc-set-title {
+        font-size: 18px;
+    }
+
+    body.discord-theme {
+        --dsc-set-top: calc(56px + var(--dsc-safe-top));
+    }
+
+    body.discord-theme #top-settings-holder > .drawer:not(#rightNavHolder) > .drawer-content,
+    body.discord-theme #top-settings-holder > .drawer:not(#rightNavHolder) > .drawer-content:is(.fillLeft, .fillRight) {
+        left: 0 !important;
+        width: 100vw !important;
+        padding: 8px 12px calc(24px + env(safe-area-inset-bottom, 0px));
+        z-index: 3009;
+    }
+
+    body.discord-theme.dsc-settings-open #top-settings-holder {
+        z-index: 3009;
+    }
+
+    /* the character panel fills the screen above the tabs */
+    body.discord-theme #right-nav-panel.openDrawer {
+        left: 0 !important;
+        top: var(--dsc-safe-top) !important;
+        height: calc(100dvh - var(--dsc-tabbar-h) - var(--dsc-safe-top)) !important;
+        padding: 8px 12px;
+    }
+
+    body.discord-theme #dsc-switcher:not([hidden]) {
+        padding-top: calc(12px + var(--dsc-safe-top));
+    }
+
+    body.discord-theme .dsc-sw-box {
+        max-height: 80dvh;
+        padding: 16px 16px 0;
+    }
+
+    body.discord-theme .dsc-sw-input {
+        height: 48px;
+        font-size: 18px;
+        line-height: 48px;
+    }
+
+    body.discord-theme .dsc-sw-tip {
+        margin: 12px -16px 0;
+        padding: 12px 16px;
+    }
+}
