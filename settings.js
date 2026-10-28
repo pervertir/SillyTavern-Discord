@@ -2,6 +2,7 @@
 // right, with the round close button and "ESC" beside it. Each section is one of
 // SillyTavern's own menus, opened in place; only the frame around them is the theme's.
 
+import { ensurePage, undock } from './customize.js';
 import { showShortcuts } from './shortcuts.js';
 import { closeDrawers, icon, isPhone, openDrawer, shieldFromOutsideClose, t } from './ui.js';
 
@@ -19,6 +20,7 @@ export const SECTIONS = [
     { id: 'user-settings-button', part: 'UI-Theme-Block', label: 'Appearance', title: 'User Settings: UI Theme' },
     { id: 'user-settings-button', part: 'power-user-options-block', label: 'Chat', title: 'User Settings: Chat/Message Handling' },
     { id: 'user-settings-button', part: 'UI-Customization', label: 'Advanced', title: 'User Settings: Character Handling and Miscellaneous' },
+    { page: 'customize', label: 'Customize', title: 'Customize every part of the theme' },
     { id: 'backgrounds-button', label: 'Backgrounds', title: 'Backgrounds' },
     { action: 'keybinds', label: 'Keybinds', title: 'Keyboard shortcuts' },
     { heading: 'AI Settings' },
@@ -55,6 +57,9 @@ function rememberSection(id, part) {
 function lastSection() {
     try {
         const { id, part } = JSON.parse(localStorage.getItem(LAST_KEY) || '{}');
+        if (!id && SECTIONS.some(x => x.page && x.page === part)) {
+            return { id: '', part, page: true };
+        }
         if (id && SECTIONS.some(x => x.id === id && (x.part ?? '') === (part ?? ''))) {
             return { id, part: part ?? '' };
         }
@@ -114,6 +119,9 @@ function createOverlay() {
             item.dataset.drawer = section.id;
             item.dataset.part = section.part ?? '';
             item.addEventListener('click', () => openSection(section.id, section.part ?? ''));
+        } else if (section.page) {
+            item.dataset.page = section.page;
+            item.addEventListener('click', () => openPage(section.page));
         } else if (section.action === 'keybinds') {
             item.addEventListener('click', () => showShortcuts());
         }
@@ -151,6 +159,7 @@ function createOverlay() {
     back.append(icon('back', 20));
     // phones: back to the list of sections, as Discord mobile goes back
     back.addEventListener('click', () => {
+        closePage();
         closeDrawers();
         document.body.classList.add('dsc-settings-list');
     });
@@ -199,7 +208,38 @@ function refreshThemeItem() {
 
 function isOpen() {
     const body = document.body.classList;
-    return body.contains('dsc-settings-open') || body.contains('dsc-settings-list');
+    return body.contains('dsc-settings-open') || body.contains('dsc-settings-list') || body.contains('dsc-settings-page');
+}
+
+let openPageId = '';
+/** menus that were open when the page opened, still closing */
+let closingIds = [];
+
+/** Opens one of the theme's own pages (Customize), which isn't a SillyTavern menu. */
+export function openPage(pageId) {
+    openPageId = pageId;
+    rememberSection('', pageId);
+    closingIds = SETTINGS_DRAWERS.filter(id => document.getElementById(id)?.classList.contains('dsc-open'));
+    showPart('', '');
+    closeDrawers();
+    const page = ensurePage();
+    shieldFromOutsideClose(page);
+    page.scrollTo({ top: 0 });
+    document.body.classList.remove('dsc-settings-list');
+    document.body.classList.add('dsc-settings-page');
+    actions.drawersChanged();
+    refreshSettings();
+}
+
+function closePage() {
+    if (!openPageId) {
+        return;
+    }
+    openPageId = '';
+    closingIds = [];
+    undock();
+    document.body.classList.remove('dsc-settings-page');
+    actions.drawersChanged();
 }
 
 /* World Info: each lorebook as a channel under the section, as a server lists its channels */
@@ -245,8 +285,9 @@ function openBook(value) {
 /** Opens one section: one of SillyTavern's menus, or one part of it. */
 export function openSection(drawerId, part = '') {
     const openId = SETTINGS_DRAWERS.find(id => document.getElementById(id)?.classList.contains('dsc-open'));
-    if (openId && openId !== drawerId) {
-        // SillyTavern closes the open menu before opening this one; hold the settings up meanwhile
+    if (openPageId || (openId && openId !== drawerId)) {
+        // SillyTavern closes the open menu before opening this one (or the theme's page closes);
+        // hold the settings up meanwhile
         document.body.classList.add('dsc-settings-switching');
         clearTimeout(switchTimer);
         switchTimer = setTimeout(() => {
@@ -255,6 +296,7 @@ export function openSection(drawerId, part = '') {
         }, 1000);
     }
     document.body.classList.remove('dsc-settings-list');
+    closePage();
     rememberSection(drawerId, part);
     showPart(drawerId, part);
     openDrawer(drawerId);
@@ -275,11 +317,16 @@ export function openSettings(drawerId = '') {
         return;
     }
     const last = lastSection();
+    if (last.page) {
+        openPage(last.part);
+        return;
+    }
     openSection(last.id, last.part);
 }
 
 export function closeSettings() {
     document.body.classList.remove('dsc-settings-list');
+    closePage();
     showPart('', '');
     closeDrawers();
     refreshSettings();
@@ -296,10 +343,18 @@ export function refreshSettings() {
     if (!openId && currentPart) {
         showPart('', '');
     }
-    const open = SECTIONS.find(section => section.id === openId && (section.part ?? '') === currentPart)
+    // a SillyTavern menu opened some other way takes over from the theme's page
+    if (openId && openPageId && !closingIds.includes(openId)) {
+        closePage();
+    }
+    const open = openPageId ? SECTIONS.find(section => section.page === openPageId)
+        : SECTIONS.find(section => section.id === openId && (section.part ?? '') === currentPart)
         ?? SECTIONS.find(section => section.id === openId);
     for (const item of overlay.querySelectorAll('.dsc-set-item[data-drawer]')) {
-        item.classList.toggle('dsc-selected', item.dataset.drawer === open?.id && item.dataset.part === (open?.part ?? ''));
+        item.classList.toggle('dsc-selected', !openPageId && item.dataset.drawer === open?.id && item.dataset.part === (open?.part ?? ''));
+    }
+    for (const item of overlay.querySelectorAll('.dsc-set-item[data-page]')) {
+        item.classList.toggle('dsc-selected', item.dataset.page === openPageId);
     }
     overlay.querySelector('.dsc-set-title').textContent = open ? t(open.label) : '';
     refreshThemeItem();

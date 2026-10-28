@@ -3,6 +3,7 @@
 // and quick switcher) and exposes a small settings panel.
 
 import { initCompose, openExtensionsMenu } from './compose.js';
+import { initCustomize } from './customize.js';
 import { embedAll, initEmbeds } from './embeds.js';
 import { initAppearance, renderAppearance } from './appearance.js';
 import { hideDiscover, initDiscover, showDiscover } from './discover.js';
@@ -260,7 +261,7 @@ function trackDrawers() {
         if (settings) {
             body.remove('dsc-settings-switching');
         }
-        settings ||= body.contains('dsc-settings-switching');
+        settings ||= body.contains('dsc-settings-switching') || body.contains('dsc-settings-page');
         body.toggle('dsc-settings-open', settings);
         if (settings) {
             body.remove('dsc-settings-list');
@@ -426,6 +427,7 @@ async function init() {
     const listLoaded = initData({ max: () => getSettings().recentMax, opened: showChat });
     initSidebar({ showFriends, openSwitcher, openSettings, showChat, showDiscover: openDiscover });
     initHeader({ showAside, toggleAside, openSwitcher, back });
+    initCustomize({ settings: getSettings, save: saveSettings });
     initSettings({ setTheme, isDark: () => isDark(), drawersChanged: () => trackDrawers.update?.() });
     initSwitcher({ picked: () => document.body.classList.remove('dsc-friends') });
     initCompose();

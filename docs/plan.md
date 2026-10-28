@@ -10,6 +10,7 @@ update Deep's install after every push.
 - **Navigation:** server rail (groups as servers), DMs, channels, Friends, Discover, Notifications (phone), quick switcher, your status menu with Switch Accounts, unread badges, desktop notifications.
 - **Chat:** cozy and compact layouts, grouping, date lines, hover bar, right-click message menu, Reply, Enter/Esc editing, ↑ to edit, typing dots, short split messages revealed one by one, presence (online, idle, Do Not Disturb, offline) with held replies, sounds, Jump to Present, the not-connected bar, the "/" command picker.
 - **Settings:** full-screen Discord settings split into one-topic pages; Appearance (themes, colours, display, font size, spacing, 24-hour time); Profile and Server Settings editors; lorebooks as channels.
+- **Customize:** Settings > App Settings > Customize changes every colour, font, size, shape, spacing, visible part, name colour, chat background and animation, plus custom CSS; live, with a preview, per-section reset, export and import (shared format: AI/shared/customize-spec.md).
 - **Phones:** Home, Notifications and You tabs; sheets; long-press menus.
 - **QA:** 87 components checked and fixed (docs/qa-checklist.md).
 

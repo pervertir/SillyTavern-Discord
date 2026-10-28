@@ -103,13 +103,13 @@ function createHeader() {
     const tools = document.createElement('div');
     tools.className = 'dsc-head-tools';
     tools.append(
-        headButton('dsc-for-dm', withShortcut(t('Start a New Chat'), SHORTCUTS.newChat), 'phone', () => clickOption('option_start_new_chat')),
-        headButton('dsc-for-dm', t('Chat History'), 'video', () => clickOption('option_select_chat')),
-        headButton('dsc-for-channel', t('Chat History'), 'threads', () => clickOption('option_select_chat')),
-        headButton('dsc-for-chat dsc-pin-tool', withShortcut(t('Pin Chat'), SHORTCUTS.pin), 'pin', togglePinCurrent),
-        headButton('dsc-for-dm dsc-convert', t('Convert to Group'), 'person-add', () => clickOption('option_convert_to_group')),
-        headButton('dsc-for-dm dsc-aside-tool', withShortcut(t('Show User Profile'), SHORTCUTS.members), 'profile', () => actions.toggleAside()),
-        headButton('dsc-for-channel dsc-aside-tool', withShortcut(t('Show Member List'), SHORTCUTS.members), 'members', () => actions.toggleAside()),
+        headButton('dsc-for-dm dsc-tool-call', withShortcut(t('Start a New Chat'), SHORTCUTS.newChat), 'phone', () => clickOption('option_start_new_chat')),
+        headButton('dsc-for-dm dsc-tool-video', t('Chat History'), 'video', () => clickOption('option_select_chat')),
+        headButton('dsc-for-channel dsc-tool-threads', t('Chat History'), 'threads', () => clickOption('option_select_chat')),
+        headButton('dsc-for-chat dsc-pin-tool dsc-tool-pin', withShortcut(t('Pin Chat'), SHORTCUTS.pin), 'pin', togglePinCurrent),
+        headButton('dsc-for-dm dsc-convert dsc-tool-add', t('Convert to Group'), 'person-add', () => clickOption('option_convert_to_group')),
+        headButton('dsc-for-dm dsc-aside-tool dsc-tool-profile', withShortcut(t('Show User Profile'), SHORTCUTS.members), 'profile', () => actions.toggleAside()),
+        headButton('dsc-for-channel dsc-aside-tool dsc-tool-members', withShortcut(t('Show Member List'), SHORTCUTS.members), 'members', () => actions.toggleAside()),
     );
     const search = document.createElement('label');
     search.className = 'dsc-head-search';
@@ -154,7 +154,7 @@ function createTitlebar() {
     };
     right.append(
         tool('dsc-inbox', withShortcut(t('Inbox'), SHORTCUTS.inbox), 'inbox', (event) => openInbox(/** @type {HTMLElement} */ (event.currentTarget))),
-        tool('', withShortcut(t('Help'), SHORTCUTS.keybinds), 'help', () => showShortcuts()),
+        tool('dsc-help', withShortcut(t('Help'), SHORTCUTS.keybinds), 'help', () => showShortcuts()),
     );
     bar.append(left, middle, right);
     document.body.append(bar);

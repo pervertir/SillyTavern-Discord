@@ -59,8 +59,12 @@ function imageEmbed({ url, alt }) {
     img.referrerPolicy = 'no-referrer';
     img.addEventListener('load', () => {
         box.classList.remove('dsc-embed-loading');
-        // the box takes the picture's own shape within 550×350, so nothing jumps afterwards
-        const scale = Math.min(1, 550 / img.naturalWidth, 350 / img.naturalHeight);
+        // the box takes the picture's own shape within the size limit (550×350 unless
+        // customized), so nothing jumps afterwards
+        const style = getComputedStyle(document.body);
+        const maxW = parseFloat(style.getPropertyValue('--dsc-embed-w')) || 550;
+        const maxH = parseFloat(style.getPropertyValue('--dsc-embed-h')) || 350;
+        const scale = Math.min(1, maxW / img.naturalWidth, maxH / img.naturalHeight);
         box.style.width = `${Math.round(img.naturalWidth * scale)}px`;
         box.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
     });

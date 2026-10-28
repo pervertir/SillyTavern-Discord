@@ -206,11 +206,11 @@ body.discord-theme.dsc-light {
 }
 
 body.discord-theme.dsc-aside-on:not(.dsc-no-chat, .dsc-friends) {
-    --dsc-aside-w: 340px;
+    --dsc-aside-w: var(--dsc-profile-w, 340px);
 }
 
 body.discord-theme.dsc-aside-on.dsc-channel:not(.dsc-no-chat, .dsc-friends) {
-    --dsc-aside-w: 264px;
+    --dsc-aside-w: var(--dsc-members-w, 264px);
 }
 
 /* Icons, drawn as masks in Discord's style and painted with the current text color */

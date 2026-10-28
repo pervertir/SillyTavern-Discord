@@ -1,0 +1,153 @@
+/* Hooks for the Customize page (customize.js): the theme's sizes, shapes and colours read
+   these variables, each falling back to the theme's own value, so a customization changes
+   them live without touching the rest of the styles. Loaded after the styles it adjusts. */
+
+/* Shape */
+body.discord-theme :is(.menu_button, .dsc-button, .dsc-dv-action, .dsc-tb-tool, .dsc-user-tool),
+body.discord-theme .menu_button:is(.toggleEnabled, .active, .dsc-primary, .redWarningBG, .caution),
+body.discord-theme dialog.popup .popup-controls .menu_button {
+    border-radius: var(--dsc-radius-button, 8px);
+}
+
+body.discord-theme :is(.text_pole, select, textarea:not(#send_textarea), input:is([type="text"], [type="number"], [type="search"], [type="password"], [type="url"]):not(.neo-range-input), #send_form, .dsc-find, .dsc-head-search) {
+    border-radius: var(--dsc-radius-input, 8px);
+}
+
+body.discord-theme :is(.inline-drawer, .dsc-prof-card, .select_chat_block, #user_avatar_block .avatar-container, .dsc-radio-card, .dsc-fr-search, #dsc-menu, .dsc-dm, .dsc-channel, .dsc-nav-row, .dsc-set-item) {
+    border-radius: var(--dsc-radius-card, 8px);
+}
+
+body.discord-theme .dsc-dv-card {
+    border-radius: var(--dsc-radius-card-lg, 12px);
+}
+
+body.discord-theme :is(dialog.popup, #character_popup, #dialogue_popup, .dsc-sw-box, #dsc-react-picker) {
+    border-radius: var(--dsc-radius-modal, 12px);
+}
+
+body.discord-theme :is(.dsc-embed, .dsc-embed img, #chat .mes_text img.dsc-embed-inline, #chat .mes .mes_text pre) {
+    border-radius: var(--dsc-radius-image, 8px);
+}
+
+/* Avatars: shape everywhere, size in the chat */
+body.discord-theme :is(.dsc-avatar, .dsc-avatar > img, .dsc-monogram, #chat .mes .avatar, #chat .mes .avatar img, .dsc-mono > .dsc-mono-mark) {
+    border-radius: var(--dsc-avatar-radius, 50%);
+}
+
+body.discord-theme #chat .mes {
+    --dsc-avatar-size: var(--dsc-chat-avatar, 40px);
+    padding-left: calc(var(--dsc-chat-avatar, 40px) + 32px);
+    padding-top: var(--dsc-mes-pad, 2px);
+    padding-bottom: var(--dsc-mes-pad, 2px);
+}
+
+body.discord-theme.dsc-compact #chat .mes,
+body.discord-theme.hideChatAvatars #chat .mes {
+    padding-left: 16px;
+}
+
+body.discord-theme #chat .mes .dsc-part {
+    margin-left: calc(-1 * (var(--dsc-chat-avatar, 40px) + 32px));
+    padding-left: calc(var(--dsc-chat-avatar, 40px) + 32px);
+}
+
+/* Text */
+body.discord-theme #chat .mes .mes_text {
+    line-height: var(--dsc-line, 1.375);
+    font-weight: var(--dsc-body-weight, 400);
+}
+
+body.discord-theme #chat .mes .name_text {
+    color: var(--dsc-name-color, var(--dsc-header));
+    font-weight: var(--dsc-name-weight, 500);
+}
+
+body.discord-theme #chat .mes[is_user="true"] .name_text {
+    color: var(--dsc-own-name, var(--dsc-name-color, var(--dsc-header)));
+}
+
+/* your own messages, highlighted if wanted */
+body.discord-theme #chat .mes[is_user="true"] {
+    background: var(--dsc-own-bg, none);
+}
+
+/* Spacing */
+body.discord-theme :is(.dsc-dm, .dsc-nav-row) {
+    height: var(--dsc-row-h, 42px);
+}
+
+body.discord-theme .dsc-channel {
+    height: var(--dsc-channel-h, 32px);
+}
+
+/* Messages: picture size limits */
+body.discord-theme .dsc-embed {
+    max-width: min(var(--dsc-embed-w, 550px), 100%);
+}
+
+body.discord-theme :is(.dsc-embed img, #chat .mes_text img.dsc-embed-inline) {
+    max-width: min(var(--dsc-embed-w, 550px), 100%);
+    max-height: var(--dsc-embed-h, 350px);
+}
+
+/* Motion */
+body.discord-theme .dsc-typing-dots i {
+    animation-duration: var(--dsc-typing-speed, 1.4s);
+}
+
+body.discord-theme.dsc-motion-off *,
+body.discord-theme.dsc-motion-off *::before,
+body.discord-theme.dsc-motion-off *::after {
+    animation: none !important;
+    transition: none !important;
+}
+
+body.discord-theme.dsc-motion-reduced *,
+body.discord-theme.dsc-motion-reduced *::before,
+body.discord-theme.dsc-motion-reduced *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+}
+
+/* Chat background picture with blur and dim (customize.js sets the picture) */
+body.discord-theme.dsc-chat-picture #sheld::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: var(--dsc-chat-picture) center / cover no-repeat;
+    filter: blur(var(--dsc-chat-picture-blur, 0px));
+    pointer-events: none;
+}
+
+body.discord-theme.dsc-chat-picture #sheld::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: rgba(0, 0, 0, var(--dsc-chat-picture-dim, 0.4));
+    pointer-events: none;
+}
+
+body.discord-theme.dsc-chat-picture #sheld {
+    overflow: hidden;
+}
+
+body.discord-theme.dsc-chat-picture #sheld > * {
+    position: relative;
+    z-index: 1;
+}
+
+body.discord-theme.dsc-chat-picture :is(#chat, #form_sheld, #dsc-head) {
+    background: transparent;
+}
+
+/* a gradient behind the chat */
+body.discord-theme.dsc-chat-gradient #sheld {
+    background: var(--dsc-chat-gradient);
+}
+
+body.discord-theme.dsc-chat-gradient :is(#chat, #form_sheld, #dsc-head) {
+    background: transparent;
+}
