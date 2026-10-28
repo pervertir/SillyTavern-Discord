@@ -3,6 +3,7 @@
 // and quick switcher) and exposes a small settings panel.
 
 import { initCompose, openExtensionsMenu } from './compose.js';
+import { initEditor, refreshEditor } from './editor.js';
 import { getCurrentPlace, initData, scheduleRefresh } from './data.js';
 import { refreshTitle, setDisguise } from './disguise.js';
 import { initHeader, openInbox, refreshHeader, setFriendsTab, togglePinCurrent } from './header.js';
@@ -174,6 +175,7 @@ function trackDrawers() {
         markCurrent();
         if (charsChanged) {
             refreshHeader();
+            refreshEditor();
         }
     };
     const observer = new MutationObserver(update);
@@ -279,6 +281,7 @@ async function init() {
     initSettings({ setTheme, isDark: () => isDark() });
     initSwitcher({ picked: () => document.body.classList.remove('dsc-friends') });
     initCompose();
+    initEditor();
     createPhoneTabs();
     trackDrawers();
     initMessages();

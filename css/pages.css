@@ -328,6 +328,10 @@ body.discord-theme .select_chat_block .select_chat_block_mes {
 body.discord-theme #avatar-and-name-block {
     display: flex;
     flex-direction: column;
+    flex-wrap: nowrap;
+    /* a flex item of the editor's column: it must not shrink */
+    flex: none;
+    height: auto;
     gap: 8px;
     margin: 4px 0 12px;
     padding: 0 16px 16px;
@@ -339,9 +343,14 @@ body.discord-theme #avatar-and-name-block {
 body.discord-theme #avatar-and-name-block::before {
     content: '';
     order: 0;
+    flex: none;
     height: 100px;
     margin: 0 -16px;
     background: linear-gradient(135deg, var(--dsc-blurple), #eb459f);
+}
+
+body.discord-theme #avatar-and-name-block > * {
+    flex: none;
 }
 
 body.discord-theme #avatar-and-name-block > .expander {

@@ -191,3 +191,53 @@ body.discord-theme .drawer-content .drag-grabber,
 body.discord-theme #top-settings-holder .drawer-content .floating_panel_maximize {
     display: none;
 }
+
+/* ---------- the character and group editors as settings pages (editor.js) ---------- */
+
+@media screen and (min-width: 1001px) {
+    body.discord-theme.dsc-editor-open #dsc-editor {
+        display: flex;
+        position: fixed;
+        inset: var(--dsc-title-h) 0 0 0;
+        z-index: 3004;
+        background: var(--dsc-chat);
+        animation: dsc-settings-in 0.2s ease-out;
+    }
+
+    body.discord-theme.dsc-editor-open #right-nav-panel.openDrawer {
+        top: var(--dsc-set-top) !important;
+        left: calc(var(--dsc-set-side) + 40px) !important;
+        right: auto !important;
+        width: min(740px, calc(100vw - var(--dsc-set-side) - 120px)) !important;
+        height: calc(100dvh - var(--dsc-set-top)) !important;
+        padding: 0 0 80px;
+        background: var(--dsc-chat);
+        overflow-y: auto;
+    }
+
+    /* the editor's own back buttons and hint aren't needed under the sidebar */
+    body.discord-theme.dsc-editor-open :is(#rm_button_back, #rm_button_back_from_group, #HotSwapWrapper, #rm_button_bar) {
+        display: none !important;
+    }
+
+    body.discord-theme.dsc-editor-open .dsc-tb-title > * {
+        display: none;
+    }
+
+    body.discord-theme.dsc-editor-open .dsc-tb-title::after {
+        content: 'User Settings';
+    }
+
+    body.discord-theme.dsc-editor-open.dsc-editor-group .dsc-tb-title::after {
+        content: 'Server Settings';
+    }
+}
+
+body.discord-theme .dsc-set-item.dsc-set-danger {
+    color: var(--dsc-critical-text);
+}
+
+body.discord-theme .dsc-set-item.dsc-set-danger:hover {
+    background: rgba(210, 45, 57, 0.08);
+    color: var(--dsc-critical-text);
+}
