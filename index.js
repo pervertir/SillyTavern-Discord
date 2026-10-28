@@ -13,6 +13,7 @@ import { initHeader, openInbox, refreshHeader, refreshPresenceViews, setFriendsT
 import { initPresence } from './presence.js';
 import { initSounds, play } from './sounds.js';
 import { initMessages, labelMessages } from './messages.js';
+import { initMessageTools } from './msgtools.js';
 import { initMonograms } from './monograms.js';
 import { initSettings, openSettings, refreshSettings, SETTINGS_DRAWERS } from './settings.js';
 import { formatKeys, initShortcuts, SHORTCUTS } from './shortcuts.js';
@@ -389,6 +390,7 @@ async function init() {
     createPhoneTabs();
     trackDrawers();
     initMessages();
+    initMessageTools();
     initSounds({ settings: getSettings, save: saveSettings });
     initPresence({
         enabled: () => !!getSettings().enabled && !!getSettings().presenceSim,
