@@ -290,3 +290,33 @@ body.discord-theme #extensions_details .extension_block {
 }
 
 /* ---------- swipes, edit and message-level controls already themed in chat.css ---------- */
+
+/* ---------- chat history: Discord's list rows ---------- */
+
+body.discord-theme .select_chat_block {
+    margin: 0 0 4px;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 8px;
+    background: var(--dsc-side);
+    color: var(--dsc-text);
+    box-shadow: none;
+}
+
+body.discord-theme .select_chat_block:hover {
+    background: color-mix(in srgb, var(--dsc-side), var(--dsc-text) 6%);
+}
+
+body.discord-theme .select_chat_block[highlight] {
+    background: var(--dsc-selected);
+    box-shadow: inset 4px 0 0 var(--dsc-blurple);
+}
+
+body.discord-theme .select_chat_block .select_chat_block_filename {
+    color: var(--dsc-header);
+    font-weight: 600;
+}
+
+body.discord-theme .select_chat_block .select_chat_block_mes {
+    color: var(--dsc-header-2);
+}

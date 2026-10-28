@@ -401,6 +401,7 @@
     body.discord-theme #right-nav-panel.openDrawer {
         left: 0 !important;
         top: var(--dsc-safe-top) !important;
+        z-index: 3006;
         height: calc(100dvh - var(--dsc-tabbar-h) - var(--dsc-safe-top)) !important;
         padding: 8px 12px;
     }

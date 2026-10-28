@@ -826,11 +826,11 @@ body.discord-theme.movingUI #sheld {
 /* the character panel (Friends, Discover) takes the chat's place */
 body.discord-theme #right-nav-panel.openDrawer {
     position: fixed;
-    top: 0 !important;
+    top: var(--dsc-head-h) !important;
     left: var(--dsc-content-left) !important;
     right: 0 !important;
     width: auto !important;
-    height: 100dvh !important;
+    height: calc(100dvh - var(--dsc-head-h)) !important;
     max-height: none;
     max-width: none;
     margin: 0;

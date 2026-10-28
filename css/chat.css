@@ -1110,3 +1110,9 @@ body.discord-theme .dsc-fr-active-card p {
         display: none;
     }
 }
+
+/* the character panel (Discover) under the header: only the header's general tools */
+body.discord-theme.dsc-chars-open .dsc-head-tool:is(.dsc-for-dm, .dsc-for-channel, .dsc-for-chat),
+body.discord-theme.dsc-chars-open :is(.dsc-head-tabs, .dsc-head-status, .dsc-head-topic, .dsc-head-search) {
+    display: none !important;
+}

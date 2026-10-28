@@ -156,9 +156,13 @@ function trackDrawers() {
         if (settings) {
             body.remove('dsc-settings-list');
         }
+        const charsChanged = body.contains('dsc-chars-open') !== chars;
         body.toggle('dsc-chars-open', chars);
         refreshSettings();
         markCurrent();
+        if (charsChanged) {
+            refreshHeader();
+        }
     };
     const observer = new MutationObserver(update);
     for (const drawer of drawers) {

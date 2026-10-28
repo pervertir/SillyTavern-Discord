@@ -153,7 +153,11 @@ export function refreshHeader() {
     const topic = head.querySelector('.dsc-head-topic');
     glyph.replaceChildren();
     topic.textContent = '';
-    if (friends) {
+    if (body.contains('dsc-chars-open')) {
+        // the character panel stands in for the chat: Discord's Discover page
+        glyph.append(icon('compass'));
+        name.textContent = t('Discover');
+    } else if (friends) {
         glyph.append(icon('friends'));
         name.textContent = t('Friends');
     } else if (group) {
