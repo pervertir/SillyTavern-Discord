@@ -18,7 +18,92 @@ let actions = {
     current: () => ({ appearance: 'dark', nitroTheme: '' }),
     setBase: (_id) => {},
     setNitro: (_id) => {},
+    /** reads and writes the message display options */
+    get: (_key) => undefined,
+    set: (_key, _value) => {},
 };
+
+/** A radio card, as Discord's Message Display choices */
+function radioCard(name, value, label, note, checked, onPick) {
+    const card = document.createElement('label');
+    card.className = 'dsc-radio-card';
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = name;
+    input.value = value;
+    input.checked = checked;
+    input.addEventListener('change', () => onPick(value));
+    const text = document.createElement('span');
+    text.className = 'dsc-radio-text';
+    const strong = document.createElement('strong');
+    strong.textContent = t(label);
+    const small = document.createElement('small');
+    small.textContent = t(note);
+    text.append(strong, small);
+    card.append(input, text);
+    return card;
+}
+
+/** A slider with its value shown, as Discord's font size and spacing sliders */
+function slider(id, label, min, max, step, value, unit, onChange) {
+    const row = document.createElement('div');
+    row.className = 'dsc-ap-slider';
+    const head = document.createElement('div');
+    head.className = 'dsc-ap-slider-head';
+    const name = document.createElement('label');
+    name.htmlFor = id;
+    name.textContent = t(label);
+    const shown = document.createElement('span');
+    shown.textContent = `${value}${unit}`;
+    head.append(name, shown);
+    const input = document.createElement('input');
+    input.type = 'range';
+    input.id = id;
+    input.min = String(min);
+    input.max = String(max);
+    input.step = String(step);
+    input.value = String(value);
+    input.addEventListener('input', () => {
+        shown.textContent = `${input.value}${unit}`;
+        onChange(Number(input.value));
+    });
+    row.append(head, input);
+    return row;
+}
+
+function toggleRow(id, label, note, checked, onChange) {
+    const row = document.createElement('label');
+    row.className = 'checkbox_label dsc-ap-toggle';
+    row.htmlFor = id;
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    input.id = id;
+    input.checked = checked;
+    input.addEventListener('input', () => onChange(input.checked));
+    const text = document.createElement('span');
+    text.textContent = t(label);
+    if (note) {
+        const small = document.createElement('small');
+        small.textContent = t(note);
+        text.append(small);
+    }
+    row.append(input, text);
+    return row;
+}
+
+/** Message display, chat font size, group spacing and the clock. */
+function renderDisplay(root) {
+    const host = root.querySelector('.dsc-ap-display');
+    const display = actions.get('messageDisplay') ?? 'cozy';
+    const pick = value => actions.set('messageDisplay', value);
+    host.replaceChildren(
+        radioCard('dsc-display', 'cozy', 'Cozy', 'Modern, beautiful, and easy on your eyes.', display === 'cozy', pick),
+        radioCard('dsc-display', 'compact', 'Compact', 'Fit more messages on screen at one time. #IRC', display === 'compact', pick),
+        slider('dsc_font', 'Chat Font Scaling', 12, 24, 1, actions.get('chatFont') ?? 16, 'px', value => actions.set('chatFont', value)),
+        slider('dsc_group_gap', 'Space Between Message Groups', 0, 24, 2, actions.get('groupGap') ?? 16, 'px', value => actions.set('groupGap', value)),
+        toggleRow('dsc_24h', 'Use 24-hour time', 'Times read 16:20 instead of 4:20 PM.', !!actions.get('clock24'), value => actions.set('clock24', value)),
+    );
+}
 
 function swatch(className, label, background, selected, run) {
     const button = document.createElement('button');
@@ -72,8 +157,14 @@ function build() {
     colorText.textContent = t('Make Discord yours with a color theme.');
     const colorRow = document.createElement('div');
     colorRow.className = 'dsc-swatches dsc-swatches-color';
-    root.append(themeTitle, themeRow, colorTitle, colorText, colorRow);
+    const displayTitle = document.createElement('h4');
+    displayTitle.className = 'dsc-ap-title';
+    displayTitle.textContent = t('Message Display');
+    const display = document.createElement('div');
+    display.className = 'dsc-ap-display';
+    root.append(themeTitle, themeRow, colorTitle, colorText, colorRow, displayTitle, display);
     host.prepend(root);
+    renderDisplay(root);
 }
 
 /**
@@ -81,6 +172,8 @@ function build() {
  * @param {() => {appearance: string, nitroTheme: string}} options.current
  * @param {(id: string) => void} options.setBase
  * @param {(id: string) => void} options.setNitro
+ * @param {(key: string) => any} options.get
+ * @param {(key: string, value: any) => void} options.set
  */
 export function initAppearance(options) {
     actions = { ...actions, ...options };

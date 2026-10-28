@@ -241,7 +241,7 @@ body.discord-theme #chat .mes {
     flex-wrap: wrap;
     align-items: center;
     min-height: 44px;
-    margin: 17px 0 0;
+    margin: calc(var(--dsc-group-gap, 16px) + 1px) 0 0;
     padding: 2px 48px 2px 72px;
     box-sizing: border-box;
     background: none;
@@ -420,8 +420,8 @@ body.discord-theme #chat .mes .name_text {
     text-overflow: ellipsis;
     white-space: nowrap;
     color: var(--dsc-header);
-    font-size: 16px;
-    line-height: 22px;
+    font-size: var(--dsc-chat-font, 16px);
+    line-height: 1.375;
     font-weight: 500;
     cursor: pointer;
 }
@@ -463,8 +463,8 @@ body.discord-theme #chat .mes .mes_text {
     margin: 0;
     color: var(--dsc-text);
     font-family: var(--dsc-font);
-    font-size: 16px;
-    line-height: 22px;
+    font-size: var(--dsc-chat-font, 16px);
+    line-height: 1.375;
     font-weight: 400;
     overflow-wrap: anywhere;
     text-shadow: none;
@@ -828,8 +828,9 @@ body.discord-theme.dsc-compact #chat .mes .timestamp {
     margin: 0 8px 0 0;
 }
 
-body.discord-theme.dsc-compact.dsc-times #chat .mes .timestamp[data-dsc-time]::after {
-    content: attr(data-dsc-time);
+/* compact shows only the clock, as Discord's compact mode */
+body.discord-theme.dsc-compact.dsc-times #chat .mes .timestamp[data-dsc-short]::after {
+    content: attr(data-dsc-short);
 }
 
 body.discord-theme.dsc-compact #chat .mes .name_text::after {
@@ -1207,4 +1208,14 @@ body.discord-theme #chat .mes .dsc-part.dsc-part-hidden {
 /* SillyTavern's model icon after the time: Discord shows nothing there */
 body.discord-theme #chat .mes .timestamp-icon {
     display: none;
+}
+
+/* compact: parts sit in the text column without their own gutter */
+body.discord-theme.dsc-compact #chat .mes .dsc-part {
+    margin: 0;
+    padding: 0;
+}
+
+body.discord-theme.dsc-compact #chat .mes .dsc-part + .dsc-part::before {
+    content: none;
 }

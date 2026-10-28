@@ -5,6 +5,7 @@
 // comes in part by part with the typing dots between, unless it was already streamed in.
 
 import { splitMessage } from './lib/message-splitter.js';
+import { clock } from './messages.js';
 import { hideTyping, showTyping } from './presence.js';
 
 let enabled = () => true;
@@ -37,7 +38,7 @@ function renderParts(mes, { reveal = false } = {}) {
     }
     const html = parts.map(part => context.messageFormatting(part, message.name, false, false, id));
     const sent = message.send_date ? context.timestampToMoment(message.send_date) : null;
-    const time = sent?.isValid?.() ? sent.format('LT') : '';
+    const time = sent?.isValid?.() ? clock(sent) : '';
     const rows = html.map((partHtml, index) => {
         const row = document.createElement('div');
         row.className = 'dsc-part';

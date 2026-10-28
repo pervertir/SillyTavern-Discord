@@ -597,3 +597,9 @@ body.discord-theme:is(.dsc-settings-open, .dsc-settings-list) .dsc-tb-title > * 
 body.discord-theme:is(.dsc-settings-open, .dsc-settings-list) .dsc-tb-title::after {
     content: var(--dsc-settings-title, 'User Settings');
 }
+
+/* Keyboard focus: Discord's blue ring on anything you reach with Tab */
+body.discord-theme :is(button, [role="button"], a, input, select, textarea, .menu_button, .dsc-swatch):focus-visible {
+    outline: 2px solid #00aafc;
+    outline-offset: 2px;
+}

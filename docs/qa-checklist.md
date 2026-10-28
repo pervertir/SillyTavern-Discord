@@ -58,7 +58,23 @@ values) and Discord's current client. Status: ✅ right · ❌ wrong (defect) �
 | Swipe, delete, regenerate on split replies | ✅ | Work on the whole message (SillyTavern's data is untouched) | |
 | Model icon after the time | ❌→🔧 | SillyTavern's model icon; hidden | |
 | Setting "Split replies into short messages" | ✅ | On by default; off puts replies back whole at once | |
-## Batch 4: settings and controls — pending
+## Batch 4: settings and controls
+
+| Component | Status | Defect / fix | Simpler |
+|---|---|---|---|
+| Settings sidebar, one topic per page, close + ESC | ✅ | | Long ST pages split by topic |
+| Switching sections | ❌→🔧 | Chat flashed through while SillyTavern swapped menus (2f2ae2c) | |
+| Clicks inside settings | ❌→🔧 | SillyTavern's outside-click closer shut the settings (6cde172) | |
+| Switches, selects, text fields, textareas, sliders, buttons | ✅ | Discord's controls | |
+| Radio choices | ✅ | Discord radio cards on the Appearance page | |
+| Appearance: theme swatches, Nitro colors | ✅ | | |
+| Message Display: Cozy / Compact | ❌→🔧 | Was only in the extension panel; now radio cards on Appearance; compact shows the clock only | |
+| Chat font scaling 12–24px | ❌→🔧 | Didn't exist | |
+| Space between message groups 0–24px | ❌→🔧 | Didn't exist | |
+| 24-hour time | ❌→🔧 | Didn't exist | |
+| Keyboard focus rings | ❌→🔧 | Mixed; now Discord's blue ring on Tab | |
+| Keybinds list (Ctrl/⌘+/) | ✅ | | |
+| ↑ edits last message, Esc cancels edit | ✅ | Batch 1 | |
 ## Batch 5: overlays and editors — pending
 ## Batch 6: home pages and phone — pending
 ## Batch 7: final sweep — pending

@@ -14,7 +14,7 @@ import { enableDesktopNotifications, initNotify } from './notify.js';
 import { initPresence } from './presence.js';
 import { initSounds, play } from './sounds.js';
 import { initSplit, renderAllParts } from './split.js';
-import { initMessages, labelMessages } from './messages.js';
+import { initMessages, labelMessages, setClock } from './messages.js';
 import { initMessageTools } from './msgtools.js';
 import { initMonograms } from './monograms.js';
 import { initSettings, openSettings, refreshSettings, SETTINGS_DRAWERS } from './settings.js';
@@ -57,6 +57,11 @@ const defaultSettings = Object.freeze({
     /** The user panel's mute and deafen */
     muted: false,
     deafened: false,
+    /** Message text size in px, and the gap between message groups in px */
+    chatFont: 16,
+    groupGap: 16,
+    /** 24-hour clock in message times */
+    clock24: false,
     /** Long replies show as several short messages */
     splitReplies: true,
     /** Your own status: online, idle, dnd or invisible */
@@ -112,6 +117,8 @@ function applySettings() {
     body.toggle('dsc-compact', on && settings.messageDisplay === 'compact');
     body.toggle('dsc-presence', on && !!settings.presence);
     body.toggle('dsc-times', on && !!settings.discordTimes);
+    document.body.style.setProperty('--dsc-chat-font', `${Number(settings.chatFont) || 16}px`);
+    document.body.style.setProperty('--dsc-group-gap', `${Number.isFinite(Number(settings.groupGap)) ? Number(settings.groupGap) : 16}px`);
     setDisguise(on);
     refreshHeader();
 }
@@ -405,10 +412,26 @@ async function init() {
         current: () => ({ appearance: getSettings().appearance, nitroTheme: getSettings().nitroTheme }),
         setBase: setTheme,
         setNitro: setNitroTheme,
+        get: key => getSettings()[key],
+        set: (key, value) => {
+            getSettings()[key] = value;
+            applySettings();
+            saveSettings();
+            if (key === 'clock24') {
+                labelMessages();
+            }
+            if (key === 'messageDisplay') {
+                const select = /** @type {HTMLSelectElement} */ (document.getElementById('dsc_message_display'));
+                if (select) {
+                    select.value = value;
+                }
+            }
+        },
     });
     initDiscover({ shown: () => { refreshHeader(); refreshTitle(); markCurrent(); } });
     createPhoneTabs();
     trackDrawers();
+    setClock(() => !!getSettings().clock24);
     initMessages();
     initMessageTools();
     initSplit({

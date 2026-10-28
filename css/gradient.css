@@ -158,3 +158,76 @@ body.discord-theme .dsc-swatch-check {
         height: 52px;
     }
 }
+
+/* Message Display: radio cards, sliders with their value, and a switch with a note */
+body.discord-theme .dsc-ap-display {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+body.discord-theme .dsc-radio-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--dsc-hover);
+    color: var(--dsc-header-2);
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-radio-card:hover {
+    background: var(--dsc-active);
+    color: var(--dsc-header);
+}
+
+body.discord-theme .dsc-radio-card:has(input:checked) {
+    background: var(--dsc-selected);
+    color: var(--dsc-header);
+}
+
+body.discord-theme .dsc-radio-card input {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    accent-color: var(--dsc-blurple);
+}
+
+body.discord-theme .dsc-radio-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+body.discord-theme .dsc-radio-text strong {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+body.discord-theme .dsc-radio-text small,
+body.discord-theme .dsc-ap-toggle small {
+    display: block;
+    color: var(--dsc-muted);
+    font-size: 14px;
+    font-weight: 400;
+}
+
+body.discord-theme .dsc-ap-slider {
+    margin: 12px 0 4px;
+}
+
+body.discord-theme .dsc-ap-slider-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: var(--dsc-header);
+    font-size: 16px;
+    font-weight: 500;
+}
+
+body.discord-theme .dsc-ap-slider-head span {
+    color: var(--dsc-muted);
+    font-size: 14px;
+}

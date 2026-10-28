@@ -8,6 +8,18 @@ import { t } from './ui.js';
 
 const GROUP_GAP_MS = 7 * 60 * 1000;
 
+let use24h = () => false;
+
+/** The clock part of a time: 4:20 PM, or 16:20 with 24-hour time on. */
+export function clock(time) {
+    return time.format(use24h() ? 'HH:mm' : 'LT');
+}
+
+/** @param {() => boolean} fn */
+export function setClock(fn) {
+    use24h = fn;
+}
+
 function momentOf(mes) {
     const { chat, timestampToMoment } = SillyTavern.getContext();
     const message = chat[Number(mes.getAttribute('mesid'))];
@@ -23,12 +35,12 @@ export function formatMessageTime(time) {
     const { timestampToMoment } = SillyTavern.getContext();
     const now = timestampToMoment(Date.now());
     if (time.isSame(now, 'day')) {
-        return `${t('Today at')} ${time.format('LT')}`;
+        return `${t('Today at')} ${clock(time)}`;
     }
     if (time.isSame(now.clone().subtract(1, 'day'), 'day')) {
-        return `${t('Yesterday at')} ${time.format('LT')}`;
+        return `${t('Yesterday at')} ${clock(time)}`;
     }
-    return time.format('L LT');
+    return `${time.format('L')} ${clock(time)}`;
 }
 
 /** A list time: the clock today, "Yesterday", the weekday this week, else the date. */
@@ -40,7 +52,7 @@ export function formatListTime(timestamp) {
     }
     const now = timestampToMoment(Date.now());
     if (time.isSame(now, 'day')) {
-        return time.format('LT');
+        return clock(time);
     }
     if (time.isSame(now.clone().subtract(1, 'day'), 'day')) {
         return t('Yesterday');
@@ -73,11 +85,13 @@ function labelMessage(mes) {
     if (time) {
         if (stamp) {
             stamp.dataset.dscTime = formatMessageTime(time);
+            stamp.dataset.dscShort = clock(time);
             stamp.dataset.dscTip = time.format('LLLL');
         }
-        mes.dataset.dscShort = time.format('LT');
+        mes.dataset.dscShort = clock(time);
     } else {
         delete stamp?.dataset.dscTime;
+        delete stamp?.dataset.dscShort;
         delete mes.dataset.dscShort;
     }
 
