@@ -228,8 +228,8 @@ body.discord-theme #chat .mes:not([is_user="true"]) :is(.avatar, .name_text) {
     cursor: pointer;
 }
 
-@media screen and (max-width: 1000px) {
-    /* phones: the profile slides up as a sheet over the chat */
+@media screen and (max-width: 1100px) {
+    /* phones and narrow windows: the profile slides up as a sheet over the chat */
     body.discord-theme.dsc-profile-sheet #dsc-aside {
         display: flex !important;
         top: 12dvh;

@@ -13,6 +13,8 @@ const HEAD_ID = 'dsc-head';
 const ASIDE_ID = 'dsc-aside';
 const FRIENDS_ID = 'dsc-friends';
 const TITLE_ID = 'dsc-titlebar';
+/** Below this width the profile panel doesn't fit beside the chat (aside.css) */
+const SHEET_QUERY = '(max-width: 1100px)';
 
 /** A character whose profile shows in the panel in place of the chat's own (a member of a
     group, or anyone whose picture was clicked in the chat) */
@@ -72,15 +74,23 @@ function createHeader() {
     topic.className = 'dsc-head-topic';
     title.append(glyph, name, status, topic);
     title.addEventListener('click', () => {
-        if (!document.body.classList.contains('dsc-friends-mode')) {
-            actions.toggleAside();
+        if (document.body.classList.contains('dsc-friends-mode')) {
+            return;
         }
+        // phones and narrow windows have no room for the panel: the profile opens as a sheet
+        const character = currentCharacter();
+        if (window.matchMedia(SHEET_QUERY).matches && character) {
+            showProfile(character.avatar);
+            return;
+        }
+        actions.toggleAside();
     });
 
     // Friends page tabs
     const tabs = document.createElement('nav');
     tabs.className = 'dsc-head-tabs';
-    for (const [key, label] of [['online', 'Online'], ['all', 'All'], ['add', 'Add Friend']]) {
+    // Discord's Pending and Blocked have no meaning for characters; Favorites does
+    for (const [key, label] of [['online', 'Online'], ['all', 'All'], ['favorites', 'Favorites'], ['add', 'Add Friend']]) {
         const tab = document.createElement('button');
         tab.type = 'button';
         tab.className = 'dsc-head-tab';
@@ -523,7 +533,7 @@ export function showProfile(avatar) {
         aside.dataset.key = '';
     }
     refreshAside();
-    if (window.matchMedia('(max-width: 1000px)').matches) {
+    if (window.matchMedia(SHEET_QUERY).matches) {
         document.body.classList.add('dsc-profile-sheet');
     }
 }
@@ -739,13 +749,15 @@ function renderFriends() {
     const { characters } = SillyTavern.getContext();
     const needle = friendsFilter.trim().toLowerCase();
     const byName = (a, b) => String(a.name).localeCompare(String(b.name));
-    let people = friendsTab === 'online'
-        ? characters.filter(x => statusOf(x.avatar) !== 'offline').sort(byName)
-        : [...characters].sort(byName);
+    const isFav = x => x.fav === true || x.fav === 'true';
+    let people = friendsTab === 'online' ? characters.filter(x => statusOf(x.avatar) !== 'offline').sort(byName)
+        : friendsTab === 'favorites' ? characters.filter(isFav).sort(byName)
+            : [...characters].sort(byName);
     if (needle) {
         people = people.filter(x => String(x.name).toLowerCase().includes(needle));
     }
-    heading.textContent = `${t(friendsTab === 'online' ? 'Online' : 'All Friends')} — ${people.length}`;
+    const headings = { online: 'Online', all: 'All Friends', favorites: 'Favorites' };
+    heading.textContent = `${t(headings[friendsTab] ?? 'All Friends')} — ${people.length}`;
     const draw = (from) => {
         const rows = people.slice(from, from + FRIENDS_PAGE).map(friendRow);
         list.append(...rows);
@@ -767,6 +779,18 @@ function renderFriends() {
         }
     };
     list.replaceChildren();
+    if (!people.length) {
+        const empties = {
+            online: "No one's around right now. Say hi to someone and they'll come online.",
+            favorites: 'No favorites yet. Star a character in their profile to keep them here.',
+            all: needle ? 'No one by that name.' : 'No friends yet. Add one with Add Friend.',
+        };
+        const empty = document.createElement('div');
+        empty.className = 'dsc-fr-empty';
+        empty.textContent = t(needle ? 'No one by that name.' : empties[friendsTab] ?? empties.all);
+        list.append(empty);
+        return;
+    }
     draw(0);
 }
 

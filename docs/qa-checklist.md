@@ -88,5 +88,20 @@ values) and Discord's current client. Status: ✅ right · ❌ wrong (defect) �
 | Toasts | ✅ | | |
 | Profile (character editor), Server Settings (group editor), lorebooks as channels, personas | ✅ | Earlier passes | |
 | Other extensions' settings | ✅ | Discord cards in Extensions | |
-## Batch 6: home pages and phone — pending
+## Batch 6: home pages and phone
+
+| Component | Status | Defect / fix | Simpler |
+|---|---|---|---|
+| Friends: Online, All, Add Friend | ✅ | | |
+| Friends: Pending, Blocked | ➖ | Not added: they mean nothing for characters | Favorites tab instead |
+| Friends empty lists | ❌→🔧 | Showed a bare "— 0"; now a plain sentence saying what to do | |
+| Discover | ✅ | | |
+| Notifications (phone) | ✅ | | |
+| Nitro / Shop rows | ✅ | Open Extensions / Backgrounds | |
+| Quick switcher prefixes @ # * | ✅ | | |
+| Phone: home, chat, tabs, You list, Appearance, Discover | ✅ | No sideways scrolling at 390px | |
+| Phone: "User Settings" heading | ❌→🔧 | Touched the top edge; now padded | |
+| Phone: tap the chat title | ❌→🔧 | Did nothing (no side panel); now opens the profile sheet | |
+| 1001–1100px windows | ❌→🔧 | Profile panel hidden, so avatar clicks did nothing; now the sheet | |
+| Tablet 768px, switch at 1000/1001px, 1280px | ✅ | No overflow; layout swaps cleanly | |
 ## Batch 7: final sweep — pending

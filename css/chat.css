@@ -1219,3 +1219,13 @@ body.discord-theme.dsc-compact #chat .mes .dsc-part {
 body.discord-theme.dsc-compact #chat .mes .dsc-part + .dsc-part::before {
     content: none;
 }
+
+/* Friends: an empty list says so, plainly */
+body.discord-theme .dsc-fr-empty {
+    margin: 64px auto;
+    max-width: 360px;
+    color: var(--dsc-muted);
+    font-size: 16px;
+    line-height: 22px;
+    text-align: center;
+}
