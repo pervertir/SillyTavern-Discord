@@ -241,3 +241,42 @@ body.discord-theme .dsc-set-item.dsc-set-danger:hover {
     background: rgba(210, 45, 57, 0.08);
     color: var(--dsc-critical-text);
 }
+
+/* lorebooks as channels under World Info */
+body.discord-theme .dsc-set-books {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 4px 12px;
+}
+
+body.discord-theme .dsc-set-book {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 30px;
+    margin: 0 0 1px;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    color: var(--dsc-channel);
+    font: 500 15px/20px var(--dsc-font);
+    text-align: left;
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-set-book span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.discord-theme .dsc-set-book:hover {
+    background: var(--dsc-hover);
+    color: var(--dsc-header);
+}
+
+body.discord-theme .dsc-set-book.dsc-selected {
+    background: var(--dsc-selected);
+    color: var(--dsc-header);
+}

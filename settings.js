@@ -117,6 +117,17 @@ function createOverlay() {
             item.addEventListener('click', () => showShortcuts());
         }
         nav.append(item);
+        if (section.id === 'WI-SP-button') {
+            const books = document.createElement('div');
+            books.className = 'dsc-set-books';
+            books.addEventListener('click', (event) => {
+                const row = /** @type {HTMLElement} */ (event.target).closest('.dsc-set-book');
+                if (row) {
+                    openBook(row.dataset.value);
+                }
+            });
+            nav.append(books);
+        }
     }
     const sep = document.createElement('div');
     sep.className = 'dsc-set-sep';
@@ -189,6 +200,46 @@ function isOpen() {
     return body.contains('dsc-settings-open') || body.contains('dsc-settings-list');
 }
 
+/* World Info: each lorebook as a channel under the section, as a server lists its channels */
+
+function getBookSelect() {
+    return /** @type {HTMLSelectElement} */ (document.getElementById('world_editor_select'));
+}
+
+/** Lists the lorebooks under World Info, the one being edited marked. */
+export function refreshBooks() {
+    const holder = document.querySelector(`#${OVERLAY_ID} .dsc-set-books`);
+    const select = getBookSelect();
+    if (!holder || !select) {
+        return;
+    }
+    const open = document.getElementById('WI-SP-button')?.classList.contains('dsc-open');
+    holder.replaceChildren(...[...select.options].filter(option => option.value !== '').map((option) => {
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.className = 'dsc-set-book';
+        row.dataset.value = option.value;
+        row.classList.toggle('dsc-selected', open && option.selected);
+        row.append(icon('hash', 16));
+        const name = document.createElement('span');
+        name.textContent = option.textContent.trim().toLowerCase().replace(/\s+/g, '-');
+        name.title = option.textContent.trim();
+        row.append(name);
+        return row;
+    }));
+}
+
+/** Opens World Info on one lorebook, picking it in SillyTavern's own list. */
+function openBook(value) {
+    openSection('WI-SP-button', '');
+    const select = getBookSelect();
+    if (select && select.value !== value) {
+        select.value = value;
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    refreshBooks();
+}
+
 /** Opens one section: one of SillyTavern's menus, or one part of it. */
 export function openSection(drawerId, part = '') {
     document.body.classList.remove('dsc-settings-list');
@@ -240,6 +291,7 @@ export function refreshSettings() {
     }
     overlay.querySelector('.dsc-set-title').textContent = open ? t(open.label) : '';
     refreshThemeItem();
+    refreshBooks();
 }
 
 /**
@@ -250,4 +302,12 @@ export function refreshSettings() {
 export function initSettings(options) {
     actions = { ...actions, ...options };
     createOverlay();
+    const { eventSource, eventTypes } = SillyTavern.getContext();
+    for (const type of [eventTypes.WORLDINFO_UPDATED, eventTypes.WORLDINFO_SETTINGS_UPDATED]) {
+        if (type) {
+            eventSource.on(type, () => setTimeout(refreshBooks, 0));
+        }
+    }
+    getBookSelect()?.addEventListener('change', () => setTimeout(refreshBooks, 0));
+    refreshBooks();
 }
