@@ -66,7 +66,7 @@ body.discord-theme .right_menu_button:hover {
 
 /* Fields */
 body.discord-theme :is(.text_pole, textarea:not(#send_textarea, .edit_textarea), select,
-    input:is([type="text"], [type="number"], [type="password"], [type="url"], [type="search"]):not(.dsc-sw-input, .dsc-head-search input, .dsc-fr-search input, .dsc-fr-add-field input)) {
+    input:is([type="text"], [type="number"], [type="password"], [type="url"], [type="search"]):not(.dsc-sw-input, .dsc-head-search input, .dsc-fr-search input, .dsc-fr-add-field input, .neo-range-input)) {
     border: none;
     border-radius: 3px;
     background-color: var(--dsc-field);
@@ -134,22 +134,35 @@ body.discord-theme input[type="radio"] {
     accent-color: var(--dsc-blurple);
 }
 
-/* Sliders: Discord's grey rail with a white grab handle */
-body.discord-theme input[type="range"] {
-    height: 8px;
-    border-radius: 4px;
-    background: var(--dsc-field);
-    box-shadow: none;
-    filter: none;
+/* Sliders: Discord's grey rail with a white grab handle. SillyTavern paints a fixed 70% "fill"
+   that doesn't follow the handle, so it's left out. */
+body.discord-theme input[type="range"],
+body.discord-theme .neo-range-slider {
+    height: 8px !important;
+    margin-top: 10px !important;
+    border-radius: 4px !important;
+    background: var(--dsc-secondary-button) !important;
+    box-shadow: none !important;
+    filter: none !important;
     accent-color: var(--dsc-blurple);
 }
 
-/* SillyTavern sets its sliders with !important */
-body.discord-theme .neo-range-slider {
-    height: 8px !important;
-    border-radius: 4px !important;
-    background: var(--dsc-field) !important;
-    box-shadow: none !important;
+/* the number under a slider reads as its value label, and becomes a field when edited */
+body.discord-theme input.neo-range-input {
+    height: 26px;
+    margin-top: 4px;
+    padding: 0 4px;
+    border: none;
+    border-radius: 3px;
+    background: transparent;
+    color: var(--dsc-header-2);
+    font: 500 14px/26px var(--dsc-font);
+    text-align: center;
+}
+
+body.discord-theme input.neo-range-input:is(:hover, :focus) {
+    background: var(--dsc-field);
+    color: var(--dsc-text);
 }
 
 body.discord-theme input[type="range"]::-webkit-slider-thumb {

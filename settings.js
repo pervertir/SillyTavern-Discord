@@ -103,7 +103,11 @@ function createOverlay() {
     back.className = 'dsc-set-back';
     back.setAttribute('aria-label', t('Back'));
     back.append(icon('back', 20));
-    back.addEventListener('click', () => closeDrawers());
+    // phones: back to the list of sections, as Discord mobile goes back
+    back.addEventListener('click', () => {
+        closeDrawers();
+        document.body.classList.add('dsc-settings-list');
+    });
     const title = document.createElement('h2');
     title.className = 'dsc-set-title';
     main.append(back, title);
