@@ -97,8 +97,8 @@
         cursor: pointer;
     }
 
-    body.discord-theme:not(.dsc-settings-list, .dsc-settings-open, .dsc-friends) .dsc-tab[data-tab="home"],
-    body.discord-theme.dsc-friends:not(.dsc-settings-list, .dsc-settings-open) .dsc-tab[data-tab="friends"],
+    body.discord-theme:not(.dsc-settings-list, .dsc-settings-open, .dsc-activity) .dsc-tab[data-tab="home"],
+    body.discord-theme.dsc-activity:not(.dsc-settings-list, .dsc-settings-open) .dsc-tab[data-tab="notifications"],
     body.discord-theme:is(.dsc-settings-list, .dsc-settings-open) .dsc-tab[data-tab="you"] {
         color: var(--dsc-header);
     }
@@ -127,7 +127,17 @@
         transition: transform 0.25s ease-out;
     }
 
-    body.discord-theme.dsc-m-chat:not(.dsc-settings-list, .dsc-settings-open) #dsc-tabs {
+    body.discord-theme.dsc-m-chat:not(.dsc-settings-list, .dsc-settings-open, .dsc-activity) #dsc-tabs {
+        display: none;
+    }
+
+    /* Notifications keeps the tabs; it sits above them */
+    body.discord-theme.dsc-activity #sheld {
+        bottom: var(--dsc-tabbar-h);
+        height: auto;
+    }
+
+    body.discord-theme.dsc-activity .dsc-head-back {
         display: none;
     }
 

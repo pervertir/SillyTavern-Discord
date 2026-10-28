@@ -15,7 +15,7 @@ const COLLAPSED_KEY = 'dsc-collapsed-categories';
 /** '' while home (direct messages) is picked, else the picked group's id */
 let selectedServer = '';
 let actions = {
-    showFriends: (_on) => {},
+    showFriends: (_on, _tab) => {},
     openSwitcher: (_text) => {},
     openSettings: (_drawerId) => {},
     showChat: () => {},
@@ -163,7 +163,7 @@ function goHome() {
     renderAll();
     const current = getCurrentPlace();
     // home shows your conversations; a group chat isn't one, so Friends takes its place
-    actions.showFriends(!current || !!current.group);
+    actions.showFriends(!current || !!current.group, 'online');
 }
 
 /** Picks a server; with open=true it also opens its newest channel, as Discord returns you there. */
@@ -479,7 +479,7 @@ function onListClick(event) {
     if (nav) {
         if (nav.dataset.nav === 'friends') {
             closeDrawers();
-            actions.showFriends(true);
+            actions.showFriends(true, 'online');
         } else {
             actions.openSettings(nav.dataset.nav === 'nitro' ? 'extensions-settings-button' : 'backgrounds-button');
         }
@@ -646,7 +646,7 @@ function followChat() {
 
 /**
  * @param {object} options
- * @param {(on: boolean) => void} options.showFriends
+ * @param {(on: boolean, tab?: string) => void} options.showFriends
  * @param {(text: string) => void} options.openSwitcher
  * @param {(drawerId: string) => void} options.openSettings
  * @param {() => void} options.showChat

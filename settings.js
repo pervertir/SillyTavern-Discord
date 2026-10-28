@@ -6,30 +6,46 @@ import { showShortcuts } from './shortcuts.js';
 import { closeDrawers, icon, isPhone, openDrawer, t } from './ui.js';
 
 const OVERLAY_ID = 'dsc-settings';
-const LAST_KEY = 'dsc-last-settings';
+const LAST_KEY = 'dsc-last-settings-section';
 
 /** The sections, under Discord's headings; title gives SillyTavern's full name */
+/* A section is a whole menu, or one part of a long one (part: the id of its block), so each
+   page holds one topic as Discord's do. */
 export const SECTIONS = [
     { heading: 'User Settings' },
     { id: 'persona-management-button', label: 'My Account', title: 'Persona Management' },
     { id: 'sys-settings-button', label: 'Connections', title: 'API Connections' },
     { heading: 'App Settings' },
-    { id: 'user-settings-button', label: 'Appearance', title: 'User Settings' },
-    { id: 'ai-config-button', label: 'AI Config', title: 'AI Response Configuration' },
-    { id: 'advanced-formatting-button', label: 'Response Format', title: 'AI Response Formatting' },
-    { id: 'WI-SP-button', label: 'World Info', title: 'World Info' },
+    { id: 'user-settings-button', part: 'UI-Theme-Block', label: 'Appearance', title: 'User Settings: UI Theme' },
+    { id: 'user-settings-button', part: 'power-user-options-block', label: 'Chat', title: 'User Settings: Chat/Message Handling' },
+    { id: 'user-settings-button', part: 'UI-Customization', label: 'Advanced', title: 'User Settings: Character Handling and Miscellaneous' },
     { id: 'backgrounds-button', label: 'Backgrounds', title: 'Backgrounds' },
-    { id: 'extensions-settings-button', label: 'Extensions', title: 'Extensions' },
     { action: 'keybinds', label: 'Keybinds', title: 'Keyboard shortcuts' },
+    { heading: 'AI Settings' },
+    { id: 'ai-config-button', label: 'AI Config', title: 'AI Response Configuration' },
+    { id: 'advanced-formatting-button', part: 'ContextSettings', label: 'Context Template', title: 'AI Response Formatting: Context Template' },
+    { id: 'advanced-formatting-button', part: 'InstructSettingsColumn', label: 'Instruct Template', title: 'AI Response Formatting: Instruct Template' },
+    { id: 'advanced-formatting-button', part: 'SystemPromptColumn', label: 'System Prompt', title: 'AI Response Formatting: System Prompt and more' },
+    { id: 'WI-SP-button', label: 'World Info', title: 'World Info' },
+    { heading: 'Apps' },
+    { id: 'extensions-settings-button', label: 'Extensions', title: 'Extensions' },
 ];
 
-export const SETTINGS_DRAWERS = SECTIONS.filter(x => x.id).map(x => x.id);
+/** The blocks each split menu is made of */
+const PARTS = Object.fromEntries(SECTIONS.filter(x => x.part).reduce((map, { id, part }) => {
+    map.set(id, [...(map.get(id) ?? []), part]);
+    return map;
+}, new Map()));
+
+let currentPart = '';
+
+export const SETTINGS_DRAWERS = [...new Set(SECTIONS.filter(x => x.id).map(x => x.id))];
 
 let actions = { setTheme: (_appearance) => {}, isDark: () => true };
 
-function rememberSection(id) {
+function rememberSection(id, part) {
     try {
-        localStorage.setItem(LAST_KEY, id);
+        localStorage.setItem(LAST_KEY, JSON.stringify({ id, part }));
     } catch {
         // storage can be refused in private windows
     }
@@ -37,10 +53,27 @@ function rememberSection(id) {
 
 function lastSection() {
     try {
-        const id = localStorage.getItem(LAST_KEY);
-        return SETTINGS_DRAWERS.includes(id) ? id : SETTINGS_DRAWERS[0];
+        const { id, part } = JSON.parse(localStorage.getItem(LAST_KEY) || '{}');
+        if (id && SECTIONS.some(x => x.id === id && (x.part ?? '') === (part ?? ''))) {
+            return { id, part: part ?? '' };
+        }
     } catch {
-        return SETTINGS_DRAWERS[0];
+        // fall through to the first section
+    }
+    return { id: SETTINGS_DRAWERS[0], part: '' };
+}
+
+/** Shows one block of a split menu and hides its others; no part shows them all. */
+function showPart(drawerId, part) {
+    currentPart = part;
+    for (const [id, parts] of Object.entries(PARTS)) {
+        for (const block of parts) {
+            document.getElementById(block)?.classList.toggle('dsc-part-hidden', id === drawerId && !!part && block !== part);
+        }
+    }
+    // a part starts at its top
+    if (drawerId) {
+        document.querySelector(`#${drawerId} > .drawer-content`)?.scrollTo({ top: 0 });
     }
 }
 
@@ -78,7 +111,8 @@ function createOverlay() {
         item.title = t(section.title);
         if (section.id) {
             item.dataset.drawer = section.id;
-            item.addEventListener('click', () => openSection(section.id));
+            item.dataset.part = section.part ?? '';
+            item.addEventListener('click', () => openSection(section.id, section.part ?? ''));
         } else if (section.action === 'keybinds') {
             item.addEventListener('click', () => showShortcuts());
         }
@@ -133,7 +167,8 @@ function createOverlay() {
             return;
         }
         // leave Escape to dialogs and menus that sit above the settings
-        if (document.querySelector('dialog.popup[open]') || !document.getElementById('dsc-menu')?.hidden) {
+        const menu = document.getElementById('dsc-menu');
+        if (document.querySelector('dialog.popup[open]') || (menu && !menu.hidden)) {
             return;
         }
         event.preventDefault();
@@ -154,11 +189,13 @@ function isOpen() {
     return body.contains('dsc-settings-open') || body.contains('dsc-settings-list');
 }
 
-/** Opens one section (one of SillyTavern's menus). */
-export function openSection(drawerId) {
+/** Opens one section: one of SillyTavern's menus, or one part of it. */
+export function openSection(drawerId, part = '') {
     document.body.classList.remove('dsc-settings-list');
-    rememberSection(drawerId);
+    rememberSection(drawerId, part);
+    showPart(drawerId, part);
     openDrawer(drawerId);
+    refreshSettings();
 }
 
 /** Opens the settings: on a section, or (no section given) where you left them. On phones
@@ -170,11 +207,17 @@ export function openSettings(drawerId = '') {
         refreshSettings();
         return;
     }
-    openSection(drawerId || lastSection());
+    if (drawerId) {
+        openSection(drawerId, SECTIONS.find(x => x.id === drawerId && x.part)?.part ?? '');
+        return;
+    }
+    const last = lastSection();
+    openSection(last.id, last.part);
 }
 
 export function closeSettings() {
     document.body.classList.remove('dsc-settings-list');
+    showPart('', '');
     closeDrawers();
     refreshSettings();
 }
@@ -185,9 +228,15 @@ export function refreshSettings() {
     if (!overlay) {
         return;
     }
-    const open = SECTIONS.find(section => section.id && document.getElementById(section.id)?.classList.contains('dsc-open'));
+    const openId = SETTINGS_DRAWERS.find(id => document.getElementById(id)?.classList.contains('dsc-open'));
+    // closed some other way (SillyTavern's own Escape, a shortcut): show whole menus again
+    if (!openId && currentPart) {
+        showPart('', '');
+    }
+    const open = SECTIONS.find(section => section.id === openId && (section.part ?? '') === currentPart)
+        ?? SECTIONS.find(section => section.id === openId);
     for (const item of overlay.querySelectorAll('.dsc-set-item[data-drawer]')) {
-        item.classList.toggle('dsc-selected', item.dataset.drawer === open?.id);
+        item.classList.toggle('dsc-selected', item.dataset.drawer === open?.id && item.dataset.part === (open?.part ?? ''));
     }
     overlay.querySelector('.dsc-set-title').textContent = open ? t(open.label) : '';
     refreshThemeItem();

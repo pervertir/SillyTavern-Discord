@@ -5,7 +5,7 @@
 import { initCompose, openExtensionsMenu } from './compose.js';
 import { getCurrentPlace, initData, scheduleRefresh } from './data.js';
 import { refreshTitle, setDisguise } from './disguise.js';
-import { initHeader, openInbox, refreshHeader, togglePinCurrent } from './header.js';
+import { initHeader, openInbox, refreshHeader, setFriendsTab, togglePinCurrent } from './header.js';
 import { initMessages, labelMessages } from './messages.js';
 import { initMonograms } from './monograms.js';
 import { initSettings, openSettings, refreshSettings, SETTINGS_DRAWERS } from './settings.js';
@@ -106,8 +106,11 @@ function toggleAside() {
     }
 }
 
-/** Friends stands in for the chat (on = true), or the chat comes back. */
-function showFriends(on) {
+/** Friends stands in for the chat (on = true), or the chat comes back; tab picks its tab. */
+function showFriends(on, tab = '') {
+    if (tab) {
+        setFriendsTab(tab);
+    }
     document.body.classList.toggle('dsc-friends', !!on);
     if (on) {
         document.body.classList.add('dsc-m-chat');
@@ -183,7 +186,7 @@ function trackDrawers() {
     update();
 }
 
-/** Bottom tabs on phones: Home, Friends and You, as Discord mobile has. */
+/** Bottom tabs on phones: Home, Notifications and You, as Discord mobile has. */
 function createPhoneTabs() {
     if (document.getElementById('dsc-tabs')) {
         return;
@@ -210,9 +213,10 @@ function createPhoneTabs() {
             document.body.classList.remove('dsc-settings-list', 'dsc-m-chat', 'dsc-friends');
             refreshHeader();
         }),
-        tab('friends', 'Friends', 'friends', () => {
+        tab('notifications', 'Notifications', 'bell', () => {
             closeDrawers();
             document.body.classList.remove('dsc-settings-list');
+            setFriendsTab('activity');
             showFriends(true);
         }),
         tab('you', 'You', 'gear', () => openSettings('')),

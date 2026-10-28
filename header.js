@@ -2,6 +2,7 @@
 // panel or member list on the right, and the Friends page that stands in when no chat is open.
 
 import { channelLabel, getCurrentPlace, getDirectMessages, getGroup, isPinned, onDataChange, openCharacter, togglePin } from './data.js';
+import { formatListTime } from './messages.js';
 import { isPlaceholder, monogramizeAll } from './monograms.js';
 import { SHORTCUTS, showShortcuts, withShortcut } from './shortcuts.js';
 import { openCharacterPanel, selectServer } from './sidebar.js';
@@ -18,7 +19,8 @@ let actions = {
     back: () => {},
 };
 
-/** Which Friends tab is showing: online (characters you talk to), all, or add */
+/** Which Friends tab is showing: online (characters you talk to), all, add, or activity (the
+    phone's Notifications tab: recent messages) */
 let friendsTab = 'online';
 let friendsFilter = '';
 
@@ -183,10 +185,14 @@ export function refreshHeader() {
     const topic = head.querySelector('.dsc-head-topic');
     glyph.replaceChildren();
     topic.textContent = '';
+    body.toggle('dsc-activity', friends && friendsTab === 'activity');
     if (body.contains('dsc-chars-open')) {
         // the character panel stands in for the chat: Discord's Discover page
         glyph.append(icon('compass'));
         name.textContent = t('Discover');
+    } else if (friends && friendsTab === 'activity') {
+        glyph.append(icon('bell'));
+        name.textContent = t('Notifications');
     } else if (friends) {
         glyph.append(icon('friends'));
         name.textContent = t('Friends');
@@ -611,6 +617,10 @@ function renderFriends() {
         list.replaceChildren();
         return;
     }
+    if (friendsTab === 'activity') {
+        renderActivity(list, heading);
+        return;
+    }
     const { characters } = SillyTavern.getContext();
     const needle = friendsFilter.trim().toLowerCase();
     let people = friendsTab === 'online'
@@ -641,6 +651,23 @@ function renderFriends() {
     };
     list.replaceChildren();
     draw(0);
+}
+
+/** Recent messages, newest first: who wrote, what, and when. */
+function renderActivity(list, heading) {
+    const dms = getDirectMessages().filter(dm => !dm.pinned || dm.preview).sort((a, b) => b.lastMes - a.lastMes);
+    heading.textContent = t('Recent Activity');
+    list.replaceChildren(...dms.map((dm) => {
+        const row = friendRow(dm.character);
+        row.classList.add('dsc-activity-row');
+        row.querySelector('.dsc-friend-sub').textContent = dm.preview;
+        const time = document.createElement('span');
+        time.className = 'dsc-activity-time';
+        time.textContent = formatListTime(dm.lastMes);
+        row.querySelector('.dsc-friend-tools').replaceChildren(time);
+        return row;
+    }));
+    monogramizeAll(list, '.dsc-avatar img', img => img.parentElement?.dataset.name ?? '');
 }
 
 /**

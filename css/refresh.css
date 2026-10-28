@@ -587,3 +587,12 @@ body.discord-theme #avatar_div_div {
     border-color: var(--dsc-surface);
     background: var(--dsc-surface);
 }
+
+/* while the settings are open the title bar names them */
+body.discord-theme:is(.dsc-settings-open, .dsc-settings-list) .dsc-tb-title > * {
+    display: none;
+}
+
+body.discord-theme:is(.dsc-settings-open, .dsc-settings-list) .dsc-tb-title::after {
+    content: var(--dsc-settings-title, 'User Settings');
+}

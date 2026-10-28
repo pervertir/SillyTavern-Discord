@@ -1116,3 +1116,21 @@ body.discord-theme.dsc-chars-open .dsc-head-tool:is(.dsc-for-dm, .dsc-for-channe
 body.discord-theme.dsc-chars-open :is(.dsc-head-tabs, .dsc-head-status, .dsc-head-topic, .dsc-head-search) {
     display: none !important;
 }
+
+/* Notifications (phones): recent messages with their time */
+body.discord-theme.dsc-activity :is(.dsc-head-tabs, .dsc-fr-search) {
+    display: none !important;
+}
+
+body.discord-theme .dsc-activity-row .dsc-friend-sub {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.discord-theme .dsc-activity-time {
+    flex: none;
+    color: var(--dsc-muted);
+    font-size: 12px;
+    font-weight: 500;
+}

@@ -391,3 +391,12 @@ body.discord-theme #HotSwapWrapper {
 body.discord-theme #rm_group_chats_block .inline-drawer {
     background: var(--dsc-side);
 }
+
+/* one part of a split menu at a time (settings.js) */
+body.discord-theme .dsc-part-hidden {
+    display: none !important;
+}
+
+body.discord-theme :is(#user-settings-block-content, #AdvancedFormatting > .flex-container.spaceEvenly) > :not(.dsc-part-hidden) {
+    border-top: none;
+}
