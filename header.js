@@ -177,7 +177,7 @@ export function refreshHeader() {
     const hasChat = !!(group || character) && !!SillyTavern.getContext().getCurrentChatId();
     body.toggle('dsc-no-chat', !hasChat);
     body.toggle('dsc-channel', !!group);
-    const friends = body.contains('dsc-friends') || !hasChat;
+    const friends = !body.contains('dsc-discover') && (body.contains('dsc-friends') || !hasChat);
     body.toggle('dsc-friends-mode', friends);
 
     const glyph = head.querySelector('.dsc-head-glyph');
@@ -186,8 +186,8 @@ export function refreshHeader() {
     glyph.replaceChildren();
     topic.textContent = '';
     body.toggle('dsc-activity', friends && friendsTab === 'activity');
-    if (body.contains('dsc-chars-open')) {
-        // the character panel stands in for the chat: Discord's Discover page
+    if (body.contains('dsc-chars-open') || body.contains('dsc-discover')) {
+        // the character panel or Discover stands in for the chat
         glyph.append(icon('compass'));
         name.textContent = t('Discover');
     } else if (friends && friendsTab === 'activity') {

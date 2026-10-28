@@ -1,0 +1,335 @@
+/* Discover (discover.js): a hero with search and quick actions, category pills, then cards in
+   Discord's discovery style (banner, icon over its edge, name, two lines, who's online). */
+
+#dsc-discover {
+    display: none;
+}
+
+body.discord-theme.dsc-discover :is(#chat, #form_sheld, #dsc-friends, #dsc-aside) {
+    display: none !important;
+}
+
+body.discord-theme.dsc-discover #dsc-discover {
+    display: block;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 24px 40px;
+}
+
+body.discord-theme.dsc-discover .dsc-head-tool:is(.dsc-for-dm, .dsc-for-channel, .dsc-for-chat),
+body.discord-theme.dsc-discover :is(.dsc-head-tabs, .dsc-head-status, .dsc-head-topic, .dsc-head-search) {
+    display: none !important;
+}
+
+body.discord-theme .dsc-dv-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin: 24px 0 0;
+    padding: 48px 24px 32px;
+    border-radius: 12px;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(235, 69, 159, 0.55), transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(87, 242, 135, 0.35), transparent 45%),
+        linear-gradient(135deg, #5865f2, #3c45a5);
+    color: #ffffff;
+    text-align: center;
+}
+
+body.discord-theme .dsc-dv-hero h1 {
+    margin: 0;
+    font: 800 28px/34px var(--dsc-font-display);
+}
+
+body.discord-theme .dsc-dv-hero p {
+    margin: 0 0 12px;
+    font-size: 16px;
+    line-height: 20px;
+    opacity: 0.9;
+}
+
+body.discord-theme .dsc-dv-search {
+    display: flex;
+    align-items: center;
+    width: min(560px, 100%);
+    height: 44px;
+    padding: 0 14px 0 0;
+    box-sizing: border-box;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #4e5058;
+}
+
+body.discord-theme #dsc-discover .dsc-dv-search input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    margin: 0;
+    padding: 0 14px;
+    border: none;
+    outline: none;
+    background: none;
+    border-radius: 0;
+    color: #060607;
+    font: 500 16px/44px var(--dsc-font);
+    box-shadow: none;
+}
+
+body.discord-theme .dsc-dv-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+body.discord-theme .dsc-dv-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 36px;
+    padding: 0 14px;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.22);
+    color: #ffffff;
+    font: 500 14px/16px var(--dsc-font);
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-dv-action:hover {
+    background: rgba(0, 0, 0, 0.35);
+}
+
+body.discord-theme .dsc-dv-action.dsc-dv-primary {
+    border-color: transparent;
+    background: #ffffff;
+    color: #5865f2;
+}
+
+body.discord-theme .dsc-dv-tabs {
+    display: flex;
+    gap: 8px;
+    margin: 24px 0 8px;
+}
+
+body.discord-theme .dsc-dv-tab {
+    min-height: 32px;
+    padding: 4px 12px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    color: var(--dsc-header-2);
+    font: 500 16px/20px var(--dsc-font);
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-dv-tab:hover {
+    background: var(--dsc-hover);
+    color: var(--dsc-header);
+}
+
+body.discord-theme .dsc-dv-tab.dsc-selected {
+    background: var(--dsc-selected);
+    color: var(--dsc-header);
+}
+
+body.discord-theme .dsc-dv-heading {
+    margin: 16px 0 12px;
+    color: var(--dsc-header);
+    font: 700 20px/24px var(--dsc-font-display);
+}
+
+body.discord-theme .dsc-dv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+    gap: 16px;
+}
+
+body.discord-theme .dsc-dv-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
+    border: 1px solid var(--dsc-border-muted);
+    border-radius: 12px;
+    background: var(--dsc-surface);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    --dsc-ring: var(--dsc-surface);
+}
+
+body.discord-theme .dsc-dv-card:hover,
+body.discord-theme .dsc-dv-card:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: var(--dsc-elevation-high);
+    outline: none;
+}
+
+body.discord-theme .dsc-dv-banner {
+    flex: none;
+    height: 136px;
+    background: linear-gradient(135deg, var(--dsc-blurple), #eb459f);
+    overflow: hidden;
+}
+
+body.discord-theme .dsc-dv-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+}
+
+body.discord-theme .dsc-dv-icon {
+    position: absolute;
+    top: 104px;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--dsc-surface);
+    border-radius: 16px;
+    background: var(--dsc-surface);
+    overflow: hidden;
+}
+
+body.discord-theme .dsc-dv-icon .dsc-avatar {
+    width: 100%;
+    height: 100%;
+}
+
+body.discord-theme .dsc-dv-icon .dsc-avatar,
+body.discord-theme .dsc-dv-icon .dsc-avatar img {
+    border-radius: 12px;
+}
+
+body.discord-theme .dsc-dv-acronym {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background: var(--dsc-blurple);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+body.discord-theme .dsc-dv-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 28px 16px 16px;
+}
+
+body.discord-theme .dsc-dv-name {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 0 4px;
+    overflow: hidden;
+    color: var(--dsc-header);
+    font: 600 16px/20px var(--dsc-font-display);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.discord-theme .dsc-dv-name .dsc-ico {
+    color: var(--dsc-yellow);
+}
+
+body.discord-theme .dsc-dv-about {
+    display: -webkit-box;
+    flex: 1;
+    margin: 0 0 12px;
+    overflow: hidden;
+    color: var(--dsc-header-2);
+    font-size: 14px;
+    line-height: 18px;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+body.discord-theme .dsc-dv-foot {
+    display: flex;
+    gap: 16px;
+    color: var(--dsc-muted);
+    font-size: 12px;
+    line-height: 16px;
+}
+
+body.discord-theme .dsc-dv-foot span::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 4px;
+    border-radius: 50%;
+    background: var(--dsc-muted);
+}
+
+body.discord-theme .dsc-dv-foot .dsc-dv-online::before {
+    background: var(--dsc-online);
+}
+
+body.discord-theme .dsc-dv-more {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-dv-card:is(:hover, :focus-within) .dsc-dv-more {
+    display: flex;
+}
+
+body.discord-theme .dsc-dv-sentinel {
+    height: 1px;
+}
+
+/* the rail's compass lights up while Discover is shown */
+body.discord-theme .dsc-guild-action.dsc-selected .dsc-guild-icon {
+    background: var(--dsc-green);
+    color: #ffffff;
+}
+
+@media screen and (max-width: 1000px) {
+    body.discord-theme.dsc-discover #dsc-discover {
+        padding: 0 12px 24px;
+    }
+
+    body.discord-theme .dsc-dv-hero {
+        margin-top: 12px;
+        padding: 28px 16px 20px;
+    }
+
+    body.discord-theme .dsc-dv-hero h1 {
+        font-size: 22px;
+        line-height: 28px;
+    }
+
+    body.discord-theme .dsc-dv-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* no picture of their own: Discord's colored banner in place of the default silhouette */
+body.discord-theme .dsc-dv-banner.dsc-dv-plain img {
+    display: none;
+}

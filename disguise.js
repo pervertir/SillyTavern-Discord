@@ -50,8 +50,9 @@ export function refreshTitle() {
         return;
     }
     const where = describe();
-    const friends = document.body.classList.contains('dsc-friends');
-    document.title = [APP, ...(friends ? [t('Friends')] : where.title)].join(' | ');
+    const body = document.body.classList;
+    const page = body.contains('dsc-discover') ? [t('Discover')] : body.contains('dsc-friends') ? [t('Friends')] : where.title;
+    document.title = [APP, ...page].join(' | ');
     const textarea = document.getElementById('send_textarea');
     if (textarea) {
         const text = where.box ? `${t('Message')} ${where.box}` : t('Message');

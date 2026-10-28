@@ -3,6 +3,7 @@
 // and quick switcher) and exposes a small settings panel.
 
 import { initCompose, openExtensionsMenu } from './compose.js';
+import { hideDiscover, initDiscover, showDiscover } from './discover.js';
 import { initEditor, refreshEditor } from './editor.js';
 import { getCurrentPlace, initData, scheduleRefresh } from './data.js';
 import { refreshTitle, setDisguise } from './disguise.js';
@@ -109,6 +110,7 @@ function toggleAside() {
 
 /** Friends stands in for the chat (on = true), or the chat comes back; tab picks its tab. */
 function showFriends(on, tab = '') {
+    hideDiscover();
     if (tab) {
         setFriendsTab(tab);
     }
@@ -123,6 +125,7 @@ function showFriends(on, tab = '') {
 
 /** Phones show one pane at a time: the lists, or the chat. */
 function showChat() {
+    hideDiscover();
     document.body.classList.remove('dsc-friends');
     if (isPhone()) {
         document.body.classList.add('dsc-m-chat');
@@ -132,12 +135,23 @@ function showChat() {
     markCurrent();
 }
 
+/** Discover in the chat's place (the rail's compass). */
+function openDiscover() {
+    closeDrawers();
+    document.body.classList.remove('dsc-friends');
+    if (isPhone()) {
+        document.body.classList.add('dsc-m-chat');
+    }
+    showDiscover();
+}
+
 function back() {
     document.body.classList.remove('dsc-m-chat');
 }
 
 function onChatChanged(chatId) {
     if (chatId) {
+        hideDiscover();
         document.body.classList.remove('dsc-friends');
         if (isPhone() && !document.body.classList.contains('dsc-booting')) {
             document.body.classList.add('dsc-m-chat');
@@ -276,12 +290,13 @@ async function init() {
     initTooltips();
 
     const listLoaded = initData({ max: () => getSettings().recentMax, opened: showChat });
-    initSidebar({ showFriends, openSwitcher, openSettings, showChat });
+    initSidebar({ showFriends, openSwitcher, openSettings, showChat, showDiscover: openDiscover });
     initHeader({ toggleAside, openSwitcher, back });
     initSettings({ setTheme, isDark: () => isDark() });
     initSwitcher({ picked: () => document.body.classList.remove('dsc-friends') });
     initCompose();
     initEditor();
+    initDiscover({ shown: () => { refreshHeader(); refreshTitle(); markCurrent(); } });
     createPhoneTabs();
     trackDrawers();
     initMessages();

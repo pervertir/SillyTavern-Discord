@@ -19,6 +19,7 @@ let actions = {
     openSwitcher: (_text) => {},
     openSettings: (_drawerId) => {},
     showChat: () => {},
+    showDiscover: () => {},
 };
 
 export function getSelectedServer() {
@@ -84,7 +85,7 @@ function createRail() {
 
     home.querySelector('button').addEventListener('click', goHome);
     add.querySelector('button').addEventListener('click', () => openCharacterPanel('rm_button_group_chats'));
-    discover.querySelector('button').addEventListener('click', () => openCharacterPanel('rm_button_characters'));
+    discover.querySelector('button').addEventListener('click', () => actions.showDiscover());
 
     list.addEventListener('click', (event) => {
         const item = /** @type {HTMLElement} */ (event.target).closest('.dsc-server');
@@ -119,9 +120,11 @@ function renderRail() {
         list.dataset.signature = signature;
         list.replaceChildren(...servers.map(buildServer));
     }
-    rail.querySelector('.dsc-home').classList.toggle('dsc-selected', !selectedServer);
+    const discovering = document.body.classList.contains('dsc-discover');
+    rail.querySelector('.dsc-home').classList.toggle('dsc-selected', !selectedServer && !discovering);
+    rail.querySelector('.dsc-discover').classList.toggle('dsc-selected', discovering);
     for (const item of list.querySelectorAll('.dsc-server')) {
-        item.classList.toggle('dsc-selected', item.dataset.group === selectedServer);
+        item.classList.toggle('dsc-selected', item.dataset.group === selectedServer && !discovering);
         // a server with the open chat in it keeps a small pill, as one with unread messages does
         item.classList.toggle('dsc-unread', !!current?.group && item.dataset.group === String(current.group) && item.dataset.group !== selectedServer);
     }
@@ -435,12 +438,14 @@ function renderSide() {
 
 /** Highlights the open chat and the page shown (Friends, Nitro, Shop). */
 export function markCurrent() {
+    renderRail();
     const side = document.getElementById(SIDE_ID);
     if (!side) {
         return;
     }
     const body = document.body.classList;
-    const page = body.contains('dsc-chars-open') ? 'friends'
+    const page = body.contains('dsc-discover') ? 'discover'
+        : body.contains('dsc-chars-open') ? 'friends'
         : isDrawerOpen('extensions-settings-button') ? 'nitro'
             : isDrawerOpen('backgrounds-button') ? 'shop'
                 : body.contains('dsc-friends') || body.contains('dsc-no-chat') ? 'friends' : '';
@@ -650,6 +655,7 @@ function followChat() {
  * @param {(text: string) => void} options.openSwitcher
  * @param {(drawerId: string) => void} options.openSettings
  * @param {() => void} options.showChat
+ * @param {() => void} options.showDiscover
  */
 export function initSidebar(options) {
     actions = { ...actions, ...options };
