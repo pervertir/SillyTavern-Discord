@@ -67,10 +67,10 @@ function applySettings() {
     body.toggle(BODY_CLASS, on);
     document.documentElement.classList.toggle('dsc-html', on);
     body.toggle('dsc-light', on && !isDark(settings));
-    body.toggle('dsc-aside-on', !!settings.aside);
-    body.toggle('dsc-compact', settings.messageDisplay === 'compact');
-    body.toggle('dsc-presence', !!settings.presence);
-    body.toggle('dsc-times', !!settings.discordTimes);
+    body.toggle('dsc-aside-on', on && !!settings.aside);
+    body.toggle('dsc-compact', on && settings.messageDisplay === 'compact');
+    body.toggle('dsc-presence', on && !!settings.presence);
+    body.toggle('dsc-times', on && !!settings.discordTimes);
     setDisguise(on);
     refreshHeader();
 }
