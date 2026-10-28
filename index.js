@@ -11,6 +11,7 @@ import { getCurrentPlace, initData, scheduleRefresh } from './data.js';
 import { refreshTitle, setDisguise } from './disguise.js';
 import { initHeader, openInbox, refreshHeader, refreshPresenceViews, setFriendsTab, togglePinCurrent } from './header.js';
 import { initPresence } from './presence.js';
+import { initSounds, play } from './sounds.js';
 import { initMessages, labelMessages } from './messages.js';
 import { initMonograms } from './monograms.js';
 import { initSettings, openSettings, refreshSettings, SETTINGS_DRAWERS } from './settings.js';
@@ -44,6 +45,15 @@ const defaultSettings = Object.freeze({
     presenceSim: true,
     /** Seconds before someone away comes online to reply */
     wakeDelay: 3,
+    /** Sounds, as Discord's Notifications > Sounds: all on or off, volume 0-100, and each kind */
+    sounds: true,
+    soundVolume: 60,
+    soundMessage: true,
+    soundOnline: true,
+    soundVoice: true,
+    /** The user panel's mute and deafen */
+    muted: false,
+    deafened: false,
     recentMax: 50,
 });
 
@@ -310,6 +320,11 @@ async function renderSettingsPanel() {
     const times = byId('dsc_times');
     const recentMax = byId('dsc_recent_max');
     const presenceSim = byId('dsc_presence_sim');
+    const sounds = byId('dsc_sounds');
+    const soundVolume = byId('dsc_sound_volume');
+    const soundMessage = byId('dsc_sound_message');
+    const soundOnline = byId('dsc_sound_online');
+    const soundVoice = byId('dsc_sound_voice');
     const wakeDelay = byId('dsc_wake_delay');
 
     enabled.checked = settings.enabled;
@@ -321,6 +336,11 @@ async function renderSettingsPanel() {
     times.checked = settings.discordTimes;
     recentMax.value = String(settings.recentMax);
     presenceSim.checked = settings.presenceSim;
+    sounds.checked = settings.sounds;
+    soundVolume.value = String(settings.soundVolume);
+    soundMessage.checked = settings.soundMessage;
+    soundOnline.checked = settings.soundOnline;
+    soundVoice.checked = settings.soundVoice;
     wakeDelay.value = String(settings.wakeDelay);
 
     const bind = (element, key, read, after) => {
@@ -338,6 +358,11 @@ async function renderSettingsPanel() {
     bind(display, 'messageDisplay', () => display.value);
     bind(presence, 'presence', () => presence.checked);
     bind(times, 'discordTimes', () => times.checked, () => labelMessages());
+    bind(sounds, 'sounds', () => sounds.checked);
+    bind(soundVolume, 'soundVolume', () => Number(soundVolume.value), () => play('message'));
+    bind(soundMessage, 'soundMessage', () => soundMessage.checked);
+    bind(soundOnline, 'soundOnline', () => soundOnline.checked);
+    bind(soundVoice, 'soundVoice', () => soundVoice.checked);
     bind(presenceSim, 'presenceSim', () => presenceSim.checked, () => refreshPresenceViews());
     bind(wakeDelay, 'wakeDelay', () => Math.min(30, Math.max(0, Number(wakeDelay.value) || 0)));
     bind(recentMax, 'recentMax', () => Math.min(500, Math.max(5, Number(recentMax.value) || defaultSettings.recentMax)), () => scheduleRefresh());
@@ -364,6 +389,7 @@ async function init() {
     createPhoneTabs();
     trackDrawers();
     initMessages();
+    initSounds({ settings: getSettings, save: saveSettings });
     initPresence({
         enabled: () => !!getSettings().enabled && !!getSettings().presenceSim,
         delay: () => getSettings().wakeDelay,

@@ -10,6 +10,7 @@
 // regenerations and continues never wait.
 
 import { getDirectMessages, onDataChange } from './data.js';
+import { play } from './sounds.js';
 import { t } from './ui.js';
 
 const STORE_KEY = 'dsc-presence-v1';
@@ -207,10 +208,14 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 /** Brings a character online if needed (waiting the set delay), then shows them typing. */
 async function wake(avatar, name) {
-    if (options.enabled() && statusOf(avatar) !== 'online') {
+    const away = options.enabled() && statusOf(avatar) !== 'online';
+    if (away) {
         await delay(Math.max(0, Number(options.delay()) || 0) * 1000);
     }
     touch(avatar);
+    if (away) {
+        play('online');
+    }
     showTyping(name);
 }
 
