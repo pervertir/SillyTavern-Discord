@@ -150,6 +150,42 @@ export function embedAll() {
     document.querySelectorAll('#chat > .mes').forEach(mes => embedMessage(/** @type {HTMLElement} */ (mes)));
 }
 
+/** SillyTavern's "External media has been blocked" notice contradicts the picture the theme
+    shows, so while pictures are on that one notice is cleared as it appears. */
+function hideBlockedNotice() {
+    const title = SillyTavern.getContext().translate('External media has been blocked');
+    const watch = (container) => new MutationObserver(() => {
+        if (!enabled()) {
+            return;
+        }
+        for (const toast of container.querySelectorAll('.toast')) {
+            if (toast.querySelector('.toast-title')?.textContent.trim() === title) {
+                toast.remove();
+            }
+        }
+    }).observe(container, { childList: true });
+    const existing = document.getElementById('toast-container');
+    if (existing) {
+        watch(existing);
+        return;
+    }
+    // toastr makes its container with the first toast; watch the page until then
+    const wait = new MutationObserver(() => {
+        const container = document.getElementById('toast-container');
+        if (container) {
+            wait.disconnect();
+            watch(container);
+            // the first toast came with the container
+            for (const toast of container.querySelectorAll('.toast')) {
+                if (enabled() && toast.querySelector('.toast-title')?.textContent.trim() === title) {
+                    toast.remove();
+                }
+            }
+        }
+    });
+    wait.observe(document.body, { childList: true });
+}
+
 /** @param {{enabled: () => boolean}} options enabled: the theme is on and \"Show image links as pictures\" is set */
 export function initEmbeds(options) {
     enabled = options.enabled;
@@ -181,5 +217,6 @@ export function initEmbeds(options) {
             closeViewer();
         }
     }, true);
+    hideBlockedNotice();
     setTimeout(embedAll, 0);
 }
