@@ -1229,3 +1229,17 @@ body.discord-theme .dsc-fr-empty {
     line-height: 22px;
     text-align: center;
 }
+
+/* Code on light themes: SillyTavern's highlight colors are made for dark backgrounds */
+body.discord-theme.dsc-light #chat .mes .mes_text pre code,
+body.discord-theme.dsc-light #chat .mes .mes_text pre code.hljs {
+    color: var(--dsc-text);
+    background: none;
+}
+
+body.discord-theme.dsc-light #chat .mes .mes_text pre :is(.hljs-keyword, .hljs-selector-tag, .hljs-literal) { color: #c41a78; }
+body.discord-theme.dsc-light #chat .mes .mes_text pre :is(.hljs-string, .hljs-regexp, .hljs-addition) { color: #0b7a42; }
+body.discord-theme.dsc-light #chat .mes .mes_text pre :is(.hljs-number, .hljs-attr, .hljs-attribute, .hljs-variable) { color: #0b5cad; }
+body.discord-theme.dsc-light #chat .mes .mes_text pre :is(.hljs-title, .hljs-function, .hljs-class .hljs-title, .hljs-section) { color: #6f42c1; }
+body.discord-theme.dsc-light #chat .mes .mes_text pre :is(.hljs-comment, .hljs-quote) { color: #6a737d; }
+body.discord-theme.dsc-light #chat .mes .mes_text pre :is(.hljs-built_in, .hljs-type, .hljs-params) { color: #b35900; }

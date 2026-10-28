@@ -29,6 +29,7 @@ A SillyTavern extension that makes SillyTavern look and work like Discord after 
 ![Friends](.github/friends.png)
 ![Settings](.github/settings.png)
 ![Light](.github/light.png)
+![A Nitro color theme (Chroma Glow)](.github/gradient.png)
 ![On a phone](.github/phone.png)
 
 ## Install

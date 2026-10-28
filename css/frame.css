@@ -27,10 +27,23 @@
 
 body.discord-theme #top-bar,
 body.discord-theme #sheldheader,
-body.discord-theme #bg1,
-body.discord-theme #bg_custom,
+body.discord-theme:not(.dsc-show-bg) :is(#bg1, #bg_custom),
 body.discord-theme #version_display {
     display: none;
+}
+
+/* the chat background, when shown, sits behind a see-through chat */
+body.discord-theme.dsc-show-bg :is(#bg1, #bg_custom) {
+    z-index: 0;
+}
+
+body.discord-theme.dsc-show-bg #sheld,
+body.discord-theme.dsc-show-bg :is(#chat, #form_sheld, #dsc-head) {
+    background: color-mix(in srgb, var(--dsc-chat) 72%, transparent);
+}
+
+body.discord-theme.dsc-show-bg :is(#chat, #form_sheld, #dsc-head) {
+    background: transparent;
 }
 
 body.discord-theme ::selection {

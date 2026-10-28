@@ -104,4 +104,17 @@ values) and Discord's current client. Status: ✅ right · ❌ wrong (defect) �
 | Phone: tap the chat title | ❌→🔧 | Did nothing (no side panel); now opens the profile sheet | |
 | 1001–1100px windows | ❌→🔧 | Profile panel hidden, so avatar clicks did nothing; now the sheet | |
 | Tablet 768px, switch at 1000/1001px, 1280px | ✅ | No overflow; layout swaps cleanly | |
-## Batch 7: final sweep — pending
+## Batch 7: final sweep
+
+| Check | Status | Notes |
+|---|---|---|
+| Dark, Light, Onyx, Chroma Glow on desktop; phone | ✅ | qa/after (local, gitignored) |
+| Light theme code blocks | ❌→🔧 | Highlight colors were for dark backgrounds (text vanished); Discord's light code colors added |
+| 1,000-message chat | ✅ | Opens in 0.36s (100 shown, 50 replies split) |
+| Streaming (300 updates) | ✅ | Style 46ms / layout 95ms with the theme, vs 133ms / 506ms without it |
+| Scrolling the loaded chat | ✅ | Style 198ms, layout 40ms over the whole scroll |
+| Widths 768, 1000, 1001, 1100, 1280 | ✅ | No overflow |
+| Chat background image | ❌→🔧 | Always hidden; now a switch shows it behind a see-through chat |
+| Theme off restores SillyTavern exactly | ✅ | Compared with a fresh load |
+| Console | ✅ | No errors in any capture |
+| README screenshots | ✅ | Retaken from the clean profile |

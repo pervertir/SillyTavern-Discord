@@ -63,6 +63,8 @@ const defaultSettings = Object.freeze({
     groupGap: 16,
     /** 24-hour clock in message times */
     clock24: false,
+    /** SillyTavern's chat background behind the messages (hidden by default, as Discord has none) */
+    showBackground: false,
     /** Long replies show as several short messages */
     splitReplies: true,
     /** Your own status: online, idle, dnd or invisible */
@@ -118,6 +120,7 @@ function applySettings() {
     body.toggle('dsc-compact', on && settings.messageDisplay === 'compact');
     body.toggle('dsc-presence', on && !!settings.presence);
     body.toggle('dsc-times', on && !!settings.discordTimes);
+    body.toggle('dsc-show-bg', on && !!settings.showBackground);
     document.body.style.setProperty('--dsc-chat-font', `${Number(settings.chatFont) || 16}px`);
     document.body.style.setProperty('--dsc-group-gap', `${Number.isFinite(Number(settings.groupGap)) ? Number(settings.groupGap) : 16}px`);
     setDisguise(on);
@@ -340,6 +343,7 @@ async function renderSettingsPanel() {
     const sounds = byId('dsc_sounds');
     const desktop = byId('dsc_desktop_notifications');
     const split = byId('dsc_split');
+    const showBackground = byId('dsc_show_bg');
     const soundVolume = byId('dsc_sound_volume');
     const soundMessage = byId('dsc_sound_message');
     const soundOnline = byId('dsc_sound_online');
@@ -358,6 +362,7 @@ async function renderSettingsPanel() {
     sounds.checked = settings.sounds;
     desktop.checked = settings.desktopNotifications;
     split.checked = settings.splitReplies;
+    showBackground.checked = settings.showBackground;
     soundVolume.value = String(settings.soundVolume);
     soundMessage.checked = settings.soundMessage;
     soundOnline.checked = settings.soundOnline;
@@ -380,12 +385,14 @@ async function renderSettingsPanel() {
     bind(presence, 'presence', () => presence.checked);
     bind(times, 'discordTimes', () => times.checked, () => labelMessages());
     bind(sounds, 'sounds', () => sounds.checked);
+    bind(showBackground, 'showBackground', () => showBackground.checked);
     bind(split, 'splitReplies', () => split.checked, () => renderAllParts());
     // turning desktop notifications on asks the browser first
     desktop.addEventListener('input', async () => {
         settings.desktopNotifications = desktop.checked && await enableDesktopNotifications();
         desktop.checked = settings.desktopNotifications;
     split.checked = settings.splitReplies;
+    showBackground.checked = settings.showBackground;
         saveSettings();
     });
     bind(soundVolume, 'soundVolume', () => Number(soundVolume.value), () => play('message'));
