@@ -72,7 +72,7 @@ function createRail() {
     rail.setAttribute('aria-label', t('Servers sidebar'));
 
     const home = railItem('dsc-home', t('Direct Messages'));
-    home.querySelector('button').append(icon('bubble', 28));
+    home.querySelector('button').append(icon('clyde', 30));
     const sep = document.createElement('div');
     sep.className = 'dsc-guild-sep';
     const list = document.createElement('div');

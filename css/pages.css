@@ -1,0 +1,292 @@
+/* SillyTavern's menu pages laid out as Discord settings pages: one column, uppercase form
+   titles, full-width fields, switch rows with the switch on the right and a divider under
+   each, collapsible sections as cards. Applies to the settings sections and to the character
+   panel (Friends, Discover, the character and group editors). */
+
+/* ---------- one column ---------- */
+
+body.discord-theme :is(#user-settings-block-content, #AdvancedFormatting > .flex-container.spaceEvenly) {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0;
+}
+
+body.discord-theme :is(#user-settings-block-content, #AdvancedFormatting > .flex-container.spaceEvenly) > * {
+    flex: none;
+    width: 100%;
+    max-width: none;
+    padding-top: 12px;
+    border-top: 1px solid var(--dsc-divider);
+}
+
+body.discord-theme :is(#user-settings-block-content, #AdvancedFormatting > .flex-container.spaceEvenly) > :first-child {
+    border-top: none;
+}
+
+/* ---------- page and form titles ---------- */
+
+body.discord-theme :is(#top-settings-holder, #right-nav-panel) h3 {
+    color: var(--dsc-header);
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 600;
+}
+
+body.discord-theme :is(#top-settings-holder, #right-nav-panel) :is(h4, h5, .standoutHeader, .range-block-title) {
+    color: var(--dsc-header-2);
+}
+
+body.discord-theme :is(#top-settings-holder, #right-nav-panel) small {
+    color: var(--dsc-header-2);
+}
+
+/* the round "?" help marks */
+body.discord-theme :is(#top-settings-holder, #right-nav-panel) :is(.note-link-span, .fa-circle-question, .fa-circle-info) {
+    color: var(--dsc-icon);
+    opacity: 0.8;
+}
+
+/* ---------- switch rows ---------- */
+
+body.discord-theme :is(#top-settings-holder, #right-nav-panel) label.checkbox_label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+    padding: 8px 0;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--dsc-divider);
+    color: var(--dsc-header);
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+body.discord-theme :is(#top-settings-holder, #right-nav-panel) label.checkbox_label > input[type="checkbox"] {
+    order: 99;
+    margin-left: auto;
+}
+
+body.discord-theme :is(#top-settings-holder, #right-nav-panel) label.checkbox_label > :is(span, small) {
+    color: var(--dsc-header);
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    text-align: left;
+}
+
+/* ---------- fields ---------- */
+
+body.discord-theme :is(#top-settings-holder, #right-nav-panel, dialog.popup) :is(.text_pole, select):not(textarea, .neo-range-input) {
+    min-height: 40px;
+    padding: 0 10px;
+    font-size: 16px;
+}
+
+body.discord-theme :is(#top-settings-holder, #right-nav-panel, dialog.popup) textarea:not(#send_textarea, .edit_textarea) {
+    padding: 10px;
+    border-radius: 3px;
+    font-size: 15px;
+    line-height: 20px;
+}
+
+/* select arrows: Discord's chevron */
+body.discord-theme :is(#top-settings-holder, #right-nav-panel, dialog.popup) select:not([multiple]) {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 32px;
+    background-image: linear-gradient(transparent, transparent), var(--dsc-select-arrow);
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px 16px;
+}
+
+body.discord-theme {
+    --dsc-select-arrow: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23b5bac1' d='M5.3 9.3a1 1 0 0 1 1.4 0l5.3 5.29 5.3-5.3a1 1 0 1 1 1.4 1.42l-6 6a1 1 0 0 1-1.4 0l-6-6a1 1 0 0 1 0-1.42z'/></svg>");
+}
+
+body.discord-theme.dsc-light {
+    --dsc-select-arrow: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%234e5058' d='M5.3 9.3a1 1 0 0 1 1.4 0l5.3 5.29 5.3-5.3a1 1 0 1 1 1.4 1.42l-6 6a1 1 0 0 1-1.4 0l-6-6a1 1 0 0 1 0-1.42z'/></svg>");
+}
+
+/* ---------- collapsible sections: Discord cards ---------- */
+
+body.discord-theme :is(#top-settings-holder, #right-nav-panel) .inline-drawer {
+    margin: 8px 0;
+    padding: 0 16px;
+    border: none;
+    border-radius: 8px;
+    background: var(--dsc-side);
+}
+
+body.discord-theme :is(#top-settings-holder, #right-nav-panel) .inline-drawer .inline-drawer {
+    background: var(--dsc-chat);
+}
+
+body.discord-theme :is(#top-settings-holder, #right-nav-panel) .inline-drawer-toggle.inline-drawer-header {
+    min-height: 48px;
+    margin: 0;
+    padding: 12px 0;
+    box-sizing: border-box;
+    border: none;
+    background: none;
+    color: var(--dsc-header);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+body.discord-theme :is(#top-settings-holder, #right-nav-panel) .inline-drawer-content {
+    padding: 0 0 16px;
+}
+
+body.discord-theme :is(#top-settings-holder, #right-nav-panel) .inline-drawer-icon {
+    color: var(--dsc-icon);
+}
+
+/* ---------- personas: Discord's account cards ---------- */
+
+body.discord-theme #user_avatar_block .avatar-container {
+    margin: 0 0 8px;
+    padding: 12px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: var(--dsc-side);
+    box-shadow: none;
+}
+
+body.discord-theme #user_avatar_block .avatar-container:hover {
+    background: color-mix(in srgb, var(--dsc-side), var(--dsc-text) 6%);
+}
+
+body.discord-theme #user_avatar_block .avatar-container.selected {
+    border-color: var(--dsc-blurple);
+}
+
+body.discord-theme #user_avatar_block .avatar-container :is(.avatar, .avatar img) {
+    border-radius: 50%;
+}
+
+body.discord-theme #user_avatar_block .ch_name {
+    color: var(--dsc-header);
+    font-weight: 600;
+}
+
+/* ---------- the character panel: Discover and the editors ---------- */
+
+/* its tab bar: Discord's top bar of the Friends page */
+body.discord-theme #rm_button_bar {
+    gap: 8px;
+    padding: 0 0 12px;
+    border-bottom: 1px solid var(--dsc-divider);
+}
+
+body.discord-theme #right-nav-panel .right_menu_button {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 18px;
+}
+
+body.discord-theme #right-nav-panel .right_menu_button:hover {
+    background: var(--dsc-hover);
+}
+
+/* character cards in the grid: Discord's server discovery cards */
+body.discord-theme.charListGrid #rm_print_characters_block {
+    gap: 16px;
+    padding-top: 12px;
+}
+
+body.discord-theme.charListGrid #rm_print_characters_block :is(.character_select, .group_select) {
+    border-radius: 8px;
+    background: var(--dsc-side);
+    padding: 12px;
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, background-color 0.15s ease-out;
+}
+
+body.discord-theme.charListGrid #rm_print_characters_block :is(.character_select, .group_select):hover {
+    background: color-mix(in srgb, var(--dsc-side), var(--dsc-text) 5%);
+    box-shadow: var(--dsc-elevation-high);
+    transform: translateY(-2px);
+}
+
+body.discord-theme #rm_print_characters_block :is(.ch_name, .group_name) {
+    color: var(--dsc-header);
+    font-weight: 600;
+}
+
+body.discord-theme #rm_print_characters_block .ch_description {
+    color: var(--dsc-header-2);
+}
+
+/* character editor: field titles as Discord form titles */
+body.discord-theme #form_create :is(h4, .flex-container > span, label > span) {
+    color: var(--dsc-header-2);
+}
+
+body.discord-theme #form_create #character_name_pole,
+body.discord-theme #rm_ch_create_block h2 {
+    color: var(--dsc-header);
+    font-weight: 700;
+}
+
+body.discord-theme #avatar_div_div .avatar,
+body.discord-theme #avatar_div_div img {
+    border-radius: 50%;
+}
+
+/* tags: Discord's role pills */
+body.discord-theme .tag {
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--dsc-side);
+    color: var(--dsc-header-2);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* group editor members: Discord member rows */
+body.discord-theme :is(#rm_group_members, #rm_group_add_members) .group_member {
+    border-radius: 4px;
+    padding: 6px 8px;
+}
+
+body.discord-theme :is(#rm_group_members, #rm_group_add_members) .group_member:hover {
+    background: var(--dsc-hover);
+}
+
+/* pagers */
+body.discord-theme .paginationjs-pages li > a {
+    border-radius: 4px;
+    color: var(--dsc-header-2);
+}
+
+body.discord-theme .paginationjs-pages li.active > a {
+    background: var(--dsc-blurple);
+    color: #ffffff;
+}
+
+/* ---------- backgrounds: Discord's image picker tiles ---------- */
+
+body.discord-theme #Backgrounds .bg_example {
+    border: 2px solid transparent;
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+body.discord-theme #Backgrounds .bg_example.selected {
+    border-color: var(--dsc-blurple);
+}
+
+/* ---------- extensions: Discord's app cards ---------- */
+
+body.discord-theme .extensions_info .extension_block,
+body.discord-theme #extensions_details .extension_block {
+    border-radius: 8px;
+    background: var(--dsc-side);
+}
+
+/* ---------- swipes, edit and message-level controls already themed in chat.css ---------- */

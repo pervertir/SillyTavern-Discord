@@ -192,7 +192,7 @@ function createPhoneTabs() {
         return button;
     };
     tabs.append(
-        tab('home', 'Home', 'bubble', () => {
+        tab('home', 'Home', 'clyde', () => {
             closeDrawers();
             document.body.classList.remove('dsc-settings-list', 'dsc-m-chat', 'dsc-friends');
             refreshHeader();

@@ -14,7 +14,10 @@ body.discord-theme .menu_button {
     border-radius: 3px;
     background: var(--dsc-secondary-button);
     color: #ffffff;
-    font: 500 14px/16px var(--dsc-font);
+    /* size and weight only: icon-only buttons are Font Awesome glyphs and keep its font */
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 500;
     filter: none;
     transition: background-color var(--dsc-normal) var(--dsc-ease);
 }
