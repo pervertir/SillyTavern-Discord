@@ -103,7 +103,7 @@ export function initSounds({ settings, save }) {
     const { eventSource, eventTypes } = SillyTavern.getContext();
     eventSource.on(eventTypes.CHARACTER_MESSAGE_RENDERED, (mesId, type) => {
         // a reply arriving while you're elsewhere pings, as a Discord message does
-        if (type === 'first_message' || watching()) {
+        if (type === 'first_message' || (watching() && !getSettings().soundAlways)) {
             return;
         }
         play('message');

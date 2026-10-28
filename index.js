@@ -53,6 +53,8 @@ const defaultSettings = Object.freeze({
     sounds: true,
     soundVolume: 60,
     soundMessage: true,
+    /** Ping for replies in the chat you're looking at too (Discord doesn't) */
+    soundAlways: false,
     soundOnline: true,
     soundVoice: true,
     /** The user panel's mute and deafen */
@@ -347,6 +349,7 @@ async function renderSettingsPanel() {
     const soundVolume = byId('dsc_sound_volume');
     const soundMessage = byId('dsc_sound_message');
     const soundOnline = byId('dsc_sound_online');
+    const soundAlways = byId('dsc_sound_always');
     const soundVoice = byId('dsc_sound_voice');
     const wakeDelay = byId('dsc_wake_delay');
 
@@ -366,6 +369,7 @@ async function renderSettingsPanel() {
     soundVolume.value = String(settings.soundVolume);
     soundMessage.checked = settings.soundMessage;
     soundOnline.checked = settings.soundOnline;
+    soundAlways.checked = settings.soundAlways;
     soundVoice.checked = settings.soundVoice;
     wakeDelay.value = String(settings.wakeDelay);
 
@@ -398,6 +402,7 @@ async function renderSettingsPanel() {
     bind(soundVolume, 'soundVolume', () => Number(soundVolume.value), () => play('message'));
     bind(soundMessage, 'soundMessage', () => soundMessage.checked);
     bind(soundOnline, 'soundOnline', () => soundOnline.checked);
+    bind(soundAlways, 'soundAlways', () => soundAlways.checked);
     bind(soundVoice, 'soundVoice', () => soundVoice.checked);
     bind(presenceSim, 'presenceSim', () => presenceSim.checked, () => refreshPresenceViews());
     bind(wakeDelay, 'wakeDelay', () => Math.min(30, Math.max(0, Number(wakeDelay.value) || 0)));
