@@ -312,10 +312,7 @@ body.discord-theme dialog.popup h3 {
 
 body.discord-theme dialog.popup .popup-controls {
     gap: 8px;
-    margin: 16px -16px -16px;
-    padding: 16px;
-    border-radius: 0 0 4px 4px;
-    background: var(--dsc-side);
+    padding: 16px 0 0;
 }
 
 body.discord-theme dialog.popup .popup-controls .menu_button {
