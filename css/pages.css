@@ -320,3 +320,74 @@ body.discord-theme .select_chat_block .select_chat_block_filename {
 body.discord-theme .select_chat_block .select_chat_block_mes {
     color: var(--dsc-header-2);
 }
+
+/* ---------- character editor: Discord's profile card ---------- */
+
+/* banner on top, the round picture overlapping it, then the name: the profile preview of
+   Discord's Profiles page */
+body.discord-theme #avatar-and-name-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 4px 0 12px;
+    padding: 0 16px 16px;
+    border-radius: 8px;
+    background: var(--dsc-panel);
+    overflow: hidden;
+}
+
+body.discord-theme #avatar-and-name-block::before {
+    content: '';
+    order: 0;
+    height: 100px;
+    margin: 0 -16px;
+    background: linear-gradient(135deg, var(--dsc-blurple), #eb459f);
+}
+
+body.discord-theme #avatar-and-name-block > .expander {
+    order: 1;
+    margin-top: -48px;
+}
+
+body.discord-theme #avatar-and-name-block > #name_div {
+    order: 2;
+}
+
+body.discord-theme #avatar_div_div {
+    flex: none;
+    width: 88px;
+    min-width: 88px;
+    height: 88px;
+    border: 6px solid var(--dsc-panel);
+    border-radius: 50%;
+    background: var(--dsc-panel);
+    overflow: hidden;
+    box-sizing: content-box;
+}
+
+body.discord-theme #avatar_div_div img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+}
+
+body.discord-theme #avatar_controls {
+    align-self: flex-end;
+}
+
+body.discord-theme #character_name_pole {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* the hint above the editor */
+body.discord-theme #HotSwapWrapper {
+    color: var(--dsc-muted);
+    font-size: 12px;
+}
+
+/* group editor: Discord's Server Overview card */
+body.discord-theme #rm_group_chats_block .inline-drawer {
+    background: var(--dsc-side);
+}
