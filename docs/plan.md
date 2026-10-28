@@ -16,7 +16,7 @@ update Deep's install after every push.
 ## Still to do, including what may have been missed
 
 ### Messages
-1. **Reactions.** Add a reaction from the hover bar or menu. They're stored in the message's extra data, so they survive reloads; the prompt is unaffected.
+1. ✅ **Reactions** (done). Add a reaction from the hover bar or menu. They're stored in the message's extra data, so they survive reloads; the prompt is unaffected.
 2. **Spoilers** (`||text||`, click to reveal) and Discord's markdown extras: `-# small text` and masked links.
 3. **Images and files:** attachments and generated images as Discord image embeds, with a click-to-enlarge viewer.
 4. **Link previews** as Discord embeds (title, site, description). This is opt-in, since it fetches pages.

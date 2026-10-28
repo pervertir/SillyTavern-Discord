@@ -14,6 +14,7 @@ import { initHeader, openInbox, refreshHeader, refreshPresenceViews, setFriendsT
 import { enableDesktopNotifications, initNotify } from './notify.js';
 import { initOverlays } from './overlays.js';
 import { initPresence } from './presence.js';
+import { initReactions } from './reactions.js';
 import { initSounds, play } from './sounds.js';
 import { initSplit, renderAllParts } from './split.js';
 import { initMessages, labelMessages, setClock } from './messages.js';
@@ -455,6 +456,7 @@ async function init() {
     setClock(() => !!getSettings().clock24);
     initMessages();
     initMessageTools();
+    initReactions();
     initOverlays({ connections: () => openSettings('sys-settings-button') });
     initEmbeds({ enabled: () => !!getSettings().enabled && !!getSettings().showImageLinks });
     initSplit({

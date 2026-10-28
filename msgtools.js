@@ -2,6 +2,7 @@
 // Regenerate and Delete; while editing, Enter saves and Esc cancels (the hint under the box
 // says so); and ↑ in an empty message box edits your last message.
 
+import { openPicker } from './reactions.js';
 import { clickOption, openMenu, t } from './ui.js';
 
 function messageData(mes) {
@@ -51,6 +52,7 @@ function openMessageMenu(mes, at) {
     const isLast = mes.classList.contains('last_mes');
     const isUser = mes.getAttribute('is_user') === 'true';
     const items = [
+        { label: 'Add Reaction', icon: 'reaction', run: () => openPicker(Number(mes.getAttribute('mesid')), /** @type {HTMLElement} */ (mes.querySelector('.mes_block') ?? mes)) },
         { label: 'Reply', icon: 'reply', run: () => reply(mes) },
         { label: 'Edit Message', icon: 'edit', run: () => startEdit(mes) },
         { label: 'Copy Text', icon: 'copy', run: () => copyText(mes) },

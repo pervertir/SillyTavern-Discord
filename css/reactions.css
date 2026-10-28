@@ -1,0 +1,131 @@
+/* Reactions (reactions.js): pills under the message, Discord's picker */
+
+#dsc-react-picker {
+    display: none;
+}
+
+body.discord-theme .dsc-reactions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 4px 0 2px;
+}
+
+body.discord-theme .dsc-reaction {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 24px;
+    padding: 2px 6px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: var(--dsc-hover);
+    color: var(--dsc-header-2);
+    font: 600 14px/16px var(--dsc-font);
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-reaction:hover {
+    border-color: var(--dsc-border);
+    background: var(--dsc-active);
+}
+
+/* yours: Discord's blurple tint and border */
+body.discord-theme .dsc-reaction.dsc-mine {
+    border-color: var(--dsc-blurple);
+    background: rgba(88, 101, 242, 0.15);
+    color: var(--dsc-header);
+}
+
+body.discord-theme .dsc-reaction-emoji {
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* the + pill only shows while pointing at the message */
+body.discord-theme .dsc-reaction-add {
+    width: 30px;
+    justify-content: center;
+    opacity: 0;
+    color: var(--dsc-icon);
+}
+
+body.discord-theme .dsc-reaction-add::before {
+    content: '';
+    width: 18px;
+    height: 18px;
+    background-color: currentColor;
+    -webkit-mask: var(--dsc-i-reaction) center / contain no-repeat;
+    mask: var(--dsc-i-reaction) center / contain no-repeat;
+}
+
+body.discord-theme #chat .mes:hover .dsc-reaction-add,
+body.discord-theme .dsc-reaction-add:focus-visible {
+    opacity: 1;
+}
+
+/* the hover bar's smiley */
+body.discord-theme #chat .mes .dsc-react-button::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    background-color: currentColor;
+    -webkit-mask: var(--dsc-i-reaction) center / 20px 20px no-repeat;
+    mask: var(--dsc-i-reaction) center / 20px 20px no-repeat;
+}
+
+body.discord-theme #dsc-react-picker {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    z-index: 3150;
+    width: min(352px, calc(100vw - 16px));
+    max-height: 340px;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid var(--dsc-divider);
+    border-radius: 8px;
+    background: var(--dsc-floating);
+    box-shadow: var(--dsc-elevation-high);
+    overflow-y: auto;
+}
+
+body.discord-theme #dsc-react-picker h3 {
+    margin: 4px 4px 6px;
+    color: var(--dsc-header-2);
+    font: 600 12px/16px var(--dsc-font);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+body.discord-theme .dsc-react-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 2px;
+    margin-bottom: 6px;
+}
+
+body.discord-theme .dsc-react-grid button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-react-grid button:hover,
+body.discord-theme .dsc-react-grid button:focus-visible {
+    background: var(--dsc-hover);
+}
+
+@media screen and (max-width: 1000px) {
+    body.discord-theme .dsc-reaction-add {
+        opacity: 1;
+    }
+}
