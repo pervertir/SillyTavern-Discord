@@ -11,6 +11,7 @@ body.discord-theme .dsc-status {
 body.discord-theme .dsc-status::after {
     content: '';
     position: absolute;
+    pointer-events: none;
     left: 50%;
     top: 50%;
     width: 0;
@@ -55,8 +56,10 @@ body.discord-theme.dsc-light .dsc-status[data-status="idle"] { --dsc-status-colo
 body.discord-theme.dsc-light .dsc-status[data-status="dnd"] { --dsc-status-color: #d22d39; }
 body.discord-theme.dsc-light .dsc-status[data-status="offline"] { --dsc-status-color: #5f606a; }
 
-/* the header's dot has no surface ring; its cut-outs use the header's color */
+/* the header's dot sits in the text flow: it must still frame its own cut-out */
 body.discord-theme .dsc-head-status {
+    position: relative;
+    flex: none;
     --dsc-ring: var(--dsc-chat);
 }
 
