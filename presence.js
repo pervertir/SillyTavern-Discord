@@ -119,22 +119,86 @@ function typingBar() {
     return bar;
 }
 
-export function showTyping(name) {
+/** Who is typing right now, in the order they started */
+const typing = new Set();
+
+/** Discord's wording: "A is typing…", "A and B are typing…", "A, B, and C are typing…",
+    "Several people are typing…". */
+function drawTyping() {
     const bar = typingBar();
     if (!bar) {
         return;
     }
+    const names = [...typing];
+    if (!names.length) {
+        bar.classList.remove('dsc-on');
+        return;
+    }
     const dots = document.createElement('span');
     dots.className = 'dsc-typing-dots';
+    dots.setAttribute('aria-hidden', 'true');
     dots.append(document.createElement('i'), document.createElement('i'), document.createElement('i'));
-    const who = document.createElement('strong');
-    who.textContent = name;
-    bar.replaceChildren(dots, who, document.createTextNode(` ${t('is typing…')}`));
+    const strong = (name) => {
+        const element = document.createElement('strong');
+        element.textContent = name;
+        return element;
+    };
+    const text = document.createElement('span');
+    text.className = 'dsc-typing-text';
+    if (names.length > 3) {
+        text.append(t('Several people are typing…'));
+    } else if (names.length === 1) {
+        text.append(strong(names[0]), ` ${t('is typing…')}`);
+    } else if (names.length === 2) {
+        text.append(strong(names[0]), ` ${t('and')} `, strong(names[1]), ` ${t('are typing…')}`);
+    } else {
+        text.append(strong(names[0]), ', ', strong(names[1]), `, ${t('and')} `, strong(names[2]), ` ${t('are typing…')}`);
+    }
+    bar.replaceChildren(dots, text);
     bar.classList.add('dsc-on');
 }
 
+export function showTyping(name) {
+    typing.add(name);
+    drawTyping();
+}
+
 export function hideTyping() {
-    document.getElementById(TYPING_ID)?.classList.remove('dsc-on');
+    typing.clear();
+    drawTyping();
+    revealPending();
+}
+
+/* SillyTavern starts a streamed reply as an empty or "..." message; Discord shows only the
+   typing line until the first words arrive, so that placeholder stays hidden until then. */
+
+let pendingWatch = null;
+
+function revealPending() {
+    pendingWatch?.disconnect();
+    pendingWatch = null;
+    document.querySelectorAll('#chat > .mes.dsc-pending').forEach(mes => mes.classList.remove('dsc-pending'));
+}
+
+function isPlaceholderText(mes) {
+    const text = (mes.querySelector('.mes_text')?.textContent ?? '').trim();
+    return text === '' || text === '...' || text === '…';
+}
+
+function watchForPlaceholder() {
+    const chat = document.getElementById('chat');
+    if (!chat || pendingWatch) {
+        return;
+    }
+    const mark = () => {
+        const last = chat.querySelector(':scope > .mes:last-of-type');
+        if (last && last.getAttribute('is_user') !== 'true' && isPlaceholderText(last)) {
+            last.classList.add('dsc-pending');
+        }
+    };
+    pendingWatch = new MutationObserver(mark);
+    pendingWatch.observe(chat, { childList: true });
+    mark();
 }
 
 /* ---------- holding replies ---------- */
@@ -204,6 +268,11 @@ export function initPresence(opts) {
         await wake(character.avatar, character.name);
     });
 
+    eventSource.on(eventTypes.GENERATION_STARTED, (type, params, dryRun) => {
+        if (!dryRun && type !== 'quiet' && type !== 'impersonate') {
+            watchForPlaceholder();
+        }
+    });
     for (const type of [eventTypes.STREAM_TOKEN_RECEIVED, eventTypes.CHARACTER_MESSAGE_RENDERED, eventTypes.GENERATION_ENDED, eventTypes.GENERATION_STOPPED, eventTypes.CHAT_CHANGED]) {
         if (type) {
             eventSource.on(type, hideTyping);

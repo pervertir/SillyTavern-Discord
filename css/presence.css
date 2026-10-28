@@ -72,7 +72,8 @@ body.discord-theme .dsc-dv-online[data-status="offline"]::before { background: #
     }
 }
 
-/* ---------- "X is typing…" ---------- */
+/* ---------- "X is typing…": Discord's three pulsing dots and the names, in the strip under
+   the message box ---------- */
 
 body.discord-theme #form_sheld {
     position: relative;
@@ -85,25 +86,29 @@ body.discord-theme #form_sheld {
 body.discord-theme #dsc-typing {
     display: flex;
     align-items: center;
-    gap: 4px;
     position: absolute;
     left: 16px;
     right: 16px;
     bottom: 0;
-    height: 20px;
+    height: 24px;
     overflow: hidden;
     color: var(--dsc-text);
-    font-size: 12px;
-    line-height: 20px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 400;
     opacity: 0;
-    transition: opacity 0.15s ease;
+    transition: opacity 0.1s ease;
     pointer-events: none;
 }
 
 body.discord-theme #dsc-typing.dsc-on {
     opacity: 1;
+}
+
+body.discord-theme .dsc-typing-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 body.discord-theme #dsc-typing strong {
@@ -112,40 +117,51 @@ body.discord-theme #dsc-typing strong {
 
 body.discord-theme .dsc-typing-dots {
     display: inline-flex;
-    gap: 3px;
-    margin-right: 4px;
+    align-items: center;
+    gap: 2px;
+    width: 24px;
+    margin: 0 6px 0 2px;
 }
 
 body.discord-theme .dsc-typing-dots i {
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: currentColor;
-    opacity: 0.4;
-    animation: dsc-typing 1.2s infinite ease-in-out;
+    opacity: 0.3;
+    transform: scale(0.8);
+    animation: dsc-typing 1.4s infinite ease-in-out;
 }
 
-body.discord-theme .dsc-typing-dots i:nth-child(2) { animation-delay: 0.15s; }
-body.discord-theme .dsc-typing-dots i:nth-child(3) { animation-delay: 0.3s; }
+body.discord-theme .dsc-typing-dots i:nth-child(2) { animation-delay: 0.2s; }
+body.discord-theme .dsc-typing-dots i:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes dsc-typing {
-    0%, 60%, 100% { opacity: 0.35; transform: none; }
-    30% { opacity: 1; transform: translateY(-2px); }
+    0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+    30% { opacity: 1; transform: scale(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
     body.discord-theme .dsc-typing-dots i {
         animation: none;
+        opacity: 0.8;
+        transform: none;
     }
+}
+
+/* the streamed reply's placeholder stays hidden until its first words */
+body.discord-theme #chat .mes.dsc-pending {
+    display: none;
 }
 
 @media screen and (max-width: 1000px) {
     body.discord-theme #form_sheld {
-        padding-bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+        padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
     }
 
     body.discord-theme #dsc-typing {
         left: 12px;
         bottom: env(safe-area-inset-bottom, 0px);
+        font-size: 13px;
     }
 }

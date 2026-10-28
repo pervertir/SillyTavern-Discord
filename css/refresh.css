@@ -265,8 +265,9 @@ body.discord-theme #chat .mes .mes_text pre {
 
 /* ---------- message box ---------- */
 
+/* the strip under the box holds "X is typing…" */
 body.discord-theme #form_sheld {
-    padding: 0 16px 16px;
+    padding: 0 16px 24px;
 }
 
 body.discord-theme #send_form {
