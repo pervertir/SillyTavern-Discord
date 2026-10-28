@@ -23,7 +23,7 @@ const BODY_CLASS = 'discord-theme';
 
 const defaultSettings = Object.freeze({
     enabled: true,
-    /** dark, light or system */
+    /** Discord's themes: dark, ash, onyx or light; or system (light or dark with the OS) */
     appearance: 'dark',
     /** The profile panel in DMs and the member list in servers */
     aside: true,
@@ -57,7 +57,16 @@ function saveSettings() {
 }
 
 function isDark(settings = getSettings()) {
-    return settings.appearance === 'dark' || (settings.appearance === 'system' && darkQuery.matches);
+    return settings.appearance !== 'light' && (settings.appearance !== 'system' || darkQuery.matches);
+}
+
+/** The body classes for a theme: Dark has none, Ash, Onyx and Light one each. */
+function applyThemeClasses(settings, on) {
+    const body = document.body.classList;
+    const dark = isDark(settings);
+    body.toggle('dsc-light', on && !dark);
+    body.toggle('dsc-ash', on && dark && settings.appearance === 'ash');
+    body.toggle('dsc-onyx', on && dark && settings.appearance === 'onyx');
 }
 
 function applySettings() {
@@ -66,7 +75,7 @@ function applySettings() {
     const body = document.body.classList;
     body.toggle(BODY_CLASS, on);
     document.documentElement.classList.toggle('dsc-html', on);
-    body.toggle('dsc-light', on && !isDark(settings));
+    applyThemeClasses(settings, on);
     body.toggle('dsc-aside-on', on && !!settings.aside);
     body.toggle('dsc-compact', on && settings.messageDisplay === 'compact');
     body.toggle('dsc-presence', on && !!settings.presence);
@@ -332,7 +341,7 @@ function bootLook() {
     document.body.classList.add('dsc-booting');
     // never leave the cover up if something fails on the way
     setTimeout(endBoot, 20000);
-    document.body.classList.toggle('dsc-light', !!settings && !isDark({ ...defaultSettings, ...settings }));
+    applyThemeClasses({ ...defaultSettings, ...settings }, true);
     // the loading tip names this OS's key
     document.body.style.setProperty('--dsc-boot-tip', `'DID YOU KNOW\\A Press ${formatKeys(SHORTCUTS.switcher)} to jump to any conversation.'`);
 }

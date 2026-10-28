@@ -5,7 +5,7 @@
    frame. It doesn't depend on the theme being on: remove the block to bring the old splash back. */
 
 #preloader {
-    background: #313338 !important;
+    background: #1a1a1e !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
@@ -22,12 +22,12 @@ dialog.popup:has(#loader.splash-screen) {
     border: none !important;
     border-radius: 0;
     outline: none;
-    background: #313338 !important;
+    background: #1a1a1e !important;
     box-shadow: none;
 }
 
 dialog.popup:has(#loader.splash-screen)::backdrop {
-    background: #313338;
+    background: #1a1a1e;
 }
 
 dialog.popup:has(#loader.splash-screen) :is(.popup-body, .popup-content) {

@@ -1,6 +1,6 @@
 # Discord Theme for SillyTavern
 
-A SillyTavern extension that makes SillyTavern look and work like Discord on desktop and on phones, in dark (the default) or light.
+A SillyTavern extension that makes SillyTavern look and work like Discord after its 2025 redesign, on desktop and on phones, in Discord's four themes: Dark (the default), Ash, Onyx and Light.
 
 ![A direct message](.github/dm.png)
 
@@ -37,7 +37,7 @@ https://github.com/pervertir/SillyTavern-Discord
 Then open **Extensions**, find **Discord Theme** and set it up:
 
 - **Enable theme**
-- **Appearance**: dark, light, or follow the system
+- **Appearance**: Dark, Ash, Onyx, Light, or sync with your computer
 - **Message display**: cozy or compact
 - **Show the profile panel and member list**
 - **Show characters as online**
@@ -51,6 +51,8 @@ Turn off other UI themes (Moonlit Echoes, Yodayo Tavern, Microsoft Teams) while 
 SillyTavern draws its own logo before any extension loads. To show Discord's loading screen from the very start, append [`extras/discord-splash.css`](extras/discord-splash.css) to `data/_css/user.css` in your SillyTavern folder. Delete that block to undo it.
 
 ## Notes
+
+- The sizes, colors and type follow Discord's own design values, collected in [docs/discord-ui-notes.md](docs/discord-ui-notes.md).
 
 - The font is gg sans if it's installed on your computer. Otherwise it falls back to Noto Sans, loaded from Google Fonts.
 - Requires SillyTavern 1.19.0 or newer.

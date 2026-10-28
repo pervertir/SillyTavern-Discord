@@ -4,15 +4,25 @@
    stylesheet that covers the moments before that). */
 
 body:is(.discord-theme, .dsc-booting) {
-    --dsc-boot-bg: #313338;
-    --dsc-boot-fg: #dbdee1;
-    --dsc-boot-muted: #949ba4;
+    --dsc-boot-bg: #1a1a1e;
+    --dsc-boot-fg: #efeff1;
+    --dsc-boot-muted: #96979e;
+}
+
+body:is(.discord-theme, .dsc-booting).dsc-ash {
+    --dsc-boot-bg: #323339;
+    --dsc-boot-fg: #f3f3f4;
+}
+
+body:is(.discord-theme, .dsc-booting).dsc-onyx {
+    --dsc-boot-bg: #000000;
+    --dsc-boot-fg: #d4d5d8;
 }
 
 body:is(.discord-theme, .dsc-booting).dsc-light {
-    --dsc-boot-bg: #ffffff;
-    --dsc-boot-fg: #313338;
-    --dsc-boot-muted: #5c5e66;
+    --dsc-boot-bg: #fbfbfb;
+    --dsc-boot-fg: #2e2e34;
+    --dsc-boot-muted: #6c6d76;
 }
 
 body:is(.discord-theme, .dsc-booting) #preloader {

@@ -10,6 +10,7 @@ import { clickOption, getColorIndex, icon, iconButton, openMenu, t, toChannelNam
 const HEAD_ID = 'dsc-head';
 const ASIDE_ID = 'dsc-aside';
 const FRIENDS_ID = 'dsc-friends';
+const TITLE_ID = 'dsc-titlebar';
 
 let actions = {
     toggleAside: () => {},
@@ -104,17 +105,46 @@ function createHeader() {
         actions.openSwitcher('');
     });
     search.append(input, icon('search', 16));
-    const inbox = headButton('dsc-for-all', withShortcut(t('Inbox'), SHORTCUTS.inbox), 'inbox', (event) => openInbox(/** @type {HTMLElement} */ (event.currentTarget)));
-    const help = headButton('dsc-for-all', withShortcut(t('Help'), SHORTCUTS.keybinds), 'help', () => showShortcuts());
-    tools.append(search, inbox, help);
+    tools.append(search);
 
     head.append(back, title, tabs, tools);
     sheld.prepend(head);
 }
 
+/** The title bar across the top: where you are in the middle, Inbox and Help on the right. */
+function createTitlebar() {
+    if (document.getElementById(TITLE_ID)) {
+        return;
+    }
+    const bar = document.createElement('header');
+    bar.id = TITLE_ID;
+    const left = document.createElement('div');
+    const middle = document.createElement('div');
+    middle.className = 'dsc-tb-title';
+    const glyph = document.createElement('span');
+    glyph.className = 'dsc-tb-glyph';
+    const name = document.createElement('span');
+    name.className = 'dsc-tb-name';
+    middle.append(glyph, name);
+    const right = document.createElement('div');
+    right.className = 'dsc-tb-tools';
+    const tool = (className, label, iconName, run) => {
+        const button = iconButton(`dsc-tb-tool ${className}`, label, iconName, 20);
+        button.dataset.dscTipSide = 'bottom';
+        button.addEventListener('click', run);
+        return button;
+    };
+    right.append(
+        tool('dsc-inbox', withShortcut(t('Inbox'), SHORTCUTS.inbox), 'inbox', (event) => openInbox(/** @type {HTMLElement} */ (event.currentTarget))),
+        tool('', withShortcut(t('Help'), SHORTCUTS.keybinds), 'help', () => showShortcuts()),
+    );
+    bar.append(left, middle, right);
+    document.body.append(bar);
+}
+
 /** Inbox: the chat's own records, a menu like Discord's inbox tabs */
 export function openInbox(anchor) {
-    const target = anchor ?? document.querySelector(`#${HEAD_ID} .dsc-for-all`);
+    const target = anchor ?? document.querySelector(`#${TITLE_ID} .dsc-inbox`);
     if (!target) {
         return;
     }
@@ -168,6 +198,13 @@ export function refreshHeader() {
     } else if (character) {
         glyph.append(icon('at'));
         name.textContent = character.name;
+    }
+    // the title bar names the place: the server for a channel, else the header's own title
+    const titleGlyph = document.querySelector(`#${TITLE_ID} .dsc-tb-glyph`);
+    const titleName = document.querySelector(`#${TITLE_ID} .dsc-tb-name`);
+    if (titleGlyph && titleName) {
+        titleGlyph.replaceChildren(group && !friends && !body.contains('dsc-chars-open') ? '' : glyph.firstElementChild?.cloneNode(true) ?? '');
+        titleName.textContent = group && !friends && !body.contains('dsc-chars-open') ? group.name : name.textContent;
     }
     for (const tab of head.querySelectorAll('.dsc-head-tab')) {
         tab.classList.toggle('dsc-selected', tab.dataset.tab === friendsTab);
@@ -614,6 +651,7 @@ function renderFriends() {
  */
 export function initHeader(options) {
     actions = { ...actions, ...options };
+    createTitlebar();
     createHeader();
     createAside();
     createFriends();

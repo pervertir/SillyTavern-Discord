@@ -16,6 +16,12 @@
         --dsc-side-w: calc(100vw - var(--dsc-rail-w));
         --dsc-aside-w: 0px !important;
         --dsc-set-side: 100vw;
+        /* no title bar on phones */
+        --dsc-title-h: 0px;
+    }
+
+    body.discord-theme #dsc-titlebar {
+        display: none;
     }
 
     /* ---------- home: rail, list, tabs ---------- */
@@ -23,6 +29,7 @@
     body.discord-theme #dsc-guilds {
         top: var(--dsc-safe-top);
         bottom: var(--dsc-tabbar-h);
+        padding-bottom: 12px;
     }
 
     body.discord-theme #dsc-side {
@@ -156,7 +163,7 @@
     }
 
     /* only the essentials in the header on a phone */
-    body.discord-theme .dsc-head-tools > :is(.dsc-head-search, .dsc-aside-tool, .dsc-for-all, .dsc-convert),
+    body.discord-theme .dsc-head-tools > :is(.dsc-head-search, .dsc-aside-tool, .dsc-convert),
     body.discord-theme .dsc-head-topic {
         display: none !important;
     }
@@ -258,8 +265,9 @@
         padding: 6px 8px calc(8px + env(safe-area-inset-bottom, 0px));
     }
 
+    /* the refreshed mobile box: a rounded rectangle, no longer a pill */
     body.discord-theme #send_form {
-        border-radius: 22px;
+        border-radius: 8px;
     }
 
     body.discord-theme .dsc-compose-tool:not(:last-child) {

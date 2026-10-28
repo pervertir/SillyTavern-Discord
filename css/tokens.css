@@ -1,65 +1,78 @@
-/* Design tokens: Discord's palette, type and shapes, plus SillyTavern's own theme variables
-   pointed at them. Dark is the default; body.dsc-light switches to the light palette. */
+/* Design tokens: Discord's palette (its 2025 themes: Dark by default, body.dsc-ash, dsc-onyx
+   and dsc-light), type and shapes, plus SillyTavern's own theme variables pointed at them.
+   Values come from docs/discord-ui-notes.md. */
 
 body.discord-theme {
-    /* Brand */
+    /* Brand and feedback (docs/discord-ui-notes.md) */
     --dsc-blurple: #5865f2;
-    --dsc-blurple-hover: #4752c4;
-    --dsc-blurple-active: #3c45a5;
+    --dsc-blurple-hover: #4452bb;
+    --dsc-blurple-active: #3a48a3;
     --dsc-on-blurple: #ffffff;
-    --dsc-green: #23a55a;
-    --dsc-green-hover: #1a8346;
-    --dsc-red: #f23f43;
-    --dsc-red-hover: #da373c;
+    --dsc-green: #3d9e60;
+    --dsc-green-hover: #2f7d4b;
+    --dsc-red: #d22d39;
+    --dsc-red-hover: #a9232e;
     --dsc-yellow: #f0b232;
-    --dsc-link: #00a8fc;
+    --dsc-mod: 151, 151, 159;
 
-    /* Surfaces, from the far left inwards */
-    --dsc-rail: #1e1f22;
-    --dsc-side: #2b2d31;
-    --dsc-chat: #313338;
-    --dsc-panel: #232428;
-    --dsc-floating: #111214;
-    --dsc-input: #383a40;
-    --dsc-field: #1e1f22;
-    --dsc-message-hover: #2e3035;
-    --dsc-mention: rgba(250, 168, 26, 0.1);
-    --dsc-rail-item: #313338;
-    --dsc-separator: #35363c;
+    /* Dark, Discord's default dark theme. The names below are this theme's own; each maps to
+       one of Discord's tokens (in brackets). */
+    --dsc-rail: #121214;            /* [background-base-lowest] title bar, rail, frame */
+    --dsc-side: #1a1a1e;            /* [background-base-lower] channel list, members */
+    --dsc-chat: #1a1a1e;            /* [background-base-lower] chat */
+    --dsc-panel: #202024;           /* [background-base-low] user panel */
+    --dsc-surface: #242429;         /* [background-surface-high] modals, tooltips, cards */
+    --dsc-floating: #28282d;        /* [background-surface-higher] context menus */
+    --dsc-surface-top: #2c2d32;     /* [background-surface-highest] hover bar */
+    --dsc-input: #222327;           /* [chat-background-default] message box */
+    --dsc-field: rgba(0, 0, 0, 0.12); /* [input-background-default] */
+    --dsc-header: #fbfbfb;          /* [text-strong] */
+    --dsc-text: #efeff1;            /* [text-default] */
+    --dsc-header-2: #abacb2;        /* [text-subtle] */
+    --dsc-muted: #96979e;           /* [text-muted] */
+    --dsc-channel: #81828a;         /* [channels-default] */
+    --dsc-link: #4d96ee;            /* [text-link] */
+    --dsc-critical-text: #f87e7a;   /* [text-feedback-critical] */
+    --dsc-scroll-thumb: #666770;
+    --dsc-slider: #474851;
+    --dsc-online: #3d9e60;
+    --dsc-hover-a: 0.12;
+    --dsc-active-a: 0.16;
+    --dsc-selected-a: 0.20;
+    --dsc-border-subtle-a: 0.12;
+    --dsc-border-normal-a: 0.20;
+    --dsc-border-muted-a: 0.04;
+    --dsc-scrim: rgba(0, 0, 0, 0.72);
 
-    /* Interactive states in lists */
-    --dsc-hover: rgba(78, 80, 88, 0.3);
-    --dsc-active: rgba(78, 80, 88, 0.48);
-    --dsc-selected: #404249;
-
-    /* Text */
-    --dsc-header: #f2f3f5;
-    --dsc-header-2: #b5bac1;
-    --dsc-text: #dbdee1;
-    --dsc-muted: #949ba4;
-    --dsc-channel: #80848e;
-    --dsc-icon: #b5bac1;
-    --dsc-icon-hover: #dbdee1;
-    --dsc-icon-active: #ffffff;
-
-    /* Lines and depth */
-    --dsc-divider: rgba(78, 80, 88, 0.48);
-    --dsc-border: #1e1f22;
-    --dsc-header-shadow: 0 1px 0 rgba(4, 4, 5, 0.2), 0 1.5px 0 rgba(6, 6, 7, 0.05), 0 2px 0 rgba(4, 4, 5, 0.05);
-    --dsc-elevation-high: 0 8px 16px rgba(0, 0, 0, 0.24);
-    --dsc-scroll-thumb: #1a1b1e;
-    --dsc-scroll-track: #2b2d31;
-    --dsc-secondary-button: #4e5058;
-    --dsc-secondary-button-hover: #6d6f78;
-    --dsc-backdrop: rgba(0, 0, 0, 0.85);
+    /* derived */
+    --dsc-hover: rgba(var(--dsc-mod), var(--dsc-hover-a));
+    --dsc-active: rgba(var(--dsc-mod), var(--dsc-active-a));
+    --dsc-selected: rgba(var(--dsc-mod), var(--dsc-selected-a));
+    --dsc-message-hover: var(--dsc-hover);
+    --dsc-divider: rgba(var(--dsc-mod), var(--dsc-border-subtle-a));
+    --dsc-border: rgba(var(--dsc-mod), var(--dsc-border-normal-a));
+    --dsc-border-muted: rgba(var(--dsc-mod), var(--dsc-border-muted-a));
+    --dsc-rail-item: var(--dsc-hover);
+    --dsc-separator: var(--dsc-divider);
+    --dsc-icon: var(--dsc-header-2);
+    --dsc-icon-hover: var(--dsc-header);
+    --dsc-icon-active: var(--dsc-header);
+    --dsc-secondary-button: var(--dsc-hover);
+    --dsc-secondary-button-hover: var(--dsc-active);
+    --dsc-scroll-track: transparent;
+    --dsc-backdrop: var(--dsc-scrim);
+    --dsc-mention: rgba(248, 163, 0, 0.08);
+    --dsc-header-shadow: none;
+    --dsc-elevation-high: 0 12px 24px 0 rgba(0, 0, 0, 0.24);
+    --dsc-shadow-low: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
 
     /* Shapes and motion */
-    --dsc-radius-xs: 3px;
-    --dsc-radius: 4px;
-    --dsc-radius-md: 8px;
+    --dsc-radius-xs: 4px;
+    --dsc-radius: 8px;
+    --dsc-radius-md: 12px;
     --dsc-radius-lg: 16px;
     --dsc-fast: 100ms;
-    --dsc-normal: 170ms;
+    --dsc-normal: 200ms;
     --dsc-ease: ease-out;
 
     /* Type: gg sans when it's installed, else Noto Sans (loaded from Google Fonts) */
@@ -67,11 +80,14 @@ body.discord-theme {
     --dsc-font-display: "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     --dsc-mono: "gg mono", "Source Code Pro", Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", Monaco, monospace;
 
-    /* Frame sizes */
-    --dsc-rail-w: 72px;
+    /* Frame sizes (2025 visual refresh) */
+    --dsc-title-h: 32px;
+    --dsc-rail-w: 76px;
+    --dsc-guild-size: 44px;
     --dsc-side-w: 240px;
-    --dsc-head-h: 48px;
-    --dsc-panel-h: 52px;
+    --dsc-head-h: 49px;
+    --dsc-panel-h: 56px;
+    --dsc-panel-gap: 8px;
     --dsc-aside-w: 0px;
     --dsc-content-left: calc(var(--dsc-rail-w) + var(--dsc-side-w));
 
@@ -110,42 +126,82 @@ body.discord-theme {
     color-scheme: dark;
 }
 
+/* Ash: the lighter dark (Discord's former dark) */
+body.discord-theme.dsc-ash {
+    --dsc-rail: #2c2d32;
+    --dsc-side: #323339;
+    --dsc-chat: #323339;
+    --dsc-panel: #36373e;
+    --dsc-surface: #393a41;
+    --dsc-floating: #3c3d45;
+    --dsc-surface-top: #3f4048;
+    --dsc-input: #393a41;
+    --dsc-field: rgba(0, 0, 0, 0.08);
+    --dsc-header: #ffffff;
+    --dsc-text: #f3f3f4;
+    --dsc-header-2: #c5c6ca;
+    --dsc-muted: #abacb2;
+    --dsc-channel: #999aa1;
+    --dsc-link: #76aff6;
+    --dsc-critical-text: #ffa09b;
+    --dsc-scroll-thumb: #7d7e87;
+    --dsc-slider: #595a63;
+}
+
+/* Onyx: black */
+body.discord-theme.dsc-onyx {
+    --dsc-rail: #000000;
+    --dsc-side: #000000;
+    --dsc-chat: #000000;
+    --dsc-panel: #000000;
+    --dsc-surface: #0a0a0c;
+    --dsc-floating: #121214;
+    --dsc-surface-top: #17181b;
+    --dsc-input: #101013;
+    --dsc-field: rgba(0, 0, 0, 0.12);
+    --dsc-header: #dcdcdf;
+    --dsc-text: #d4d5d8;
+    --dsc-header-2: #96979e;
+    --dsc-muted: #81828a;
+    --dsc-channel: #7a7b83;
+    --dsc-link: #2781e7;
+    --dsc-critical-text: #eb5f5e;
+    --dsc-scroll-thumb: #595a63;
+    --dsc-slider: #383940;
+    --dsc-active-a: 0.20;
+    --dsc-selected-a: 0.24;
+    --dsc-border-subtle-a: 0.20;
+    --dsc-border-normal-a: 0.24;
+    --dsc-border-muted-a: 0.16;
+}
+
 body.discord-theme.dsc-light {
-    --dsc-link: #006ce7;
-    --dsc-rail: #e3e5e8;
-    --dsc-side: #f2f3f5;
-    --dsc-chat: #ffffff;
-    --dsc-panel: #ebedef;
+    --dsc-rail: #f3f3f4;
+    --dsc-side: #fbfbfb;
+    --dsc-chat: #fbfbfb;
+    --dsc-panel: #fbfbfb;
+    --dsc-surface: #ffffff;
     --dsc-floating: #ffffff;
-    --dsc-input: #ebedef;
-    --dsc-field: #e3e5e8;
-    --dsc-message-hover: #f7f7f8;
-    --dsc-rail-item: #ffffff;
-    --dsc-separator: #c4c9ce;
-
-    --dsc-hover: rgba(116, 127, 141, 0.16);
-    --dsc-active: rgba(116, 127, 141, 0.24);
-    --dsc-selected: rgba(116, 127, 141, 0.3);
-
-    --dsc-header: #060607;
-    --dsc-header-2: #4e5058;
-    --dsc-text: #313338;
-    --dsc-muted: #5c5e66;
-    --dsc-channel: #5c5e66;
-    --dsc-icon: #4e5058;
-    --dsc-icon-hover: #313338;
-    --dsc-icon-active: #060607;
-
-    --dsc-divider: rgba(79, 84, 92, 0.16);
-    --dsc-border: #e1e2e4;
-    --dsc-header-shadow: 0 1px 0 rgba(6, 6, 7, 0.08), 0 1.5px 0 rgba(6, 6, 7, 0.02), 0 2px 0 rgba(6, 6, 7, 0.02);
-    --dsc-elevation-high: 0 8px 16px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(6, 6, 7, 0.08);
-    --dsc-scroll-thumb: #c4c9ce;
-    --dsc-scroll-track: #f2f3f5;
-    --dsc-secondary-button: #6d6f78;
-    --dsc-secondary-button-hover: #4e5058;
-    --dsc-backdrop: rgba(0, 0, 0, 0.7);
-
+    --dsc-surface-top: #ffffff;
+    --dsc-input: #ffffff;
+    --dsc-field: rgba(0, 0, 0, 0.02);
+    --dsc-header: #28282d;
+    --dsc-text: #2e2e34;
+    --dsc-header-2: #595a63;
+    --dsc-muted: #6c6d76;
+    --dsc-channel: #666770;
+    --dsc-link: #006dd4;
+    --dsc-critical-text: #b92733;
+    --dsc-scroll-thumb: #8f9097;
+    --dsc-slider: #c5c6ca;
+    --dsc-online: #01783e;
+    --dsc-green: #01783e;
+    --dsc-selected-a: 0.24;
+    --dsc-border-subtle-a: 0.28;
+    --dsc-border-normal-a: 0.40;
+    --dsc-border-muted-a: 0.20;
+    --dsc-scrim: rgba(0, 0, 0, 0.52);
+    --dsc-elevation-high: 0 12px 24px 0 rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.06);
     color-scheme: light;
 }
 
@@ -154,7 +210,7 @@ body.discord-theme.dsc-aside-on:not(.dsc-no-chat, .dsc-friends) {
 }
 
 body.discord-theme.dsc-aside-on.dsc-channel:not(.dsc-no-chat, .dsc-friends) {
-    --dsc-aside-w: 240px;
+    --dsc-aside-w: 264px;
 }
 
 /* Icons, drawn as masks in Discord's style and painted with the current text color */
