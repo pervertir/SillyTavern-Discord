@@ -355,9 +355,6 @@
     "Today at": "Í dag kl.",
     "Turn off other UI themes (such as Moonlit Echoes, Yodayo Tavern or Microsoft Teams) while this one is on. The chat background image is hidden unless you turn it on above.": "Slökkva á öðrum viðmótsþemum (eins og Moonlit Echoes, Yodayo Tavern eða Microsoft Teams) á meðan þetta er virkt. Bakgrunnsmynd spjalls er falin nema þú kveikir á henni hér fyrir ofan.",
     "Turning it on turns off other theme extensions so they don't clash.": "Þegar kveikt er á því slokknar á öðrum þemaviðbótum svo þær stangist ekki á.",
-    "Turning the Discord theme on…": "Kveiki á Discord-þemanu…",
-    "Discord theme installed, reloading…": "Discord-þemað sett upp, endurhleð…",
-    "Discord theme updated, reloading…": "Discord-þemað uppfært, endurhleð…",
     "Typing dots speed": "Hraði skriftarpunkta",
     "Typing indicator": "Skriftarvísir",
     "Undeafen": "Kveikja á hljóði",
@@ -397,5 +394,9 @@
     "https://… or /backgrounds/…": "https://… eða /backgrounds/…",
     "is typing…": "er að skrifa…",
     "name color": "litur nafns",
-    "pick a color": "veldu lit"
+    "pick a color": "veldu lit",
+    "The Discord theme is on.": "Kveikt er á Discord-þemanu.",
+    "Discord theme installed.": "Discord-þemað sett upp.",
+    "Discord theme updated.": "Discord-þemað uppfært.",
+    "Reloading…": "Endurhleð…"
 }

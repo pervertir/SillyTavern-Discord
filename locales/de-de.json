@@ -355,9 +355,6 @@
     "Today at": "Heute um",
     "Turn off other UI themes (such as Moonlit Echoes, Yodayo Tavern or Microsoft Teams) while this one is on. The chat background image is hidden unless you turn it on above.": "Andere UI-Designs (wie Moonlit Echoes, Yodayo Tavern oder Microsoft Teams) ausschalten, solange dieses aktiv ist. Das Chat-Hintergrundbild ist ausgeblendet, sofern du es nicht oben einschaltest.",
     "Turning it on turns off other theme extensions so they don't clash.": "Beim Einschalten werden andere Design-Erweiterungen ausgeschaltet, damit sie sich nicht in die Quere kommen.",
-    "Turning the Discord theme on…": "Discord-Design wird eingeschaltet …",
-    "Discord theme installed, reloading…": "Discord-Design installiert, wird neu geladen …",
-    "Discord theme updated, reloading…": "Discord-Design aktualisiert, wird neu geladen …",
     "Typing dots speed": "Geschwindigkeit der Tipp-Punkte",
     "Typing indicator": "Tippanzeige",
     "Undeafen": "Ein-/Ausgabe aktivieren",
@@ -397,5 +394,9 @@
     "https://… or /backgrounds/…": "https://… oder /backgrounds/…",
     "is typing…": "schreibt …",
     "name color": "Namensfarbe",
-    "pick a color": "Farbe wählen"
+    "pick a color": "Farbe wählen",
+    "The Discord theme is on.": "Das Discord-Design ist eingeschaltet.",
+    "Discord theme installed.": "Discord-Design installiert.",
+    "Discord theme updated.": "Discord-Design aktualisiert.",
+    "Reloading…": "Wird neu geladen …"
 }

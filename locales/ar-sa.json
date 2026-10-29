@@ -355,9 +355,6 @@
     "Today at": "اليوم في",
     "Turn off other UI themes (such as Moonlit Echoes, Yodayo Tavern or Microsoft Teams) while this one is on. The chat background image is hidden unless you turn it on above.": "أوقف سمات الواجهة الأخرى (مثل Moonlit Echoes أو Yodayo Tavern أو Microsoft Teams) أثناء تشغيل هذه السمة. صورة خلفية الدردشة مخفية ما لم تفعّلها أعلاه.",
     "Turning it on turns off other theme extensions so they don't clash.": "تشغيلها يوقف إضافات السمات الأخرى حتى لا تتعارض.",
-    "Turning the Discord theme on…": "جارٍ تشغيل سمة Discord…",
-    "Discord theme installed, reloading…": "تم تثبيت سمة Discord، جارٍ إعادة التحميل…",
-    "Discord theme updated, reloading…": "تم تحديث سمة Discord، جارٍ إعادة التحميل…",
     "Typing dots speed": "سرعة نقاط الكتابة",
     "Typing indicator": "مؤشر الكتابة",
     "Undeafen": "إلغاء كتم الصوت الوارد",
@@ -397,5 +394,9 @@
     "https://… or /backgrounds/…": "https://… أو /backgrounds/…",
     "is typing…": "يكتب…",
     "name color": "لون الاسم",
-    "pick a color": "اختر لونًا"
+    "pick a color": "اختر لونًا",
+    "The Discord theme is on.": "سمة Discord قيد التشغيل.",
+    "Discord theme installed.": "تم تثبيت سمة Discord.",
+    "Discord theme updated.": "تم تحديث سمة Discord.",
+    "Reloading…": "جارٍ إعادة التحميل…"
 }
