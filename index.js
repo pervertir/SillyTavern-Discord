@@ -4,6 +4,7 @@
 
 import { initAttachments } from './attachments.js';
 import { initCompose, openEmojiFromShortcut } from './compose.js';
+import { initConnections } from './connections.js';
 import { initCustomize } from './customize.js';
 import { registerTheme } from './lib/theme-exclusive.js';
 import { initExtras } from './extras.js';
@@ -505,6 +506,7 @@ async function init() {
     initExtras();
     initAttachments();
     initForms();
+    initConnections();
     initOverlays({ connections: () => openSettings('sys-settings-button') });
     initEmbeds({ enabled: () => !!getSettings().enabled && !!getSettings().showImageLinks });
     initSplit({
