@@ -2,8 +2,9 @@
 // 1. unit tests;
 // 2. a clean SillyTavern test server is started on its own port, used, and stopped again;
 // 3. with it, headless only: the theme leaves zero traces while off (off at load, turned off
-//    live, turned off again), and the regression scripts (theme off vs. fresh load, shortcuts
-//    and grouping, settings and sheets, settings flash).
+//    live, turned off again), the regression scripts (theme off vs. fresh load, shortcuts
+//    and grouping, settings and sheets, settings flash), and the accessibility audit (names,
+//    alt text, contrast in every base theme, visible keyboard focus).
 // It never touches any other SillyTavern server. Settings: test/e2e/env.mjs and the DSC_* variables.
 
 import { spawn, spawnSync } from 'node:child_process';
@@ -15,9 +16,9 @@ const ST_DIR = process.env.DSC_ST_DIR || '/Volumes/980Pro/Workspace/AI/SillyTave
 const DATA = process.env.DSC_DATA || '/Volumes/980Pro/tmp-st-discord/data';
 const PORT = process.env.DSC_PORT || '8004';
 const URL = `http://127.0.0.1:${PORT}/`;
-const SCRIPTS = ['leaks', 'off', 'grp', 'bugs', 'flash'];
+const SCRIPTS = ['leaks', 'off', 'grp', 'bugs', 'flash', 'a11y', 'surfaces'];
 /** Output that means a script found a problem */
-const FAILED = /: [1-9]\d* leaks|same: false|errors \[\s*'|errors: \[\s*'|TimeoutError|Error: /;
+const FAILED = /: [1-9]\d* leaks|same: false|errors \[\s*'|errors: \[\s*'|TimeoutError|Error: |: [1-9]\d* unnamed|[1-9]\d* (no alt|pictures without alt|low contrast|low-contrast)|[1-9]\d* focused controls without|[1-9]\d* painted surfaces|[1-9]\d* corner problems/;
 
 function run(cmd, args, options = {}) {
     const result = spawnSync(cmd, args, { encoding: 'utf8', timeout: 240000, ...options });

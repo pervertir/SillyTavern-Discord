@@ -389,3 +389,73 @@ body.discord-theme .dsc-pg-key {
         z-index: 3009;
     }
 }
+
+/* ---------- the editor's save bar (editor.js): Create while creating, a note while editing ---------- */
+
+body.discord-theme .dsc-editor-foot {
+    display: none;
+}
+
+@media screen and (min-width: 1001px) {
+    body.discord-theme.dsc-editor-open .dsc-editor-foot {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        position: fixed;
+        bottom: 0;
+        left: calc(var(--dsc-set-side) + 40px);
+        width: min(740px, calc(100vw - var(--dsc-set-side) - 120px));
+        min-height: 64px;
+        box-sizing: border-box;
+        padding: 12px 16px;
+        border-top: 1px solid var(--dsc-divider);
+        background: var(--dsc-side);
+        z-index: 3200;
+    }
+
+    /* the panel ends above the bar */
+    body.discord-theme.dsc-editor-open #right-nav-panel.openDrawer {
+        height: calc(100dvh - var(--dsc-set-top) - 64px) !important;
+        padding-bottom: 24px;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    /* room under the editor's content for the bar */
+    body.discord-theme.dsc-editor-open #right-nav-panel.openDrawer {
+        padding-bottom: 88px !important;
+    }
+
+    body.discord-theme.dsc-editor-open .dsc-editor-foot {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+        border-top: 1px solid var(--dsc-divider);
+        background: var(--dsc-side);
+        z-index: 3200;
+    }
+}
+
+body.discord-theme .dsc-editor-note {
+    flex: 1;
+    color: var(--dsc-muted);
+    font: 400 14px/18px var(--dsc-font);
+}
+
+body.discord-theme .dsc-editor-create {
+    flex: none;
+    width: auto;
+    margin: 0;
+    padding: 10px 20px;
+    font-weight: 600;
+}
+
+/* an editor section not available yet (a new server's Scenario) */
+body.discord-theme .dsc-set-item.dsc-set-muted {
+    opacity: 0.5;
+}

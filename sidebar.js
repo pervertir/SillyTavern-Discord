@@ -733,6 +733,7 @@ function createUserPanel() {
     img.alt = '';
     const mono = document.createElement('span');
     mono.className = 'dsc-monogram dsc-me-mono';
+    mono.setAttribute('aria-hidden', 'true');
     const status = document.createElement('span');
     status.className = 'dsc-status dsc-status-on dsc-my-status';
     avatar.append(img, mono, status);

@@ -3,6 +3,7 @@
 // round close button. The editors themselves are SillyTavern's, placed in the page's spot;
 // the sidebar's items scroll to their parts or press SillyTavern's own buttons.
 
+import { selectServer } from './sidebar.js';
 import { closeDrawers, icon, shieldFromOutsideClose, t } from './ui.js';
 
 const ID = 'dsc-editor';
@@ -29,6 +30,16 @@ function scrollTo(id) {
     }
 }
 
+/** The character's Scenario: SillyTavern keeps it with the Definitions; go straight to it. */
+function openScenario() {
+    press('advanced_div');
+    setTimeout(() => {
+        const field = /** @type {HTMLTextAreaElement|null} */ (document.getElementById('scenario_pole'));
+        field?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        field?.focus({ preventScroll: true });
+    }, 400);
+}
+
 function currentName() {
     const context = SillyTavern.getContext();
     if (mode === 'group') {
@@ -47,7 +58,10 @@ function sections() {
             { label: 'Overview', run: () => scrollTo('') },
             { label: 'Members', run: () => scrollTo('rm_group_members') },
             { label: 'Add Members', run: () => scrollTo('rm_group_add_members') },
-            { label: 'Scenario', run: () => press('rm_group_scenario') },
+            // SillyTavern sets a server's scenario only once it exists
+            visible('rm_group_scenario')
+                ? { label: 'Scenario', run: () => press('rm_group_scenario') }
+                : { label: 'Scenario', muted: true, run: () => toastr.info(t('Create the server first; its scenario is set here afterwards.')) },
             ...(editing ? ['separator', { label: 'Delete Server', danger: true, run: () => press('rm_group_delete') }] : []),
         ];
     }
@@ -56,6 +70,7 @@ function sections() {
         { heading: currentName() || t('New Character') },
         { label: 'Profile', run: () => scrollTo('') },
         { label: 'Definitions', run: () => press('advanced_div') },
+        { label: 'Scenario', run: openScenario },
         ...(editing ? [
             { label: 'Lorebook', run: () => press('world_button') },
             { label: 'Export', run: () => press('export_button') },
@@ -95,7 +110,10 @@ function build() {
     esc.textContent = 'ESC';
     esc.setAttribute('aria-hidden', 'true');
     close.append(closeButton, esc);
-    root.append(side, main, close);
+    // Discord's save bar along the bottom: Create while creating, a note while editing
+    const foot = document.createElement('div');
+    foot.className = 'dsc-editor-foot';
+    root.append(side, main, close, foot);
     document.body.append(root);
     shieldFromOutsideClose(root);
     return root;
@@ -121,11 +139,15 @@ function render() {
         item.type = 'button';
         item.className = 'dsc-set-item';
         item.classList.toggle('dsc-set-danger', !!section.danger);
+        item.classList.toggle('dsc-set-muted', !!section.muted);
+        if (section.muted) {
+            item.title = t('Create the server first; its scenario is set here afterwards.');
+        }
         item.classList.toggle('dsc-selected', first);
         first = false;
         item.textContent = t(section.label);
         item.addEventListener('click', () => {
-            if (!section.danger && !['Definitions', 'Lorebook', 'Export', 'Duplicate', 'Scenario'].includes(section.label)) {
+            if (!section.danger && !section.muted && !['Definitions', 'Lorebook', 'Export', 'Duplicate', 'Scenario'].includes(section.label)) {
                 nav.querySelectorAll('.dsc-set-item').forEach(x => x.classList.toggle('dsc-selected', x === item));
             }
             section.run();
@@ -133,6 +155,63 @@ function render() {
         return item;
     }));
     root.querySelector('.dsc-set-title').textContent = t(mode === 'group' ? 'Server Overview' : 'Profile');
+}
+
+/** Creates the server (group) or character with SillyTavern's own button, then opens the new
+    server's chat, which SillyTavern doesn't do by itself. */
+async function create() {
+    const context = SillyTavern.getContext();
+    if (mode === 'group') {
+        if (!document.querySelector('#rm_group_members .group_member')) {
+            toastr.warning(t('Add at least one member first.'));
+            return;
+        }
+        const before = new Set(context.groups.map(group => String(group.id)));
+        press('rm_group_submit');
+        for (let i = 0; i < 50; i++) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            const made = SillyTavern.getContext().groups.find(group => !before.has(String(group.id)));
+            if (made) {
+                // the theme's own way in: leaves Friends and opens the server's channel
+                await selectServer(String(made.id), true);
+                return;
+            }
+        }
+        return;
+    }
+    press('create_button');
+}
+
+/** The save bar: what it says and offers follows the page. */
+function renderFoot() {
+    const foot = document.querySelector(`#${ID} .dsc-editor-foot`);
+    if (!foot) {
+        return;
+    }
+    const creating = mode === 'group' ? visible('rm_group_submit') : !visible('delete_button');
+    const key = `${mode}:${creating}`;
+    if (foot.dataset.key === key) {
+        return;
+    }
+    // the sections differ between creating and editing (Scenario, Delete)
+    if (foot.dataset.key) {
+        render();
+    }
+    foot.dataset.key = key;
+    const note = document.createElement('span');
+    note.className = 'dsc-editor-note';
+    if (creating) {
+        note.textContent = t(mode === 'group' ? 'Name your server and add members, then create it.' : 'Give your character a name, then create it.');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'menu_button dsc-primary dsc-editor-create';
+        button.textContent = t(mode === 'group' ? 'Create Server' : 'Create Character');
+        button.addEventListener('click', create);
+        foot.replaceChildren(note, button);
+    } else {
+        note.textContent = t('Changes save automatically.');
+        foot.replaceChildren(note);
+    }
 }
 
 /** Follows the character panel: which block shows, and whether it's open. */
@@ -153,9 +232,20 @@ function update() {
         }
     }
     mode = next;
+    if (next) {
+        renderFoot();
+    }
 }
 
 export function initEditor() {
+    // Enter in a new server's name creates it
+    document.addEventListener('keydown', (event) => {
+        const target = /** @type {HTMLElement} */ (event.target);
+        if (event.key === 'Enter' && !event.shiftKey && !event.isComposing && target?.id === 'rm_group_chat_name' && visible('rm_group_submit')) {
+            event.preventDefault();
+            create();
+        }
+    }, true);
     const observer = new MutationObserver(() => requestAnimationFrame(update));
     for (const id of ['rm_ch_create_block', 'rm_group_chats_block', 'rm_characters_block']) {
         const element = document.getElementById(id);

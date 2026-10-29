@@ -73,7 +73,7 @@ SillyTavern draws its own logo before any extension loads. To show Discord's loa
 - `npm run check` runs everything that must pass before a push:
   - the unit tests;
   - the zero-traces test, with the theme off at load, turned off live, and turned off again after turning it back on;
-  - the regression scripts in `test/e2e/`.
+  - the regression scripts, the accessibility audit (names, alt text, contrast in every base theme, visible keyboard focus) and the surfaces check (no gradient, shadow or blur around the forms; the corner under your panel belongs to the rail) in `test/e2e/`.
 
   It starts its own clean SillyTavern test server and stops it when done, and drives headless browsers only. The paths are in `test/e2e/env.mjs` and `tools/check.mjs`, and can be overridden with `DSC_*` environment variables.
 - To run the check automatically before every push, turn on the hook once per clone with `git config core.hooksPath .githooks`.

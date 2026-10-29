@@ -41,7 +41,7 @@ update Deep's install after every push.
 
 ### Platform
 17. **Real-device phone test:** iPhone Safari and Android Chrome, keyboard open, safe areas, home-screen (PWA) mode.
-18. **Accessibility:** screen-reader labels, contrast in every theme, full keyboard-only use.
+18. ✅ **Accessibility** (done): every control named, every picture with alt text, WCAG AA text contrast in Dark/Ash/Onyx/Light (Ash's channel color raised), visible focus on every control by keyboard; checked on the main screen, settings pages, profile card, menus and emoji picker, and part of `npm run check` (test/e2e/a11y.mjs).
 19. **Deep's real library at scale:** check speed and layout by counting elements only, never screenshots, with hundreds of characters and long chats.
 20. ✅ **First run** (done): with no characters, Friends says where to start, with Create and Import buttons; no AI connected already shows the not-connected bar.
 21. **Translations:** route the theme's own text through SillyTavern's translator for other languages.

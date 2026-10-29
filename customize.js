@@ -396,6 +396,7 @@ function fieldRow(field) {
         wrap.className = 'dsc-cz-color';
         const picker = document.createElement('input');
         picker.type = 'color';
+        picker.setAttribute('aria-label', `${t(field.label)}: ${t('pick a color')}`);
         const text = document.createElement('input');
         text.type = 'text';
         text.id = id;
@@ -511,6 +512,7 @@ function nameColorsEditor() {
         row.className = 'dsc-cz-name';
         const picker = document.createElement('input');
         picker.type = 'color';
+        picker.setAttribute('aria-label', `${name}: ${t('name color')}`);
         const current = custom().flags[NAME + name];
         picker.value = current ? toHex(current) : '#f2f3f5';
         const text = document.createElement('span');

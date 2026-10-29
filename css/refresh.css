@@ -79,8 +79,10 @@ body.discord-theme .dsc-tb-tool:hover {
 
 body.discord-theme #dsc-guilds {
     top: var(--dsc-title-h);
-    bottom: calc(var(--dsc-panel-h) + var(--dsc-panel-gap) * 2);
-    padding: 4px 0 12px;
+    /* down to the bottom of the window, so the corner under your floating panel is the rail's
+       color too (it showed as a square of the page's own color, plain in Nitro themes) */
+    bottom: 0;
+    padding: 4px 0 calc(var(--dsc-panel-h) + var(--dsc-panel-gap) * 2 + 12px);
     background: var(--dsc-rail);
 }
 

@@ -438,7 +438,7 @@ body.discord-theme #dsc-side {
     bottom: 0;
     width: var(--dsc-side-w);
     background: var(--dsc-side);
-    z-index: 39;
+    z-index: 41; /* above the rail: your panel, inside this column, floats over the rail */
 }
 
 body.discord-theme .dsc-side-head {

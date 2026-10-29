@@ -104,6 +104,7 @@ export function renderNotifications() {
     volumeText.append(volumeName);
     const range = document.createElement('input');
     range.type = 'range';
+    range.setAttribute('aria-label', t('Volume'));
     range.min = '0';
     range.max = '100';
     range.step = '5';
