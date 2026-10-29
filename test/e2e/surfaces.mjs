@@ -19,7 +19,7 @@ const scan = (label) => page.evaluate((label) => {
     const cs = getComputedStyle(e, pseudo);
     if (pseudo && (cs.content === 'none' || cs.content === 'normal')) return;
     const bad = [];
-    if (/gradient/.test(cs.backgroundImage) && !e.matches('.BGSampleTitle, ' + 'input[type="range"], .neo-range-slider, .dsc-swatch, .dsc-swatch *, .dsc-cz-pv-chat, .dsc-prof-banner, .dsc-ap-swatch, [class*="nitro"]')) bad.push('gradient');
+    if (/gradient/.test(cs.backgroundImage) && !e.matches('.BGSampleTitle, ' + 'input[type="range"], .neo-range-slider, .dsc-swatch, .dsc-swatch *, .dsc-cz-preview, .dsc-cz-preview *, .dsc-prof-banner, .dsc-ap-swatch, [class*="nitro"]')) bad.push('gradient');
     if (cs.boxShadow !== 'none' && !e.matches(':focus, :focus-visible')) bad.push('shadow ' + cs.boxShadow.slice(0, 40));
     if (cs.backdropFilter && cs.backdropFilter !== 'none') bad.push('blur');
     if (cs.textShadow !== 'none') bad.push('text-shadow');

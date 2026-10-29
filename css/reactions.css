@@ -145,7 +145,7 @@ body.discord-theme #dsc-emoji-picker {
     height: min(440px, calc(100dvh - 120px));
     overflow: hidden;
     border-radius: var(--dsc-radius-modal, 12px);
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
     box-shadow: 0 0 0 1px var(--dsc-divider), 0 8px 24px rgba(0, 0, 0, 0.32);
     animation: dsc-popout-in 0.12s ease-out;
 }
@@ -156,7 +156,7 @@ body.discord-theme #dsc-emoji-picker .dsc-ep-search {
     padding: 8px 10px;
     border: none;
     border-radius: var(--dsc-radius-input, 8px);
-    background: var(--dsc-rail);
+    background: var(--dsc-paint-rail);
     color: var(--dsc-text);
     font: 400 14px/18px var(--dsc-font);
     outline: none;
@@ -177,7 +177,7 @@ body.discord-theme .dsc-ep-side {
     width: 48px;
     padding: 8px 0;
     align-items: center;
-    background: var(--dsc-rail);
+    background: var(--dsc-paint-rail);
     overflow-y: auto;
 }
 
@@ -214,7 +214,7 @@ body.discord-theme .dsc-ep-section h3 {
     z-index: 1;
     margin: 0;
     padding: 10px 4px 6px;
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
     color: var(--dsc-muted);
     font: 600 12px/16px var(--dsc-font);
     letter-spacing: 0.02em;
@@ -256,7 +256,7 @@ body.discord-theme .dsc-ep-foot {
     height: 48px;
     padding: 0 14px;
     border-top: 1px solid var(--dsc-divider);
-    background: var(--dsc-panel);
+    background: var(--dsc-paint-panel);
 }
 
 body.discord-theme .dsc-ep-foot-char {

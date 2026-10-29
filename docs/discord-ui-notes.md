@@ -105,7 +105,7 @@ border-muted 4% (Onyx 16%, Light 20%). [CSS]
 
 ## Nitro color themes
 
-Discord's stylesheet defines each gradient's stops as `--bg-gradient-<theme>-N-hsl` (23 themes, from Mint Apple to Blurple Twilight, plus Dusk and Easter Egg). The angles, stop positions, light or dark base and main color come from Discord's theme definitions. For example, Chroma Glow is 128.92deg on a dark base and Mint Apple is 180deg on a light base. Dusk's and Easter Egg's angles are estimated. The app background is the gradient, and the surfaces are translucent over it and tinted toward the theme's main color. The values are in nitro.js. [CSS, web]
+Discord's client defines 24 gradient themes (Mint Apple to Blurple Twilight, plus Hexagon): stops, angle, a light or dark base and two tints. The app background is the gradient, fixed to the window; each surface tier (frame, list, chat, panels) is a translucent veil of the base theme's colour over it, so the gradient runs on unbroken. Surface tokens mix 50% of the base tint into the base theme's colours, text tokens 38% of the text tint (oklab). Dark presets sit on Ash, light ones on Light. The values are in nitro.js. [CSS, JS, web]
 
 ## Mobile
 

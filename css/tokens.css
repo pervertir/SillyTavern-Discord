@@ -25,7 +25,7 @@ body.discord-theme {
     --dsc-floating: #28282d;        /* [background-surface-higher] context menus */
     --dsc-surface-top: #2c2d32;     /* [background-surface-highest] hover bar */
     --dsc-input: #222327;           /* [chat-background-default] message box */
-    --dsc-field: rgba(0, 0, 0, 0.12); /* [input-background-default] */
+    --dsc-field: rgba(0, 0, 0, 0.122); /* [input-background-default] */
     --dsc-header: #fbfbfb;          /* [text-strong] */
     --dsc-text: #efeff1;            /* [text-default] */
     --dsc-header-2: #abacb2;        /* [text-subtle] */
@@ -36,15 +36,21 @@ body.discord-theme {
     --dsc-scroll-thumb: #666770;
     --dsc-slider: #474851;
     --dsc-online: #3d9e60;
-    --dsc-hover-a: 0.12;
-    --dsc-active-a: 0.16;
+    --dsc-hover-a: 0.122;
+    --dsc-active-a: 0.161;
     --dsc-selected-a: 0.20;
-    --dsc-border-subtle-a: 0.12;
+    --dsc-border-subtle-a: 0.122;
     --dsc-border-normal-a: 0.20;
-    --dsc-border-muted-a: 0.04;
-    --dsc-scrim: rgba(0, 0, 0, 0.72);
+    --dsc-border-muted-a: 0.039;
+    --dsc-scrim: rgba(0, 0, 0, 0.722);
 
     /* derived */
+    /* surfaces paint with these: the plain colour, or a veil over a Nitro theme's gradient */
+    --dsc-paint-rail: var(--dsc-rail);
+    --dsc-paint-side: var(--dsc-side);
+    --dsc-paint-chat: var(--dsc-chat);
+    --dsc-paint-panel: var(--dsc-panel);
+    --dsc-paint-input: var(--dsc-input);
     --dsc-hover: rgba(var(--dsc-mod), var(--dsc-hover-a));
     --dsc-active: rgba(var(--dsc-mod), var(--dsc-active-a));
     --dsc-selected: rgba(var(--dsc-mod), var(--dsc-selected-a));
@@ -122,7 +128,7 @@ body.discord-theme {
 
     font-family: var(--dsc-font);
     color: var(--dsc-text);
-    background: var(--dsc-rail);
+    background: var(--dsc-paint-rail);
     color-scheme: dark;
 }
 
@@ -136,12 +142,12 @@ body.discord-theme.dsc-ash {
     --dsc-floating: #3c3d45;
     --dsc-surface-top: #3f4048;
     --dsc-input: #393a41;
-    --dsc-field: rgba(0, 0, 0, 0.08);
+    --dsc-field: rgba(0, 0, 0, 0.078);
     --dsc-header: #ffffff;
     --dsc-text: #f3f3f4;
     --dsc-header-2: #c5c6ca;
     --dsc-muted: #abacb2;
-    --dsc-channel: #9fa0a7;
+    --dsc-channel: #9a9ba2;         /* Discord's #999aa1 is 4.49:1 on the list; one step up reaches 4.5 */
     --dsc-link: #76aff6;
     --dsc-critical-text: #ffa09b;
     --dsc-scroll-thumb: #7d7e87;
@@ -158,7 +164,7 @@ body.discord-theme.dsc-onyx {
     --dsc-floating: #121214;
     --dsc-surface-top: #17181b;
     --dsc-input: #101013;
-    --dsc-field: rgba(0, 0, 0, 0.12);
+    --dsc-field: rgba(0, 0, 0, 0.122);
     --dsc-header: #dcdcdf;
     --dsc-text: #d4d5d8;
     --dsc-header-2: #96979e;
@@ -169,10 +175,10 @@ body.discord-theme.dsc-onyx {
     --dsc-scroll-thumb: #595a63;
     --dsc-slider: #383940;
     --dsc-active-a: 0.20;
-    --dsc-selected-a: 0.24;
+    --dsc-selected-a: 0.239;
     --dsc-border-subtle-a: 0.20;
-    --dsc-border-normal-a: 0.24;
-    --dsc-border-muted-a: 0.16;
+    --dsc-border-normal-a: 0.239;
+    --dsc-border-muted-a: 0.161;
 }
 
 body.discord-theme.dsc-light {
@@ -194,15 +200,16 @@ body.discord-theme.dsc-light {
     --dsc-critical-text: #b92733;
     --dsc-scroll-thumb: #8f9097;
     --dsc-slider: #c5c6ca;
-    --dsc-online: #01783e;
+    --dsc-online: #269153;
     --dsc-green: #01783e;
-    --dsc-selected-a: 0.24;
-    --dsc-border-subtle-a: 0.28;
+    --dsc-selected-a: 0.239;
+    --dsc-border-subtle-a: 0.278;
     --dsc-border-normal-a: 0.40;
     --dsc-border-muted-a: 0.20;
-    --dsc-scrim: rgba(0, 0, 0, 0.52);
-    --dsc-elevation-high: 0 12px 24px 0 rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.06);
+    --dsc-scrim: rgba(0, 0, 0, 0.522);
+    --dsc-elevation-high: 0 12px 36px 0 rgba(0, 0, 0, 0.12);
     color-scheme: light;
+    --dsc-shadow-low: 0 1px 4px 0 rgba(0, 0, 0, 0.08);
 }
 
 body.discord-theme.dsc-aside-on:not(.dsc-no-chat, .dsc-friends) {

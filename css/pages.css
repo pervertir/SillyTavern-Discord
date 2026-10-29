@@ -119,11 +119,11 @@ body.discord-theme :is(#top-settings-holder, #right-nav-panel) .inline-drawer {
     padding: 0 16px;
     border: none;
     border-radius: 8px;
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
 }
 
 body.discord-theme :is(#top-settings-holder, #right-nav-panel) .inline-drawer .inline-drawer {
-    background: var(--dsc-chat);
+    background: var(--dsc-paint-chat);
 }
 
 body.discord-theme :is(#top-settings-holder, #right-nav-panel) .inline-drawer-toggle.inline-drawer-header {
@@ -154,7 +154,7 @@ body.discord-theme #user_avatar_block .avatar-container {
     padding: 12px;
     border: 2px solid transparent;
     border-radius: 8px;
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
     box-shadow: none;
 }
 
@@ -202,7 +202,7 @@ body.discord-theme.charListGrid #rm_print_characters_block {
 
 body.discord-theme.charListGrid #rm_print_characters_block :is(.character_select, .group_select) {
     border-radius: 8px;
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
     padding: 12px;
     transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, background-color 0.15s ease-out;
 }
@@ -242,7 +242,7 @@ body.discord-theme #avatar_div_div img {
 body.discord-theme .tag {
     padding: 2px 8px;
     border-radius: 4px;
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
     color: var(--dsc-header-2);
     font-size: 12px;
     font-weight: 500;
@@ -286,7 +286,7 @@ body.discord-theme #Backgrounds .bg_example.selected {
 body.discord-theme .extensions_info .extension_block,
 body.discord-theme #extensions_details .extension_block {
     border-radius: 8px;
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
 }
 
 /* ---------- swipes, edit and message-level controls already themed in chat.css ---------- */
@@ -298,7 +298,7 @@ body.discord-theme .select_chat_block {
     padding: 10px 12px;
     border: none;
     border-radius: 8px;
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
     color: var(--dsc-text);
     box-shadow: none;
 }
@@ -336,7 +336,7 @@ body.discord-theme #avatar-and-name-block {
     margin: 4px 0 12px;
     padding: 0 16px 16px;
     border-radius: 8px;
-    background: var(--dsc-panel);
+    background: var(--dsc-paint-panel);
     overflow: hidden;
 }
 
@@ -369,7 +369,7 @@ body.discord-theme #avatar_div_div {
     height: 88px;
     border: 6px solid var(--dsc-panel);
     border-radius: 50%;
-    background: var(--dsc-panel);
+    background: var(--dsc-paint-panel);
     overflow: hidden;
     box-sizing: content-box;
 }
@@ -398,7 +398,7 @@ body.discord-theme #HotSwapWrapper {
 
 /* group editor: Discord's Server Overview card */
 body.discord-theme #rm_group_chats_block .inline-drawer {
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
 }
 
 /* one part of a split menu at a time (settings.js) */

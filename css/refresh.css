@@ -16,7 +16,7 @@ body.discord-theme #dsc-titlebar {
     height: var(--dsc-title-h);
     padding: 0 12px;
     box-sizing: border-box;
-    background: var(--dsc-rail);
+    background: var(--dsc-paint-rail);
     z-index: 42;
     user-select: none;
 }
@@ -83,7 +83,7 @@ body.discord-theme #dsc-guilds {
        color too (it showed as a square of the page's own color, plain in Nitro themes) */
     bottom: 0;
     padding: 4px 0 calc(var(--dsc-panel-h) + var(--dsc-panel-gap) * 2 + 12px);
-    background: var(--dsc-rail);
+    background: var(--dsc-paint-rail);
 }
 
 body.discord-theme .dsc-guild-icon {
@@ -127,7 +127,7 @@ body.discord-theme #dsc-side {
     border-left: 1px solid var(--dsc-border);
     border-top-left-radius: 12px;
     box-sizing: border-box;
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
     overflow: hidden;
 }
 
@@ -171,7 +171,7 @@ body.discord-theme #dsc-user {
     padding: 0 8px;
     border: 1px solid var(--dsc-border-muted);
     border-radius: 8px;
-    background: var(--dsc-panel);
+    background: var(--dsc-paint-panel);
     z-index: 41;
     box-shadow: 0 -8px 8px var(--dsc-rail);
 }
@@ -185,7 +185,7 @@ body.discord-theme .dsc-user-tool {
 body.discord-theme #sheld {
     top: var(--dsc-title-h);
     border-top: 1px solid var(--dsc-border);
-    background: var(--dsc-chat);
+    background: var(--dsc-paint-chat);
 }
 
 body.discord-theme.movingUI #sheld {
@@ -196,7 +196,7 @@ body.discord-theme #dsc-head {
     height: var(--dsc-head-h);
     border-bottom: 1px solid var(--dsc-divider);
     box-shadow: none;
-    background: var(--dsc-chat);
+    background: var(--dsc-paint-chat);
 }
 
 body.discord-theme .dsc-head-search {
@@ -209,11 +209,11 @@ body.discord-theme .dsc-head-search {
 body.discord-theme #dsc-aside {
     top: calc(var(--dsc-title-h) + var(--dsc-head-h));
     border-left: 1px solid var(--dsc-divider);
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
 }
 
 body.discord-theme #dsc-aside:not(.dsc-members) {
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
     --dsc-ring: var(--dsc-side);
 }
 
@@ -223,7 +223,7 @@ body.discord-theme .dsc-prof-banner {
 
 body.discord-theme .dsc-prof-avatar {
     border-color: var(--dsc-side);
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
 }
 
 body.discord-theme .dsc-prof-card,
@@ -245,24 +245,30 @@ body.discord-theme .dsc-status {
 /* the hover bar */
 body.discord-theme #chat .mes :is(.mes_buttons, .mes_edit_buttons) {
     border: 1px solid var(--dsc-border-muted);
-    border-radius: 8px;
+    border-radius: 4px;
     background: var(--dsc-surface-top);
     box-shadow: var(--dsc-shadow-low);
 }
 
-body.discord-theme #chat .mes .mes_buttons > :first-child {
-    border-radius: 7px 0 0 7px;
-}
-
 /* inline code on a faint blurple */
 body.discord-theme #chat .mes .mes_text code {
-    background: rgba(88, 101, 242, 0.08);
+    border: 1px solid var(--dsc-border);
+    background: rgba(88, 101, 242, 0.078);
+}
+
+body.discord-theme.dsc-light #chat .mes .mes_text code {
+    background: rgba(88, 101, 242, 0.039);
+}
+
+/* a code block's own code has no box of its own */
+body.discord-theme #chat .mes .mes_text pre code {
+    border: none;
+    background: none;
 }
 
 body.discord-theme #chat .mes .mes_text pre {
-    border: 1px solid var(--dsc-border-muted);
+    border: 1px solid var(--dsc-border);
     background: var(--dsc-surface);
-    border-radius: 8px;
 }
 
 /* ---------- message box ---------- */
@@ -275,7 +281,7 @@ body.discord-theme #form_sheld {
 body.discord-theme #send_form {
     border: 1px solid var(--dsc-border-muted);
     border-radius: 8px;
-    background: var(--dsc-input);
+    background: var(--dsc-paint-input);
 }
 
 body.discord-theme #nonQRFormItems {
@@ -296,14 +302,26 @@ body.discord-theme #options_button {
     height: 54px;
 }
 
+/* 32px buttons with 20px icons, 8px apart */
+body.discord-theme #rightSendForm > #dsc-compose-tools {
+    gap: 8px;
+    margin-right: 6px;
+}
+
 body.discord-theme .dsc-compose-tool {
-    width: 36px;
-    height: 54px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    transition: color var(--dsc-fast) var(--dsc-ease), background-color var(--dsc-fast) var(--dsc-ease);
+}
+
+body.discord-theme .dsc-compose-tool:hover {
+    background: var(--dsc-selected);
 }
 
 body.discord-theme .dsc-compose-tool .dsc-ico {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
 }
 
 /* ---------- Friends ---------- */
@@ -348,7 +366,7 @@ body.discord-theme .dsc-friend:hover .dsc-fr-tool {
 
 body.discord-theme .dsc-fr-active {
     border-left-color: var(--dsc-divider);
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
 }
 
 /* ---------- tooltips and menus ---------- */
@@ -392,7 +410,7 @@ body.discord-theme :is(#extensionsMenu, .list-group) .list-group-item {
     margin: 0;
     padding: 8px;
     border-radius: 4px;
-    color: var(--dsc-header-2);
+    color: var(--dsc-header);
     font-size: 14px;
     line-height: 16px;
     font-weight: 500;
@@ -541,7 +559,7 @@ body.discord-theme .dsc-sw-tip {
 
 body.discord-theme #dsc-settings {
     top: var(--dsc-title-h);
-    background: var(--dsc-chat);
+    background: var(--dsc-paint-chat);
 }
 
 body.discord-theme {
@@ -549,7 +567,7 @@ body.discord-theme {
 }
 
 body.discord-theme .dsc-set-side {
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
 }
 
 body.discord-theme .dsc-set-item {
