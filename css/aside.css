@@ -688,3 +688,30 @@ body.discord-theme #chat .mes.dsc-pinned .name_text::after {
     -webkit-mask: var(--dsc-i-pin) center / contain no-repeat;
     mask: var(--dsc-i-pin) center / contain no-repeat;
 }
+
+/* a member muted in this server (SillyTavern's disabled member): a red mic after the name */
+body.discord-theme .dsc-member.dsc-member-muted .dsc-row-name::after {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-left: 6px;
+    vertical-align: -2px;
+    background-color: var(--dsc-red);
+    -webkit-mask: var(--dsc-i-mic) center / contain no-repeat;
+    mask: var(--dsc-i-mic) center / contain no-repeat;
+}
+
+/* first run: the way to the first character */
+body.discord-theme .dsc-fr-start {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+body.discord-theme .dsc-fr-start .menu_button {
+    width: auto;
+    margin: 0;
+    padding: 8px 16px;
+}

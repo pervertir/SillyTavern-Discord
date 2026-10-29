@@ -378,9 +378,12 @@ function renderMembers(aside, group) {
     const { characters } = SillyTavern.getContext();
     const disabled = new Set(group.disabled_members ?? []);
     const members = (group.members ?? []).map(avatar => characters.find(x => x.avatar === avatar)).filter(Boolean);
+    // Discord lists members by role: here who's online, who's muted in this server (SillyTavern's
+    // disabled members, who don't reply), and who's offline
+    const muted = members.filter(x => disabled.has(x.avatar));
     const isOnline = x => !disabled.has(x.avatar) && statusOf(x.avatar) !== 'offline';
     const online = members.filter(isOnline);
-    const offline = members.filter(x => !isOnline(x));
+    const offline = members.filter(x => !disabled.has(x.avatar) && !isOnline(x));
     const parts = [];
     const heading = (label, count) => {
         const h = document.createElement('h3');
@@ -390,6 +393,14 @@ function renderMembers(aside, group) {
     };
     if (online.length) {
         parts.push(heading('Online', online.length), ...online.map(x => memberRow(x, true)));
+    }
+    if (muted.length) {
+        parts.push(heading('Muted', muted.length), ...muted.map((x) => {
+            const row = memberRow(x, false);
+            row.classList.add('dsc-member-muted');
+            row.title = t('Muted in this server: doesn\'t reply');
+            return row;
+        }));
     }
     if (offline.length) {
         parts.push(heading('Offline', offline.length), ...offline.map(x => memberRow(x, false)));
@@ -978,6 +989,28 @@ function renderFriends() {
         empty.className = 'dsc-fr-empty';
         empty.textContent = t(needle ? 'No one by that name.' : empties[friendsTab] ?? empties.all);
         list.append(empty);
+        // first run: no characters at all, so say where to start
+        if (!needle && !SillyTavern.getContext().characters.length) {
+            empty.textContent = t('Nobody here yet. Make your first character, or bring one in, and they\'ll show up as a friend you can message.');
+            const start = document.createElement('div');
+            start.className = 'dsc-fr-start';
+            const button = (label, primary, run) => {
+                const element = document.createElement('button');
+                element.type = 'button';
+                element.className = `menu_button${primary ? ' dsc-primary' : ''}`;
+                element.textContent = t(label);
+                element.addEventListener('click', run);
+                return element;
+            };
+            start.append(
+                button('Create a Character', true, () => {
+                    openCharacterPanel('');
+                    document.getElementById('rm_button_create')?.click();
+                }),
+                button('Import a Character', false, () => document.getElementById('character_import_button')?.click()),
+            );
+            list.append(start);
+        }
         return;
     }
     draw(0);

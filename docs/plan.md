@@ -21,17 +21,17 @@ update Deep's install after every push.
 1. ✅ **Reactions** (done). Add a reaction from the hover bar or menu. They're stored in the message's extra data, so they survive reloads; the prompt is unaffected.
 2. ✅ **Spoilers** (done). `||text||` hides until clicked (emoji and formatting inside too) and is never cut by split replies; `-# text` lines show as small subtext; masked links `[text](url)` already come from SillyTavern's formatter.
 3. ✅ **Images and files** (done). Attached and generated pictures and videos as Discord attachments with a hover toolbar (SillyTavern's zoom, caption and delete kept); pictures open in the viewer with arrows between a message's pictures; files as Discord file cards with download and view.
-4. **Link previews** as Discord embeds (title, site, description). This is opt-in, since it fetches pages.
-5. **"(edited)"** after edited messages.
+4. ⏸ **Link previews**: on hold. A browser page can't fetch other sites' pages (CORS), and SillyTavern's CORS proxy is off by default and a security risk to turn on; revisit only if Deep wants that.
+5. ✅ **"(edited)"** (done): after a message whose text actually changed, with the time as a tooltip; kept in the message's extra data.
 6. ✅ **Pinned Messages** (done). "Pin Message" in the message menu; the header's pin icon opens the Pinned Messages list (newest first) with Jump and Unpin; a small pin marks pinned messages. Pins live in the message's extra data (never in the prompt). Pinning the chat itself moved to the list's footer, the sidebar menu and Ctrl/⌘+P.
-7. ✅ **Search in chat** (done, desktop). Type in the header search (or Ctrl/⌘+F) and press Enter: results open on the right, newest or oldest first, words marked, `from:name` to filter; Jump scrolls to the message, loading older ones if needed. Still to do: a search button on phones.
+7. ✅ **Search in chat** (done, desktop and phone: a magnifier in the phone header). Type in the header search (or Ctrl/⌘+F) and press Enter: results open on the right, newest or oldest first, words marked, `from:name` to filter; Jump scrolls to the message, loading older ones if needed. Still to do: a search button on phones.
 8. ✅ **Emoji picker** (done). The emoji button (and Ctrl/⌘+E) opens Discord's picker: search, category rail, Frequently Used, name preview; a pick goes in at the cursor, Shift+click adds several. Extensions moved to their own Apps button beside it.
 
 ### People and servers
 9. ✅ **Profile popout** (done). Clicking a picture or name in the chat, or a member in the list, opens Discord's card beside it (banner, picture, status, About Me, Member Since, Mutual Servers, View Full Profile, and a Message box that sends in their DM); your own messages open your persona card with Edit Profile. Phones keep the profile sheet.
-10. **Server icons from the group's picture,** server folders, and dragging to reorder servers and DMs.
+10. ◐ **Server icons from the group's picture** (done). Still to do: server folders, and dragging to reorder servers and DMs.
 11. **Channels:** rename a channel (rename the chat) and delete it with confirmation from its menu; a "Create Channel" dialog in Discord style.
-12. **Member roles:** group members shown by role (talking now, muted, others).
+12. ✅ **Member roles** (done): Online, Muted (SillyTavern's disabled members, red mic) and Offline.
 
 ### Settings and controls
 13. ✅ **AI Config, Context and Instruct as Discord forms** (done). Slider rows with visible explanations and value boxes; everyday samplers first, the rest behind "Show all samplers" (Mirostat and other groups fold with their heading); an Instruct Mode switch row at the top of the Instruct page; Discord's uppercase field labels on the formatting pages.
@@ -43,7 +43,7 @@ update Deep's install after every push.
 17. **Real-device phone test:** iPhone Safari and Android Chrome, keyboard open, safe areas, home-screen (PWA) mode.
 18. **Accessibility:** screen-reader labels, contrast in every theme, full keyboard-only use.
 19. **Deep's real library at scale:** check speed and layout by counting elements only, never screenshots, with hundreds of characters and long chats.
-20. **First run:** no characters, no chats, no AI connected; each screen says what to do next.
+20. ✅ **First run** (done): with no characters, Friends says where to start, with Create and Import buttons; no AI connected already shows the not-connected bar.
 21. **Translations:** route the theme's own text through SillyTavern's translator for other languages.
 
 ## Order
