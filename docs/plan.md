@@ -36,8 +36,8 @@ update Deep's install after every push.
 ### Settings and controls
 13. ✅ **AI Config, Context and Instruct as Discord forms** (done). Slider rows with visible explanations and value boxes; everyday samplers first, the rest behind "Show all samplers" (Mirostat and other groups fold with their heading); an Instruct Mode switch row at the top of the Instruct page; Discord's uppercase field labels on the formatting pages.
 14. ✅ **Connections** (done). A card for the connection in use (logo, provider, model, live status), and providers as logo tiles (API, then Chat Completion provider or Text Completion backend) built from SillyTavern's own lists; SillyTavern's key/model/Connect form follows below.
-15. **Notifications settings page** in the settings sidebar, so the sound options sit where Discord keeps them (they're in the extension panel today).
-16. **Keybinds page** with every shortcut, including mute (Ctrl/⌘+Shift+M) and deafen (Ctrl/⌘+Shift+D), which are new.
+15. ✅ **Notifications page** (done). Settings > App Settings > Notifications: desktop notifications and every sound as Discord switch rows, with volume; kept in step with the extension panel.
+16. ✅ **Keybinds page** (done). Every shortcut by group with key chips; mute (Ctrl/⌘+Shift+M) and deafen (Ctrl/⌘+Shift+D) now work.
 
 ### Platform
 17. **Real-device phone test:** iPhone Safari and Android Chrome, keyboard open, safe areas, home-screen (PWA) mode.

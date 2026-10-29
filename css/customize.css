@@ -5,7 +5,7 @@ body.discord-theme #dsc-customize {
     display: none;
 }
 
-body.discord-theme.dsc-settings-page.dsc-settings-open #dsc-customize {
+body.discord-theme.dsc-settings-page.dsc-settings-open #dsc-customize.dsc-page-active {
     display: block;
     position: fixed;
     top: var(--dsc-set-top);
@@ -350,7 +350,7 @@ body.discord-theme .dsc-cz-clear[hidden] {
         visibility: hidden;
     }
 
-    body.discord-theme.dsc-cz-docked.dsc-settings-page.dsc-settings-open #dsc-customize {
+    body.discord-theme.dsc-cz-docked.dsc-settings-page.dsc-settings-open #dsc-customize.dsc-page-active {
         top: var(--dsc-title-h, 32px);
         left: auto;
         right: 0;
@@ -381,7 +381,7 @@ body.discord-theme .dsc-cz-clear[hidden] {
     }
 
 
-    body.discord-theme.dsc-settings-page.dsc-settings-open #dsc-customize {
+    body.discord-theme.dsc-settings-page.dsc-settings-open #dsc-customize.dsc-page-active {
         left: 0;
         width: 100vw;
         padding: 8px 12px calc(24px + env(safe-area-inset-bottom, 0px));

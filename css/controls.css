@@ -432,7 +432,7 @@ body.discord-theme .dsc-kb-keys {
     gap: 4px;
 }
 
-body.discord-theme .dsc-kb-row kbd {
+body.discord-theme .dsc-kb-keys kbd {
     min-width: 12px;
     padding: 2px 6px;
     border: none;

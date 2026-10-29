@@ -3,7 +3,6 @@
 // SillyTavern's own menus, opened in place; only the frame around them is the theme's.
 
 import { ensurePage, undock } from './customize.js';
-import { showShortcuts } from './shortcuts.js';
 import { closeDrawers, icon, isPhone, openDrawer, shieldFromOutsideClose, t } from './ui.js';
 
 const OVERLAY_ID = 'dsc-settings';
@@ -20,9 +19,10 @@ export const SECTIONS = [
     { id: 'user-settings-button', part: 'UI-Theme-Block', label: 'Appearance', title: 'User Settings: UI Theme' },
     { id: 'user-settings-button', part: 'power-user-options-block', label: 'Chat', title: 'User Settings: Chat/Message Handling' },
     { id: 'user-settings-button', part: 'UI-Customization', label: 'Advanced', title: 'User Settings: Character Handling and Miscellaneous' },
+    { page: 'notifications', label: 'Notifications', title: 'Desktop notifications and sounds' },
     { page: 'customize', label: 'Customize', title: 'Customize every part of the theme' },
     { id: 'backgrounds-button', label: 'Backgrounds', title: 'Backgrounds' },
-    { action: 'keybinds', label: 'Keybinds', title: 'Keyboard shortcuts' },
+    { page: 'keybinds', label: 'Keybinds', title: 'Keyboard shortcuts' },
     { heading: 'AI Settings' },
     { id: 'ai-config-button', label: 'AI Config', title: 'AI Response Configuration' },
     { id: 'advanced-formatting-button', part: 'ContextSettings', label: 'Context Template', title: 'AI Response Formatting: Context Template' },
@@ -122,8 +122,6 @@ function createOverlay() {
         } else if (section.page) {
             item.dataset.page = section.page;
             item.addEventListener('click', () => openPage(section.page));
-        } else if (section.action === 'keybinds') {
-            item.addEventListener('click', () => showShortcuts());
         }
         nav.append(item);
         if (section.id === 'WI-SP-button') {
@@ -211,6 +209,14 @@ function isOpen() {
     return body.contains('dsc-settings-open') || body.contains('dsc-settings-list') || body.contains('dsc-settings-page');
 }
 
+/** The theme's own pages: id → a function that renders the page and returns its element */
+const PAGES = new Map([['customize', ensurePage]]);
+
+/** Adds a page of the theme's own to the settings (see SECTIONS for its place). */
+export function registerPage(id, render) {
+    PAGES.set(id, render);
+}
+
 let openPageId = '';
 /** menus that were open when the page opened, still closing */
 let closingIds = [];
@@ -222,7 +228,11 @@ export function openPage(pageId) {
     closingIds = SETTINGS_DRAWERS.filter(id => document.getElementById(id)?.classList.contains('dsc-open'));
     showPart('', '');
     closeDrawers();
-    const page = ensurePage();
+    const page = (PAGES.get(pageId) ?? ensurePage)();
+    page.classList.add('dsc-page');
+    for (const other of document.querySelectorAll('.dsc-page')) {
+        other.classList.toggle('dsc-page-active', other === page);
+    }
     shieldFromOutsideClose(page);
     page.scrollTo({ top: 0 });
     document.body.classList.remove('dsc-settings-list');

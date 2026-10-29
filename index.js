@@ -9,6 +9,7 @@ import { initCustomize } from './customize.js';
 import { registerTheme } from './lib/theme-exclusive.js';
 import { initExtras } from './extras.js';
 import { initForms } from './forms.js';
+import { initPages } from './pages.js';
 import { embedAll, initEmbeds } from './embeds.js';
 import { initAppearance, renderAppearance } from './appearance.js';
 import { hideDiscover, initDiscover, showDiscover } from './discover.js';
@@ -472,6 +473,7 @@ async function init() {
     initSidebar({ showFriends, openSwitcher, openSettings, showChat, showDiscover: openDiscover });
     initHeader({ showAside, toggleAside, openSwitcher, back });
     initCustomize({ settings: getSettings, save: saveSettings });
+    initPages({ settings: getSettings, save: saveSettings, play, enableDesktop: enableDesktopNotifications });
     initSettings({ setTheme, isDark: () => isDark(), drawersChanged: () => trackDrawers.update?.() });
     initSwitcher({ picked: () => document.body.classList.remove('dsc-friends') });
     initCompose();

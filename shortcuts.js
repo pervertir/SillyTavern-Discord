@@ -24,6 +24,8 @@ export const SHORTCUTS = {
     members: ['Mod', 'U'],
     inbox: ['Mod', 'I'],
     emoji: ['Mod', 'E'],
+    mute: ['Mod', 'Shift', 'M'],
+    deafen: ['Mod', 'Shift', 'D'],
 };
 
 /** Writes a shortcut the way this OS does: ⌘K on a Mac, Ctrl+K elsewhere. */
@@ -66,30 +68,51 @@ function isTyping(target) {
     return target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
 }
 
-/** Discord's Keybinds list. */
+/** Every shortcut, by group, as Discord's Keybinds page lists them. */
+export function shortcutGroups() {
+    return [
+        ['Navigation', [
+            ['Quick Switcher', SHORTCUTS.switcher],
+            ['Search', SHORTCUTS.search],
+            ['Navigate Channels', ['Alt', 'Up']],
+            ['Navigate Servers', ['Mod', 'Alt', 'Up']],
+            ['Chat History', SHORTCUTS.inbox],
+            ['User Settings', SHORTCUTS.settings],
+            ['Toggle Hotkeys', SHORTCUTS.keybinds],
+        ]],
+        ['Chat', [
+            ['Send a Message', ['Enter']],
+            ['New Line', ['Shift', 'Enter']],
+            ['Edit Your Last Message', ['Up']],
+            ['Emoji Picker', SHORTCUTS.emoji],
+            ['Start a New Chat', SHORTCUTS.newChat],
+            ['Create a Group', SHORTCUTS.newGroup],
+            ['Pin or Unpin the Chat', SHORTCUTS.pin],
+            ['Toggle Member List', SHORTCUTS.members],
+        ]],
+        ['Voice', [
+            ['Toggle Mute', SHORTCUTS.mute],
+            ['Toggle Deafen', SHORTCUTS.deafen],
+        ]],
+        ['Everywhere', [
+            ['Close a Menu or Dialog', ['Esc']],
+        ]],
+    ];
+}
+
+/** One shortcut's keys as Discord's key chips. */
+export function keysHtml(keys) {
+    return keys.map(key => `<kbd>${escapeHtml(formatKeys([key]))}</kbd>`).join('');
+}
+
+/** Discord's Keybinds list, as a popup (Ctrl/⌘+/). */
 export async function showShortcuts() {
     const { callGenericPopup, POPUP_TYPE } = SillyTavern.getContext();
-    const rows = items => items.map(([label, keys]) => `<div class="dsc-kb-row"><span>${escapeHtml(t(label))}</span><span class="dsc-kb-keys">${keys.map(key => `<kbd>${escapeHtml(formatKeys([key]))}</kbd>`).join('')}</span></div>`).join('');
+    const rows = items => items.map(([label, keys]) => `<div class="dsc-kb-row"><span>${escapeHtml(t(label))}</span><span class="dsc-kb-keys">${keysHtml(keys)}</span></div>`).join('');
     const html = `<div class="dsc-keybinds">
         <h3>${escapeHtml(t('Keyboard Combos'))}</h3>
         <div class="dsc-kb-grid">
-            ${rows([
-                ['Quick Switcher', SHORTCUTS.switcher],
-                ['Search', SHORTCUTS.search],
-                ['Toggle Hotkeys', SHORTCUTS.keybinds],
-                ['User Settings', SHORTCUTS.settings],
-                ['Navigate Channels', ['Alt', 'Up']],
-                ['Navigate Servers', ['Mod', 'Alt', 'Up']],
-                ['Start a New Chat', SHORTCUTS.newChat],
-                ['Create a Group', SHORTCUTS.newGroup],
-                ['Pin or Unpin the Chat', SHORTCUTS.pin],
-                ['Toggle Member List', SHORTCUTS.members],
-                ['Chat History', SHORTCUTS.inbox],
-                ['Emoji Picker', SHORTCUTS.emoji],
-                ['Send a Message', ['Enter']],
-                ['New Line', ['Shift', 'Enter']],
-                ['Close a Menu or Dialog', ['Esc']],
-            ])}
+            ${rows(shortcutGroups().flatMap(([, items]) => items))}
         </div>
     </div>`;
     await callGenericPopup(html, POPUP_TYPE.TEXT, '', { wide: true, allowVerticalScrolling: true });
@@ -128,6 +151,9 @@ export function initShortcuts(actions) {
             [SHORTCUTS.members, actions.members],
             [SHORTCUTS.inbox, actions.inbox],
             [SHORTCUTS.emoji, actions.emoji],
+            // your panel's mute and deafen, as Discord's Ctrl/⌘+Shift+M and D
+            [SHORTCUTS.mute, () => /** @type {HTMLElement} */ (document.querySelector('#dsc-user .dsc-mute'))?.click()],
+            [SHORTCUTS.deafen, () => /** @type {HTMLElement} */ (document.querySelector('#dsc-user .dsc-deafen'))?.click()],
         ].find(([keys]) => matches(event, keys))?.[1];
         if (!run) {
             return;
