@@ -141,7 +141,7 @@ body.discord-theme .dsc-head-tab[data-tab="add"].dsc-selected {
 body.discord-theme .dsc-head-tools {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 8px;
     flex: none;
     margin-left: auto;
     padding-right: 8px;
@@ -151,18 +151,24 @@ body.discord-theme .dsc-head-tool {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     padding: 0;
     margin: 0;
     border: none;
+    border-radius: 8px;
     background: none;
-    color: var(--dsc-icon);
+    color: var(--dsc-muted);
     cursor: pointer;
 }
 
+body.discord-theme .dsc-head-tool > .dsc-ico {
+    width: 20px;
+    height: 20px;
+}
+
 body.discord-theme .dsc-head-tool:hover {
-    color: var(--dsc-icon-hover);
+    color: var(--dsc-header-2);
 }
 
 body.discord-theme .dsc-head-tool.dsc-on {
@@ -631,11 +637,11 @@ body.discord-theme #chat .mes :is(.mes_button, .extraMesButtons > div):hover {
 }
 
 body.discord-theme #chat .mes .mes_buttons > :first-child {
-    border-radius: 7px 0 0 7px;
+    border-radius: 3px 0 0 3px;
 }
 
 body.discord-theme #chat .mes .mes_buttons > :last-child {
-    border-radius: 0 7px 7px 0;
+    border-radius: 0 3px 3px 0;
 }
 
 /* the pencil wears Discord's edit icon */

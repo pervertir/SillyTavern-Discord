@@ -533,6 +533,17 @@ body.discord-theme .dsc-nav-row {
     font-weight: 500;
 }
 
+body.discord-theme .dsc-nav-row > .dsc-ico {
+    width: 20px;
+    height: 20px;
+    margin: 0 6px;
+    color: var(--dsc-muted);
+}
+
+body.discord-theme .dsc-nav-row.dsc-selected > .dsc-ico {
+    color: var(--dsc-header);
+}
+
 body.discord-theme .dsc-dm {
     height: 42px;
     --dsc-ring: var(--dsc-side);
@@ -565,6 +576,7 @@ body.discord-theme :is(.dsc-nav-row, .dsc-dm, .dsc-channel):focus-visible {
 
 body.discord-theme .dsc-row-name {
     min-width: 0;
+    line-height: 20px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

@@ -165,7 +165,7 @@ body.discord-theme .dsc-member {
     height: 42px;
     margin: 1px 0;
     padding: 0 8px;
-    border-radius: 4px;
+    border-radius: 8px;
     color: var(--dsc-channel);
     font-size: 16px;
     font-weight: 500;

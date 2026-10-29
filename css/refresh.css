@@ -245,24 +245,30 @@ body.discord-theme .dsc-status {
 /* the hover bar */
 body.discord-theme #chat .mes :is(.mes_buttons, .mes_edit_buttons) {
     border: 1px solid var(--dsc-border-muted);
-    border-radius: 8px;
+    border-radius: 4px;
     background: var(--dsc-surface-top);
     box-shadow: var(--dsc-shadow-low);
 }
 
-body.discord-theme #chat .mes .mes_buttons > :first-child {
-    border-radius: 7px 0 0 7px;
-}
-
 /* inline code on a faint blurple */
 body.discord-theme #chat .mes .mes_text code {
-    background: rgba(88, 101, 242, 0.08);
+    border: 1px solid var(--dsc-border);
+    background: rgba(88, 101, 242, 0.078);
+}
+
+body.discord-theme.dsc-light #chat .mes .mes_text code {
+    background: rgba(88, 101, 242, 0.039);
+}
+
+/* a code block's own code has no box of its own */
+body.discord-theme #chat .mes .mes_text pre code {
+    border: none;
+    background: none;
 }
 
 body.discord-theme #chat .mes .mes_text pre {
-    border: 1px solid var(--dsc-border-muted);
+    border: 1px solid var(--dsc-border);
     background: var(--dsc-surface);
-    border-radius: 8px;
 }
 
 /* ---------- message box ---------- */
@@ -296,14 +302,26 @@ body.discord-theme #options_button {
     height: 54px;
 }
 
+/* 32px buttons with 20px icons, 8px apart */
+body.discord-theme #rightSendForm > #dsc-compose-tools {
+    gap: 8px;
+    margin-right: 6px;
+}
+
 body.discord-theme .dsc-compose-tool {
-    width: 36px;
-    height: 54px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    transition: color var(--dsc-fast) var(--dsc-ease), background-color var(--dsc-fast) var(--dsc-ease);
+}
+
+body.discord-theme .dsc-compose-tool:hover {
+    background: var(--dsc-selected);
 }
 
 body.discord-theme .dsc-compose-tool .dsc-ico {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
 }
 
 /* ---------- Friends ---------- */
@@ -392,7 +410,7 @@ body.discord-theme :is(#extensionsMenu, .list-group) .list-group-item {
     margin: 0;
     padding: 8px;
     border-radius: 4px;
-    color: var(--dsc-header-2);
+    color: var(--dsc-header);
     font-size: 14px;
     line-height: 16px;
     font-weight: 500;

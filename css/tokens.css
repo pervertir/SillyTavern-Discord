@@ -147,7 +147,7 @@ body.discord-theme.dsc-ash {
     --dsc-text: #f3f3f4;
     --dsc-header-2: #c5c6ca;
     --dsc-muted: #abacb2;
-    --dsc-channel: #999aa1;
+    --dsc-channel: #9a9ba2;         /* Discord's #999aa1 is 4.49:1 on the list; one step up reaches 4.5 */
     --dsc-link: #76aff6;
     --dsc-critical-text: #ffa09b;
     --dsc-scroll-thumb: #7d7e87;
