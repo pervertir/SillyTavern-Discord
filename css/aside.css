@@ -537,3 +537,154 @@ body.discord-theme #chat .mes.dsc-found {
         --dsc-aside-w: 0px !important;
     }
 }
+
+/* ---------- Pinned Messages (pins.js) ---------- */
+
+body.discord-theme #dsc-pins {
+    position: fixed;
+    z-index: 3050;
+    display: flex;
+    flex-direction: column;
+    width: min(420px, calc(100vw - 16px));
+    max-height: min(70dvh, 640px);
+    overflow: hidden;
+    border-radius: var(--dsc-radius-modal, 12px);
+    background: var(--dsc-side);
+    box-shadow: 0 0 0 1px var(--dsc-divider), 0 8px 24px rgba(0, 0, 0, 0.32);
+    animation: dsc-popout-in 0.12s ease-out;
+}
+
+body.discord-theme .dsc-pins-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: none;
+    padding: 14px 12px 14px 16px;
+    border-bottom: 1px solid var(--dsc-divider);
+}
+
+body.discord-theme .dsc-pins-head h2 {
+    flex: 1;
+    margin: 0;
+    color: var(--dsc-header);
+    font: 600 16px/20px var(--dsc-font-display);
+}
+
+body.discord-theme .dsc-pins-close,
+body.discord-theme .dsc-pin-remove {
+    display: flex;
+    padding: 4px;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    color: var(--dsc-icon);
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-pins-close:hover,
+body.discord-theme .dsc-pin-remove:hover {
+    color: var(--dsc-icon-hover);
+}
+
+body.discord-theme .dsc-pins-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    scrollbar-width: thin;
+}
+
+body.discord-theme .dsc-pin-card {
+    cursor: default;
+}
+
+body.discord-theme .dsc-pin-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+body.discord-theme .dsc-pin-tools {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    display: none;
+    align-items: center;
+    gap: 4px;
+}
+
+body.discord-theme .dsc-pin-card:hover .dsc-pin-tools {
+    display: flex;
+}
+
+body.discord-theme .dsc-pin-tools .dsc-search-jump {
+    position: static;
+    display: block;
+}
+
+body.discord-theme .dsc-pin-tools .dsc-pin-remove {
+    background: var(--dsc-floating);
+}
+
+body.discord-theme .dsc-pins-empty {
+    padding: 24px 16px 28px;
+    color: var(--dsc-muted);
+    text-align: center;
+}
+
+body.discord-theme .dsc-pins-empty p {
+    margin: 12px 0 4px;
+    color: var(--dsc-header);
+    font: 600 15px/20px var(--dsc-font);
+}
+
+body.discord-theme .dsc-pins-empty small {
+    font: 400 13px/18px var(--dsc-font);
+}
+
+body.discord-theme .dsc-pins-art {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto;
+    background-color: var(--dsc-icon);
+    opacity: 0.5;
+    -webkit-mask: var(--dsc-i-pin) center / 60% no-repeat;
+    mask: var(--dsc-i-pin) center / 60% no-repeat;
+}
+
+body.discord-theme .dsc-pins-foot {
+    flex: none;
+    padding: 10px 16px;
+    border-top: 1px solid var(--dsc-divider);
+    background: var(--dsc-panel);
+}
+
+body.discord-theme .dsc-pins-foot button {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--dsc-link);
+    font: 500 13px/18px var(--dsc-font);
+    cursor: pointer;
+}
+
+body.discord-theme .dsc-pins-foot button:hover {
+    text-decoration: underline;
+}
+
+body.discord-theme #dsc-head .dsc-tool-pin.dsc-open {
+    color: var(--dsc-icon-hover);
+}
+
+/* a small pin after a pinned message's name */
+body.discord-theme #chat .mes.dsc-pinned .name_text::after {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-left: 6px;
+    vertical-align: -1px;
+    background-color: var(--dsc-muted);
+    -webkit-mask: var(--dsc-i-pin) center / contain no-repeat;
+    mask: var(--dsc-i-pin) center / contain no-repeat;
+}

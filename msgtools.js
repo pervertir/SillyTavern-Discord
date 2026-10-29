@@ -2,6 +2,7 @@
 // Regenerate and Delete; while editing, Enter saves and Esc cancels (the hint under the box
 // says so); and ↑ in an empty message box edits your last message.
 
+import { isPinnedMessage, togglePinMessage } from './pins.js';
 import { openPicker } from './reactions.js';
 import { clickOption, openMenu, t } from './ui.js';
 
@@ -56,6 +57,11 @@ function openMessageMenu(mes, at) {
         { label: 'Reply', icon: 'reply', run: () => reply(mes) },
         { label: 'Edit Message', icon: 'edit', run: () => startEdit(mes) },
         { label: 'Copy Text', icon: 'copy', run: () => copyText(mes) },
+        {
+            label: isPinnedMessage(SillyTavern.getContext().chat[Number(mes.getAttribute('mesid'))]) ? 'Unpin Message' : 'Pin Message',
+            icon: 'pin',
+            run: () => togglePinMessage(Number(mes.getAttribute('mesid'))),
+        },
     ];
     if (isLast && !isUser) {
         items.push({ label: 'Regenerate', icon: 'refresh', run: () => clickOption('option_regenerate') });

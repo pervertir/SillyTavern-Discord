@@ -32,7 +32,7 @@ export function parseQuery(query) {
 }
 
 /** The message as plain text, without markup. */
-function plainText(message) {
+export function plainText(message) {
     const div = document.createElement('div');
     div.innerHTML = SillyTavern.libs.DOMPurify.sanitize(String(message.extra?.display_text || message.mes || ''), { ALLOWED_TAGS: [] });
     // markdown marks aren't words: **bold**, _italics_, ~~struck~~, `code`, # headings, ||spoilers||
@@ -87,7 +87,7 @@ function closeResults() {
 }
 
 /** The picture beside a result: the speaker's own. */
-function avatarFor(message) {
+export function avatarFor(message) {
     const { getThumbnailUrl, characters } = SillyTavern.getContext();
     if (message.is_user) {
         return message.force_avatar || document.querySelector('#chat .mes[is_user="true"] .avatar img')?.getAttribute('src') || '';
@@ -98,7 +98,7 @@ function avatarFor(message) {
     return message.force_avatar || (character ? getThumbnailUrl('avatar', character.avatar) : '');
 }
 
-async function jump(index) {
+export async function jump(index) {
     const { executeSlashCommandsWithOptions } = SillyTavern.getContext();
     if (window.matchMedia('(max-width: 1100px)').matches) {
         closeResults();

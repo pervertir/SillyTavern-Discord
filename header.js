@@ -5,6 +5,7 @@ import { channelLabel, getCurrentPlace, getDirectMessages, getGroup, isPinned, o
 import { formatListTime } from './messages.js';
 import { isPlaceholder, monogramizeAll } from './monograms.js';
 import { paintPresence, statusOf } from './presence.js';
+import { initPins, togglePins } from './pins.js';
 import { initSearch } from './search.js';
 import { SHORTCUTS, showShortcuts, withShortcut } from './shortcuts.js';
 import { openCharacterPanel, selectServer } from './sidebar.js';
@@ -107,7 +108,7 @@ function createHeader() {
         headButton('dsc-for-dm dsc-tool-call', withShortcut(t('Start a New Chat'), SHORTCUTS.newChat), 'phone', () => clickOption('option_start_new_chat')),
         headButton('dsc-for-dm dsc-tool-video', t('Chat History'), 'video', () => clickOption('option_select_chat')),
         headButton('dsc-for-channel dsc-tool-threads', t('Chat History'), 'threads', () => clickOption('option_select_chat')),
-        headButton('dsc-for-chat dsc-pin-tool dsc-tool-pin', withShortcut(t('Pin Chat'), SHORTCUTS.pin), 'pin', togglePinCurrent),
+        headButton('dsc-for-chat dsc-tool-pin', t('Pinned Messages'), 'pin', event => togglePins(/** @type {HTMLElement} */ (event?.currentTarget ?? document.querySelector('#dsc-head .dsc-tool-pin')))),
         headButton('dsc-for-dm dsc-convert dsc-tool-add', t('Convert to Group'), 'person-add', () => clickOption('option_convert_to_group')),
         headButton('dsc-for-dm dsc-aside-tool dsc-tool-profile', withShortcut(t('Show User Profile'), SHORTCUTS.members), 'profile', () => actions.toggleAside()),
         headButton('dsc-for-channel dsc-aside-tool dsc-tool-members', withShortcut(t('Show Member List'), SHORTCUTS.members), 'members', () => actions.toggleAside()),
@@ -1000,6 +1001,7 @@ export function initHeader(options) {
     createAside();
     createFriends();
     initProfileClicks();
+    initPins({ isChatPinned: () => isPinned(getCurrentPlace()), toggleChatPin: togglePinCurrent });
     refreshHeader();
     // the Friends page lists the people you talk to, which arrive with the conversation list
     onDataChange(() => {

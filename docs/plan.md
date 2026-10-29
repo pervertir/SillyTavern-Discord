@@ -23,7 +23,7 @@ update Deep's install after every push.
 3. ✅ **Images and files** (done). Attached and generated pictures and videos as Discord attachments with a hover toolbar (SillyTavern's zoom, caption and delete kept); pictures open in the viewer with arrows between a message's pictures; files as Discord file cards with download and view.
 4. **Link previews** as Discord embeds (title, site, description). This is opt-in, since it fetches pages.
 5. **"(edited)"** after edited messages.
-6. **Pinned Messages:** the pin icon shows a list of pinned messages (SillyTavern checkpoints and bookmarks), with Jump.
+6. ✅ **Pinned Messages** (done). "Pin Message" in the message menu; the header's pin icon opens the Pinned Messages list (newest first) with Jump and Unpin; a small pin marks pinned messages. Pins live in the message's extra data (never in the prompt). Pinning the chat itself moved to the list's footer, the sidebar menu and Ctrl/⌘+P.
 7. ✅ **Search in chat** (done, desktop). Type in the header search (or Ctrl/⌘+F) and press Enter: results open on the right, newest or oldest first, words marked, `from:name` to filter; Jump scrolls to the message, loading older ones if needed. Still to do: a search button on phones.
 8. **Emoji picker:** a real Discord-style picker on the emoji button, with recent emoji. Extensions move to their own button.
 
