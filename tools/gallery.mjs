@@ -1,5 +1,6 @@
 // Takes the README's screenshots on the clean test profile (sample characters only): desktop and
-// phone; Dark, Light and a Nitro theme; the key screens. Writes PNGs to docs/screenshots/raw/;
+// phone; Dark, Light and a Nitro theme; the key screens. Writes PNGs to docs/screenshots/raw/ (and the
+// README's lead picture, .github/dm.png);
 // convert them with: for f in docs/screenshots/raw/*.png; do cwebp -q 85 "$f" -o docs/screenshots/$(basename "$f" .png).webp; done
 // node tools/gallery.mjs starts the test server itself and stops it when done.
 import fs from 'node:fs';
@@ -59,6 +60,8 @@ await page.evaluate(async () => {
 await page.waitForTimeout(1500);
 await page.evaluate(async (base) => { const presence = await import(`${base}presence.js`); presence.showTyping?.('Seraphina'); }, theme);
 await shot(page, 'chat-dark');
+// the same shot heads the README
+fs.copyFileSync(path.join(OUT, 'chat-dark.png'), path.join(ROOT, '.github/dm.png'));
 await page.evaluate(async (base) => { const presence = await import(`${base}presence.js`); presence.hideTyping?.(); }, theme);
 
 // the profile popout

@@ -6,7 +6,7 @@ update Deep's install after every push.
 
 ## Done
 
-- **Look:** the 2025 redesign layout. Dark, Ash, Onyx and Light themes, all 23 Nitro gradients, the real Discord logo, Discord-style icons throughout, Discord's fonts and colours (docs/discord-ui-notes.md).
+- **Look:** the 2025 redesign layout. Dark, Ash, Onyx and Light themes, all 24 Nitro gradients, the real Discord logo, Discord-style icons throughout, Discord's fonts and colours (docs/discord-ui-notes.md).
 - **Navigation:** server rail (groups as servers), DMs, channels, Friends, Discover, Notifications (phone), quick switcher, your status menu with Switch Accounts, unread badges, desktop notifications.
 - **Chat:** cozy and compact layouts, grouping, date lines, hover bar, right-click message menu, Reply, Enter/Esc editing, ↑ to edit, typing dots, short split messages revealed one by one, presence (online, idle, Do Not Disturb, offline) with held replies, sounds, Jump to Present, the not-connected bar, the "/" command picker.
 - **Settings:** full-screen Discord settings split into one-topic pages; Appearance (themes, colours, display, font size, spacing, 24-hour time); Profile and Server Settings editors; lorebooks as channels.
