@@ -88,7 +88,7 @@ function section(title, ...rows) {
     return block;
 }
 
-export function renderNotifications() {
+function renderNotifications() {
     const element = page('dsc-notifications');
     const settings = actions.settings();
     const desktop = switchRow('desktopNotifications', 'Enable Desktop Notifications',
@@ -136,7 +136,7 @@ export function renderNotifications() {
     return element;
 }
 
-export function renderKeybinds() {
+function renderKeybinds() {
     const element = page('dsc-keybinds-page');
     const intro = document.createElement('p');
     intro.className = 'dsc-pg-intro';

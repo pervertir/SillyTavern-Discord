@@ -9,7 +9,7 @@ import { initCustomize } from './customize.js';
 import { registerTheme } from './lib/theme-exclusive.js';
 import { initExtras } from './extras.js';
 import { initForms } from './forms.js';
-import { buildGated, teardown } from './life.js';
+import { GatedObserver, listen, onEvent, setGate, teardown } from './life.js';
 import { initPages } from './pages.js';
 import { initEmbeds } from './embeds.js';
 import { initAppearance, renderAppearance } from './appearance.js';
@@ -376,7 +376,7 @@ function trackDrawers() {
             refreshEditor();
         }
     };
-    const observer = new MutationObserver(update);
+    const observer = new GatedObserver(update);
     trackDrawers.update = update;
     for (const drawer of drawers) {
         const content = drawer.querySelector(':scope > .drawer-content');
@@ -425,6 +425,34 @@ function createPhoneTabs() {
     document.body.append(tabs);
 }
 
+/** The panel's plain fields: element id, setting key, how the field reads, and what runs after a change. */
+const PANEL_FIELDS = [
+    { id: 'dsc_pause_user_theme', key: 'pauseUserTheme', after: () => exclusive.changed() },
+    { id: 'dsc_appearance', key: 'appearance', after: value => setTheme(value) },
+    { id: 'dsc_nitro', key: 'nitroTheme', after: () => syncThemeFields() },
+    { id: 'dsc_aside', key: 'aside' },
+    { id: 'dsc_message_display', key: 'messageDisplay' },
+    { id: 'dsc_presence', key: 'presence' },
+    { id: 'dsc_times', key: 'discordTimes', after: () => labelMessages() },
+    { id: 'dsc_sounds', key: 'sounds' },
+    { id: 'dsc_show_bg', key: 'showBackground' },
+    // pictures in or out takes a fresh draw of the chat
+    { id: 'dsc_image_links', key: 'showImageLinks', after: () => SillyTavern.getContext().reloadCurrentChat() },
+    { id: 'dsc_split', key: 'splitReplies', after: () => renderAllParts() },
+    { id: 'dsc_sound_volume', key: 'soundVolume', read: Number, after: () => play('message') },
+    { id: 'dsc_sound_message', key: 'soundMessage' },
+    { id: 'dsc_sound_online', key: 'soundOnline' },
+    { id: 'dsc_sound_always', key: 'soundAlways' },
+    { id: 'dsc_sound_voice', key: 'soundVoice' },
+    { id: 'dsc_presence_sim', key: 'presenceSim', after: () => refreshPresenceViews() },
+    { id: 'dsc_wake_delay', key: 'wakeDelay', read: value => clamp(Number(value) || 0, 0, 30) },
+    { id: 'dsc_recent_max', key: 'recentMax', read: value => clamp(Number(value) || defaultSettings.recentMax, 5, 500), after: () => scheduleRefresh() },
+];
+
+function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+}
+
 async function renderSettingsPanel() {
     const { renderExtensionTemplateAsync } = SillyTavern.getContext();
     const html = await renderExtensionTemplateAsync(EXTENSION_FOLDER, 'settings');
@@ -436,100 +464,52 @@ async function renderSettingsPanel() {
     translateTree(container.querySelector('.dsc-settings-panel'));
 
     const settings = getSettings();
-    const byId = id => /** @type {HTMLInputElement} */ (document.getElementById(id));
-    const enabled = byId('dsc_enabled');
-    const pauseUserTheme = byId('dsc_pause_user_theme');
-    const appearance = byId('dsc_appearance');
     const nitro = /** @type {HTMLSelectElement} */ (document.getElementById('dsc_nitro'));
     for (const theme of NITRO_THEMES) {
         nitro.append(new Option(theme.name, theme.id));
     }
-    const aside = byId('dsc_aside');
-    const display = byId('dsc_message_display');
-    const presence = byId('dsc_presence');
-    const times = byId('dsc_times');
-    const recentMax = byId('dsc_recent_max');
-    const presenceSim = byId('dsc_presence_sim');
-    const sounds = byId('dsc_sounds');
-    const desktop = byId('dsc_desktop_notifications');
-    const split = byId('dsc_split');
-    const showBackground = byId('dsc_show_bg');
-    const imageLinks = byId('dsc_image_links');
-    const soundVolume = byId('dsc_sound_volume');
-    const soundMessage = byId('dsc_sound_message');
-    const soundOnline = byId('dsc_sound_online');
-    const soundAlways = byId('dsc_sound_always');
-    const soundVoice = byId('dsc_sound_voice');
-    const wakeDelay = byId('dsc_wake_delay');
 
-    enabled.checked = settings.enabled;
-    pauseUserTheme.checked = settings.pauseUserTheme !== false;
-    appearance.value = settings.appearance;
-    nitro.value = settings.nitroTheme;
-    aside.checked = settings.aside;
-    display.value = settings.messageDisplay;
-    presence.checked = settings.presence;
-    times.checked = settings.discordTimes;
-    recentMax.value = String(settings.recentMax);
-    presenceSim.checked = settings.presenceSim;
-    sounds.checked = settings.sounds;
-    desktop.checked = settings.desktopNotifications;
-    split.checked = settings.splitReplies;
-    showBackground.checked = settings.showBackground;
-    imageLinks.checked = settings.showImageLinks;
-    soundVolume.value = String(settings.soundVolume);
-    soundMessage.checked = settings.soundMessage;
-    soundOnline.checked = settings.soundOnline;
-    soundAlways.checked = settings.soundAlways;
-    soundVoice.checked = settings.soundVoice;
-    wakeDelay.value = String(settings.wakeDelay);
-
-    const bind = (element, key, read, after) => {
-        element.addEventListener('input', () => {
-            settings[key] = read();
-            applySettings();
-            saveSettings();
-            after?.();
-        });
+    const update = (key, value, after) => {
+        settings[key] = value;
+        applySettings();
+        saveSettings();
+        after?.(value);
     };
-    bind(enabled, 'enabled', () => enabled.checked, () => {
-        if (enabled.checked) {
+
+    for (const { id, key, read, after } of PANEL_FIELDS) {
+        const field = /** @type {HTMLInputElement} */ (document.getElementById(id));
+        const isBox = field.type === 'checkbox';
+        if (isBox) {
+            field.checked = key === 'pauseUserTheme' ? settings[key] !== false : settings[key];
+        } else {
+            field.value = String(settings[key]);
+        }
+        field.addEventListener('input', () => {
+            const raw = isBox ? field.checked : field.value;
+            update(key, read ? read(raw) : raw, after);
+        });
+    }
+
+    const enabled = /** @type {HTMLInputElement} */ (document.getElementById('dsc_enabled'));
+    enabled.checked = settings.enabled;
+    enabled.addEventListener('input', () => update('enabled', enabled.checked, (on) => {
+        if (on) {
             exclusive.activated();
             turnOn();
         } else {
             exclusive.changed();
             turnOff();
         }
-    });
-    bind(pauseUserTheme, 'pauseUserTheme', () => pauseUserTheme.checked, () => exclusive.changed());
-    bind(appearance, 'appearance', () => appearance.value, () => setTheme(appearance.value));
-    bind(nitro, 'nitroTheme', () => nitro.value, () => syncThemeFields());
-    bind(aside, 'aside', () => aside.checked);
-    bind(display, 'messageDisplay', () => display.value);
-    bind(presence, 'presence', () => presence.checked);
-    bind(times, 'discordTimes', () => times.checked, () => labelMessages());
-    bind(sounds, 'sounds', () => sounds.checked);
-    bind(showBackground, 'showBackground', () => showBackground.checked);
-    // pictures in or out takes a fresh draw of the chat
-    bind(imageLinks, 'showImageLinks', () => imageLinks.checked, () => SillyTavern.getContext().reloadCurrentChat());
-    bind(split, 'splitReplies', () => split.checked, () => renderAllParts());
+    }));
+
     // turning desktop notifications on asks the browser first
+    const desktop = /** @type {HTMLInputElement} */ (document.getElementById('dsc_desktop_notifications'));
+    desktop.checked = settings.desktopNotifications;
     desktop.addEventListener('input', async () => {
         settings.desktopNotifications = desktop.checked && await enableDesktopNotifications();
         desktop.checked = settings.desktopNotifications;
-    split.checked = settings.splitReplies;
-    showBackground.checked = settings.showBackground;
-    imageLinks.checked = settings.showImageLinks;
         saveSettings();
     });
-    bind(soundVolume, 'soundVolume', () => Number(soundVolume.value), () => play('message'));
-    bind(soundMessage, 'soundMessage', () => soundMessage.checked);
-    bind(soundOnline, 'soundOnline', () => soundOnline.checked);
-    bind(soundAlways, 'soundAlways', () => soundAlways.checked);
-    bind(soundVoice, 'soundVoice', () => soundVoice.checked);
-    bind(presenceSim, 'presenceSim', () => presenceSim.checked, () => refreshPresenceViews());
-    bind(wakeDelay, 'wakeDelay', () => Math.min(30, Math.max(0, Number(wakeDelay.value) || 0)));
-    bind(recentMax, 'recentMax', () => Math.min(500, Math.max(5, Number(recentMax.value) || defaultSettings.recentMax)), () => scheduleRefresh());
 }
 
 async function init() {
@@ -556,95 +536,93 @@ async function init() {
     }
 }
 
-/** Builds the theme: every handler registered here does nothing while it's off (life.js). */
+/** Builds the theme. Handlers on anything that outlives it are gated by the enabled setting (life.js). */
 async function start() {
     if (started) {
         return;
     }
     started = true;
-    let listLoaded = Promise.resolve();
-    buildGated(() => !!getSettings().enabled, () => {
-        darkQuery.addEventListener('change', applySettings);
-        initTooltips();
+    setGate(() => !!getSettings().enabled);
+    listen(darkQuery, 'change', applySettings);
+    initTooltips();
 
-        listLoaded = initData({ max: () => getSettings().recentMax, opened: showChat });
-        initSidebar({ showFriends, openSwitcher, openSettings, showChat, showDiscover: openDiscover, getLayout: () => getSettings().serverLayout, setLayout: (layout) => { getSettings().serverLayout = layout; saveSettings(); } });
-        initHeader({ showAside, toggleAside, openSwitcher, back });
-        initCustomize({ settings: getSettings, save: saveSettings });
-        initPages({ settings: getSettings, save: saveSettings, play, enableDesktop: enableDesktopNotifications });
-        initSettings({ setTheme, isDark: () => isDark(), drawersChanged: () => trackDrawers.update?.() });
-        initSwitcher({ picked: () => document.body.classList.remove('dsc-friends') });
-        initCompose();
-        initEditor();
-        initAppearance({
-            current: () => ({ appearance: getSettings().appearance, nitroTheme: getSettings().nitroTheme }),
-            setBase: setTheme,
-            setNitro: setNitroTheme,
-            get: key => getSettings()[key],
-            set: (key, value) => {
-                getSettings()[key] = value;
-                applySettings();
-                saveSettings();
-                if (key === 'clock24') {
-                    labelMessages();
+    const listLoaded = initData({ max: () => getSettings().recentMax, opened: showChat });
+    initSidebar({ showFriends, openSwitcher, openSettings, showChat, showDiscover: openDiscover, getLayout: () => getSettings().serverLayout, setLayout: (layout) => { getSettings().serverLayout = layout; saveSettings(); } });
+    initHeader({ showAside, toggleAside, openSwitcher, back });
+    initCustomize({ settings: getSettings, save: saveSettings });
+    initPages({ settings: getSettings, save: saveSettings, play, enableDesktop: enableDesktopNotifications });
+    initSettings({ setTheme, isDark: () => isDark(), drawersChanged: () => trackDrawers.update?.() });
+    initSwitcher({ picked: () => document.body.classList.remove('dsc-friends') });
+    initCompose();
+    initEditor();
+    initAppearance({
+        current: () => ({ appearance: getSettings().appearance, nitroTheme: getSettings().nitroTheme }),
+        setBase: setTheme,
+        setNitro: setNitroTheme,
+        get: key => getSettings()[key],
+        set: (key, value) => {
+            getSettings()[key] = value;
+            applySettings();
+            saveSettings();
+            if (key === 'clock24') {
+                labelMessages();
+            }
+            if (key === 'messageDisplay') {
+                const select = /** @type {HTMLSelectElement} */ (document.getElementById('dsc_message_display'));
+                if (select) {
+                    select.value = value;
                 }
-                if (key === 'messageDisplay') {
-                    const select = /** @type {HTMLSelectElement} */ (document.getElementById('dsc_message_display'));
-                    if (select) {
-                        select.value = value;
-                    }
-                }
-            },
-        });
-        initDiscover({ shown: () => { refreshHeader(); refreshTitle(); markCurrent(); } });
-        createPhoneTabs();
-        trackDrawers();
-        setClock(() => !!getSettings().clock24);
-        initMessages();
-        initMessageTools();
-        initReactions();
-        initExtras();
-        initAttachments();
-        initForms();
-        initConnections();
-        initOverlays({ connections: () => openSettings('sys-settings-button') });
-        initEmbeds({ enabled: () => !!getSettings().enabled && !!getSettings().showImageLinks });
-        initSplit({
-            enabled: () => !!getSettings().enabled && !!getSettings().splitReplies,
-            paced: () => !!getSettings().presenceSim,
-        });
-        initSounds({ settings: getSettings, save: saveSettings });
-        initNotify({ settings: getSettings, save: saveSettings, openSettings });
-        initPresence({
-            enabled: () => !!getSettings().enabled && !!getSettings().presenceSim,
-            delay: () => getSettings().wakeDelay,
-            changed: refreshPresenceViews,
-        });
-        initMonograms();
-        initShortcuts({
-            enabled: () => !!getSettings().enabled,
-            switcher: () => openSwitcher(''),
-            settings: () => openSettings(''),
-            conversation: stepConversation,
-            server: stepServer,
-            newChat: () => getCurrentPlace() && clickOption('option_start_new_chat'),
-            newGroup: () => openCharacterPanel('rm_button_group_chats'),
-            pin: togglePinCurrent,
-            members: toggleAside,
-            inbox: () => openInbox(),
-            emoji: openEmojiFromShortcut,
-        });
-        applySettings();
-
-        const { eventSource, eventTypes } = SillyTavern.getContext();
-        eventSource.on(eventTypes.CHAT_CHANGED, onChatChanged);
-        eventSource.on(eventTypes.GROUP_UPDATED, () => { refreshHeader(); refreshTitle(); });
-        eventSource.on(eventTypes.CHARACTER_EDITED, refreshHeader);
-        eventSource.on(eventTypes.CHARACTER_RENAMED, () => { refreshHeader(); refreshTitle(); });
-        eventSource.on(eventTypes.PERSONA_CHANGED, refreshPersona);
-        eventSource.on(eventTypes.PERSONA_RENAMED, () => refreshPersona());
-        eventSource.on(eventTypes.SETTINGS_UPDATED, () => refreshPersona());
+            }
+        },
     });
+    initDiscover({ shown: () => { refreshHeader(); refreshTitle(); markCurrent(); } });
+    createPhoneTabs();
+    trackDrawers();
+    setClock(() => !!getSettings().clock24);
+    initMessages();
+    initMessageTools();
+    initReactions();
+    initExtras();
+    initAttachments();
+    initForms();
+    initConnections();
+    initOverlays({ connections: () => openSettings('sys-settings-button') });
+    initEmbeds({ enabled: () => !!getSettings().enabled && !!getSettings().showImageLinks });
+    initSplit({
+        enabled: () => !!getSettings().enabled && !!getSettings().splitReplies,
+        paced: () => !!getSettings().presenceSim,
+    });
+    initSounds({ settings: getSettings, save: saveSettings });
+    initNotify({ settings: getSettings, save: saveSettings, openSettings });
+    initPresence({
+        enabled: () => !!getSettings().enabled && !!getSettings().presenceSim,
+        delay: () => getSettings().wakeDelay,
+        changed: refreshPresenceViews,
+    });
+    initMonograms();
+    initShortcuts({
+        enabled: () => !!getSettings().enabled,
+        switcher: () => openSwitcher(''),
+        settings: () => openSettings(''),
+        conversation: stepConversation,
+        server: stepServer,
+        newChat: () => getCurrentPlace() && clickOption('option_start_new_chat'),
+        newGroup: () => openCharacterPanel('rm_button_group_chats'),
+        pin: togglePinCurrent,
+        members: toggleAside,
+        inbox: () => openInbox(),
+        emoji: openEmojiFromShortcut,
+    });
+    applySettings();
+
+    const { eventTypes } = SillyTavern.getContext();
+    onEvent(eventTypes.CHAT_CHANGED, onChatChanged);
+    onEvent(eventTypes.GROUP_UPDATED, () => { refreshHeader(); refreshTitle(); });
+    onEvent(eventTypes.CHARACTER_EDITED, refreshHeader);
+    onEvent(eventTypes.CHARACTER_RENAMED, () => { refreshHeader(); refreshTitle(); });
+    onEvent(eventTypes.PERSONA_CHANGED, refreshPersona);
+    onEvent(eventTypes.PERSONA_RENAMED, () => refreshPersona());
+    onEvent(eventTypes.SETTINGS_UPDATED, () => refreshPersona());
     onChatChanged(SillyTavern.getContext().getCurrentChatId());
     await Promise.race([listLoaded, delay(3000)]);
     endBoot();

@@ -9,6 +9,7 @@ import { embedImages, embedKey } from './embeds.js';
 import { alreadyDone, markDone } from './ui.js';
 import { clock } from './messages.js';
 import { hideTyping, showTyping } from './presence.js';
+import { onEvent } from './life.js';
 
 let enabled = () => true;
 let paced = () => true;
@@ -165,22 +166,22 @@ function restoreAll() {
 export function initSplit(options) {
     enabled = options.enabled;
     paced = options.paced;
-    const { eventSource, eventTypes } = SillyTavern.getContext();
-    eventSource.on(eventTypes.GENERATION_STARTED, () => {
+    const { eventTypes } = SillyTavern.getContext();
+    onEvent(eventTypes.GENERATION_STARTED, () => {
         streamed = false;
     });
-    eventSource.on(eventTypes.STREAM_TOKEN_RECEIVED, () => {
+    onEvent(eventTypes.STREAM_TOKEN_RECEIVED, () => {
         streamed = true;
     });
-    eventSource.on(eventTypes.CHARACTER_MESSAGE_RENDERED, (mesId, type) => {
+    onEvent(eventTypes.CHARACTER_MESSAGE_RENDERED, (mesId, type) => {
         const fresh = type !== 'first_message' && !streamed;
         renderOne(mesId, { reveal: fresh });
     });
     for (const type of [eventTypes.MESSAGE_UPDATED, eventTypes.MESSAGE_EDITED, eventTypes.MESSAGE_SWIPED]) {
-        eventSource.on(type, mesId => setTimeout(() => renderOne(mesId), 0));
+        onEvent(type, mesId => setTimeout(() => renderOne(mesId), 0));
     }
     for (const type of [eventTypes.CHAT_CHANGED, eventTypes.MORE_MESSAGES_LOADED]) {
-        eventSource.on(type, () => setTimeout(renderAllParts, 0));
+        onEvent(type, () => setTimeout(renderAllParts, 0));
     }
     setTimeout(renderAllParts, 0);
 }

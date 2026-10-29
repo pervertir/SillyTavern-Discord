@@ -1,45 +1,41 @@
 // Discord exists in SillyTavern's page only while it's on.
 // - Off at load: nothing is built (only its own settings panel in the Extensions list).
-// - Built: every handler the theme's modules register while being built (SillyTavern events,
-//   DOM listeners, MutationObservers) is gated, so it does nothing while the theme is off.
-//   The modules register them synchronously, so wrapping the registration functions for that
-//   moment can't touch any other extension.
+// - Built: handlers on anything that outlives the theme (SillyTavern events, document, window,
+//   SillyTavern's elements, MutationObservers) go through listen/onEvent/GatedObserver, so they
+//   do nothing while the theme is off. Handlers on the theme's own elements need no gate: those
+//   elements are removed with it.
 // - Turned off live: teardown() removes everything the theme added to SillyTavern's page
 //   (its elements, classes, attributes, styles) and redraws the open chat with SillyTavern's
 //   own formatting.
 
-/**
- * Builds the theme with every handler registered meanwhile gated by isOn().
- * @param {() => boolean} isOn
- * @param {() => void} build Synchronous
- */
-export function buildGated(isOn, build) {
-    const { eventSource } = SillyTavern.getContext();
-    const wrap = fn => (typeof fn === 'function'
-        ? function gated(...args) {
-            return isOn() ? fn.apply(this, args) : undefined;
-        }
-        : fn);
-    const originalOn = eventSource.on;
-    const originalAdd = EventTarget.prototype.addEventListener;
-    const OriginalObserver = window.MutationObserver;
-    eventSource.on = function (type, listener) {
-        return originalOn.call(this, type, wrap(listener));
+let isOn = () => false;
+
+/** Sets the check every gated handler runs first. */
+export function setGate(check) {
+    isOn = check;
+}
+
+/** Wraps a handler so it does nothing while the theme is off. */
+export function gated(handler) {
+    return function (...args) {
+        return isOn() ? handler.apply(this, args) : undefined;
     };
-    EventTarget.prototype.addEventListener = function (type, listener, options) {
-        return originalAdd.call(this, type, wrap(listener), options);
-    };
-    window.MutationObserver = class extends OriginalObserver {
-        constructor(callback) {
-            super(wrap(callback));
-        }
-    };
-    try {
-        build();
-    } finally {
-        eventSource.on = originalOn;
-        EventTarget.prototype.addEventListener = originalAdd;
-        window.MutationObserver = OriginalObserver;
+}
+
+/** addEventListener for targets that outlive the theme (document, window, SillyTavern's elements). */
+export function listen(target, type, handler, options) {
+    target?.addEventListener(type, gated(handler), options);
+}
+
+/** eventSource.on, gated. */
+export function onEvent(type, handler) {
+    SillyTavern.getContext().eventSource.on(type, gated(handler));
+}
+
+/** A MutationObserver whose callback does nothing while the theme is off. */
+export class GatedObserver extends MutationObserver {
+    constructor(callback) {
+        super(gated(callback));
     }
 }
 

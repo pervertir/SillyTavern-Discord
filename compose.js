@@ -8,7 +8,7 @@ import { clickOption, iconButton, t } from './ui.js';
 const TOOLS_ID = 'dsc-compose-tools';
 
 /** Opens the extensions menu (SillyTavern's wand) from the Apps button. */
-export function openExtensionsMenu(anchor = /** @type {HTMLElement|null} */ (document.querySelector('#dsc-compose-tools .dsc-compose-apps'))) {
+function openExtensionsMenu(anchor = /** @type {HTMLElement|null} */ (document.querySelector('#dsc-compose-tools .dsc-compose-apps'))) {
     document.getElementById('extensionsMenuButton')?.click();
     // SillyTavern places the menu by its own (hidden) wand button; put it above Apps instead
     const menu = document.getElementById('extensionsMenu');

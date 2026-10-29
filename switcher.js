@@ -207,7 +207,7 @@ function pick(i) {
     item.run();
 }
 
-export function closeSwitcher() {
+function closeSwitcher() {
     const root = document.getElementById(ID);
     if (root) {
         root.hidden = true;

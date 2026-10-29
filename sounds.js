@@ -5,6 +5,8 @@
 // silences every sound. Nothing plays until the page has had a click or key press
 // (browsers' autoplay rule).
 
+import { listen, onEvent } from './life.js';
+
 let audio = null;
 let unlocked = false;
 let getSettings = () => ({});
@@ -97,11 +99,11 @@ function watching() {
 export function initSounds({ settings, save }) {
     getSettings = settings;
     for (const type of ['pointerdown', 'keydown']) {
-        document.addEventListener(type, unlock, { capture: true, once: true });
+        listen(document, type, unlock, { capture: true, once: true });
     }
 
-    const { eventSource, eventTypes } = SillyTavern.getContext();
-    eventSource.on(eventTypes.CHARACTER_MESSAGE_RENDERED, (mesId, type) => {
+    const { eventTypes } = SillyTavern.getContext();
+    onEvent(eventTypes.CHARACTER_MESSAGE_RENDERED, (mesId, type) => {
         // a reply arriving while you're elsewhere pings, as a Discord message does
         if (type === 'first_message' || (watching() && !getSettings().soundAlways)) {
             return;

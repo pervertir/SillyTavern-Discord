@@ -5,6 +5,7 @@
 
 import { monogramizeAll } from './monograms.js';
 import { escapeHtml, iconButton, shieldFromOutsideClose, t } from './ui.js';
+import { listen, onEvent } from './life.js';
 
 const PANEL_ID = 'dsc-search';
 const MAX_RESULTS = 200;
@@ -14,7 +15,7 @@ let order = 'newest';
 let lastQuery = '';
 
 /** Splits "from:Lyra dragon eggs" into the speaker and the words. */
-export function parseQuery(query) {
+function parseQuery(query) {
     let from = '';
     const words = [];
     for (const match of String(query).matchAll(/(from:)?(?:"([^"]+)"|(\S+))/gi)) {
@@ -45,7 +46,7 @@ export function plainText(message) {
 }
 
 /** Messages of the open chat that have every word (and match from:), as [index, text]. */
-export function findMessages(chat, query) {
+function findMessages(chat, query) {
     const { from, words } = parseQuery(query);
     const lowered = words.map(word => word.toLowerCase());
     const found = [];
@@ -63,7 +64,7 @@ export function findMessages(chat, query) {
 }
 
 /** A short piece of the text around the first word found, with the words marked. */
-export function snippet(text, words, size = 240) {
+function snippet(text, words, size = 240) {
     const lowered = text.toLowerCase();
     const first = Math.min(...words.map(word => lowered.indexOf(word.toLowerCase())).filter(x => x >= 0), Infinity);
     let start = Number.isFinite(first) ? Math.max(0, first - Math.floor(size / 3)) : 0;
@@ -210,7 +211,7 @@ function render(query) {
 }
 
 /** Runs a search in the open chat. */
-export function searchChat(query) {
+function searchChat(query) {
     lastQuery = String(query ?? '').trim();
     if (!lastQuery) {
         closeResults();
@@ -220,7 +221,7 @@ export function searchChat(query) {
 }
 
 /** Puts the cursor in the header's search box. */
-export function focusSearch() {
+function focusSearch() {
     input?.focus();
     input?.select();
 }
@@ -243,7 +244,7 @@ export function initSearch(box) {
             closeResults();
         }
     });
-    document.addEventListener('keydown', (event) => {
+    listen(document, 'keydown', (event) => {
         if ((event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey && event.key.toLowerCase() === 'f'
             && document.body.classList.contains('discord-theme') && SillyTavern.getContext().chat.length) {
             event.preventDefault();
@@ -254,13 +255,13 @@ export function initSearch(box) {
             closeResults();
         }
     });
-    const { eventSource, eventTypes } = SillyTavern.getContext();
-    eventSource.on(eventTypes.CHAT_CHANGED, () => {
+    const { eventTypes } = SillyTavern.getContext();
+    onEvent(eventTypes.CHAT_CHANGED, () => {
         closeResults();
         box.value = '';
     });
     // new messages keep open results current
     for (const type of [eventTypes.MESSAGE_RECEIVED, eventTypes.MESSAGE_SENT, eventTypes.MESSAGE_DELETED, eventTypes.MESSAGE_EDITED]) {
-        eventSource.on(type, () => document.getElementById(PANEL_ID) && lastQuery && render(lastQuery));
+        onEvent(type, () => document.getElementById(PANEL_ID) && lastQuery && render(lastQuery));
     }
 }

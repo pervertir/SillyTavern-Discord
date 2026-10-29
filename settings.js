@@ -5,6 +5,7 @@
 import { ensurePage, undock } from './customize.js';
 import { fillSliders } from './forms.js';
 import { closeDrawers, icon, isDrawerOpen, isPhone, openDrawer, shieldFromOutsideClose, t } from './ui.js';
+import { listen, onEvent } from './life.js';
 
 const OVERLAY_ID = 'dsc-settings';
 const LAST_KEY = 'dsc-last-settings-section';
@@ -209,7 +210,7 @@ function createOverlay() {
     shieldFromOutsideClose(overlay);
     refreshThemeItem();
 
-    document.addEventListener('keydown', (event) => {
+    listen(document, 'keydown', (event) => {
         if (event.key !== 'Escape' || !isOpen()) {
             return;
         }
@@ -249,7 +250,7 @@ let openPageId = '';
 let closingIds = [];
 
 /** Opens one of the theme's own pages (Customize), which isn't a SillyTavern menu. */
-export function openPage(pageId) {
+function openPage(pageId) {
     openPageId = pageId;
     rememberSection('', pageId);
     closingIds = SETTINGS_DRAWERS.filter(id => document.getElementById(id)?.classList.contains('dsc-open'));
@@ -287,7 +288,7 @@ function getBookSelect() {
 }
 
 /** Lists the lorebooks under World Info, the one being edited marked. */
-export function refreshBooks() {
+function refreshBooks() {
     const holder = document.querySelector(`#${OVERLAY_ID} .dsc-set-books`);
     const select = getBookSelect();
     if (!holder || !select) {
@@ -321,7 +322,7 @@ function openBook(value) {
 }
 
 /** Opens one section: one of SillyTavern's menus, or one part of it. */
-export function openSection(drawerId, part = '') {
+function openSection(drawerId, part = '') {
     const openId = SETTINGS_DRAWERS.find(id => document.getElementById(id)?.classList.contains('dsc-open'));
     if (openPageId || (openId && openId !== drawerId)) {
         // SillyTavern closes the open menu before opening this one (or the theme's page closes);
@@ -363,7 +364,7 @@ export function openSettings(drawerId = '') {
     openSection(last.id, last.part);
 }
 
-export function closeSettings() {
+function closeSettings() {
     document.body.classList.remove('dsc-settings-list');
     closePage();
     showPart('', '');
@@ -410,12 +411,12 @@ export function refreshSettings() {
 export function initSettings(options) {
     actions = { ...actions, ...options };
     createOverlay();
-    const { eventSource, eventTypes } = SillyTavern.getContext();
+    const { eventTypes } = SillyTavern.getContext();
     for (const type of [eventTypes.WORLDINFO_UPDATED, eventTypes.WORLDINFO_SETTINGS_UPDATED]) {
         if (type) {
-            eventSource.on(type, () => setTimeout(refreshBooks, 0));
+            onEvent(type, () => setTimeout(refreshBooks, 0));
         }
     }
-    getBookSelect()?.addEventListener('change', () => setTimeout(refreshBooks, 0));
+    listen(getBookSelect(), 'change', () => setTimeout(refreshBooks, 0));
     refreshBooks();
 }

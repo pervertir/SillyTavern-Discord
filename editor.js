@@ -5,6 +5,7 @@
 
 import { selectServer } from './sidebar.js';
 import { closeDrawers, icon, shieldFromOutsideClose, t } from './ui.js';
+import { GatedObserver, listen, onEvent } from './life.js';
 
 const ID = 'dsc-editor';
 
@@ -243,25 +244,25 @@ function update() {
 
 export function initEditor() {
     // Enter in a new server's name creates it
-    document.addEventListener('keydown', (event) => {
+    listen(document, 'keydown', (event) => {
         const target = /** @type {HTMLElement} */ (event.target);
         if (event.key === 'Enter' && !event.shiftKey && !event.isComposing && target?.id === 'rm_group_chat_name' && visible('rm_group_submit')) {
             event.preventDefault();
             create();
         }
     }, true);
-    const observer = new MutationObserver(() => requestAnimationFrame(update));
+    const observer = new GatedObserver(() => requestAnimationFrame(update));
     for (const id of ['rm_ch_create_block', 'rm_group_chats_block', 'rm_characters_block']) {
         const element = document.getElementById(id);
         if (element) {
             observer.observe(element, { attributes: true, attributeFilter: ['style'] });
         }
     }
-    const { eventSource, eventTypes } = SillyTavern.getContext();
-    eventSource.on(eventTypes.CHAT_CHANGED, () => requestAnimationFrame(update));
-    eventSource.on(eventTypes.CHARACTER_EDITED, () => requestAnimationFrame(update));
-    eventSource.on(eventTypes.GROUP_UPDATED, () => requestAnimationFrame(update));
-    document.addEventListener('keydown', (event) => {
+    const { eventTypes } = SillyTavern.getContext();
+    onEvent(eventTypes.CHAT_CHANGED, () => requestAnimationFrame(update));
+    onEvent(eventTypes.CHARACTER_EDITED, () => requestAnimationFrame(update));
+    onEvent(eventTypes.GROUP_UPDATED, () => requestAnimationFrame(update));
+    listen(document, 'keydown', (event) => {
         if (event.key !== 'Escape' || !document.body.classList.contains('dsc-editor-open')) {
             return;
         }

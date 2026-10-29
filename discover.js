@@ -7,7 +7,8 @@ import { getDirectMessages, getServers, latestChannel, openCharacter, openPlace 
 import { isPlaceholder, monogramizeAll } from './monograms.js';
 import { paintPresence } from './presence.js';
 import { openCharacterPanel, selectServer } from './sidebar.js';
-import { getAcronym, getColorIndex, icon, iconButton, openMenu, t } from './ui.js';
+import { fullPictureUrl, getAcronym, getColorIndex, icon, iconButton, openMenu, t } from './ui.js';
+import { onEvent } from './life.js';
 
 const ID = 'dsc-discover';
 const PAGE = 48;
@@ -36,6 +37,7 @@ function items() {
         name: character.name,
         about: plain(character.creator_notes || character.data?.creator_notes || character.description),
         thumb: getThumbnailUrl('avatar', character.avatar),
+        picture: fullPictureUrl('avatar', character.avatar),
         fav: character.fav === true || character.fav === 'true',
         recent: talked.has(character.avatar),
     }));
@@ -69,7 +71,8 @@ function card(item) {
         img.loading = 'lazy';
         img.decoding = 'async';
         img.src = item.thumb;
-        const bannerImg = img.cloneNode();
+        const bannerImg = /** @type {HTMLImageElement} */ (img.cloneNode());
+        bannerImg.src = item.picture;
         banner.append(bannerImg);
         isPlaceholder(item.thumb).then((placeholder) => {
             if (placeholder) {
@@ -301,10 +304,10 @@ export function hideDiscover() {
 export function initDiscover(options) {
     onShow = options.shown;
     build();
-    const { eventSource, eventTypes } = SillyTavern.getContext();
+    const { eventTypes } = SillyTavern.getContext();
     for (const type of [eventTypes.CHARACTER_EDITED, eventTypes.CHARACTER_DELETED, eventTypes.GROUP_UPDATED, eventTypes.CHARACTER_PAGE_LOADED]) {
         if (type) {
-            eventSource.on(type, () => {
+            onEvent(type, () => {
                 if (document.body.classList.contains('dsc-discover')) {
                     render();
                 }

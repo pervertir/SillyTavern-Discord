@@ -186,7 +186,7 @@ function cssString(value) {
 }
 
 /** Writes the stylesheet for the current customization. */
-export function applyCustom() {
+function applyCustom() {
     const { tokens, flags, css } = custom();
     const body = document.body.classList;
     const lines = [];
@@ -592,7 +592,7 @@ function renderPreview() {
     }
 }
 
-export function renderPage() {
+function renderPage() {
     const page = document.getElementById(PAGE_ID);
     if (!page) {
         return;

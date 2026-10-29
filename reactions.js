@@ -4,6 +4,7 @@
 // reloads and never reach the prompt.
 
 import { context, shieldFromOutsideClose, t } from './ui.js';
+import { listen, onEvent } from './life.js';
 
 const PICKER_ID = 'dsc-react-picker';
 const RECENT_KEY = 'dsc-recent-reactions';
@@ -19,7 +20,6 @@ const EMOJI = [
     '❌', '☕', '🍵', '🍕', '🍰', '🌹', '🌸', '🐱', '🐶', '🌙', '☀️', '🌧️',
 ];
 
-let editingMesId = null;
 
 function getRecent() {
     try {
@@ -70,7 +70,7 @@ async function toggle(mesId, emoji) {
 }
 
 /** The pills under a message. */
-export function renderReactions(mesId, mes = document.querySelector(`#chat > .mes[mesid="${Number(mesId)}"]`)) {
+function renderReactions(mesId, mes = document.querySelector(`#chat > .mes[mesid="${Number(mesId)}"]`)) {
     const message = context().chat[Number(mesId)];
     const block = mes?.querySelector('.mes_block');
     if (!block) {
@@ -115,13 +115,11 @@ export function renderReactions(mesId, mes = document.querySelector(`#chat > .me
 
 function closePicker() {
     document.getElementById(PICKER_ID)?.remove();
-    editingMesId = null;
 }
 
 /** Opens the emoji picker by a button, for one message. */
 export function openPicker(mesId, anchor) {
     closePicker();
-    editingMesId = mesId;
     const picker = document.createElement('div');
     picker.id = PICKER_ID;
     picker.setAttribute('role', 'dialog');
@@ -184,7 +182,7 @@ function renderAll() {
 }
 
 export function initReactions() {
-    const { eventSource, eventTypes } = SillyTavern.getContext();
+    const { eventTypes } = SillyTavern.getContext();
     const one = mesId => setTimeout(() => {
         const mes = document.querySelector(`#chat > .mes[mesid="${Number(mesId)}"]`);
         if (mes) {
@@ -193,18 +191,18 @@ export function initReactions() {
         }
     }, 0);
     for (const type of [eventTypes.USER_MESSAGE_RENDERED, eventTypes.CHARACTER_MESSAGE_RENDERED, eventTypes.MESSAGE_UPDATED, eventTypes.MESSAGE_EDITED, eventTypes.MESSAGE_SWIPED]) {
-        eventSource.on(type, one);
+        onEvent(type, one);
     }
     for (const type of [eventTypes.CHAT_CHANGED, eventTypes.MORE_MESSAGES_LOADED, eventTypes.MESSAGE_DELETED]) {
-        eventSource.on(type, () => setTimeout(renderAll, 0));
+        onEvent(type, () => setTimeout(renderAll, 0));
     }
-    document.addEventListener('pointerdown', (event) => {
+    listen(document, 'pointerdown', (event) => {
         const picker = document.getElementById(PICKER_ID);
         if (picker && !picker.contains(/** @type {Node} */ (event.target)) && !(/** @type {HTMLElement} */ (event.target)).closest('.dsc-react-button, .dsc-reaction-add')) {
             closePicker();
         }
     });
-    document.addEventListener('keydown', (event) => {
+    listen(document, 'keydown', (event) => {
         if (event.key === 'Escape' && document.getElementById(PICKER_ID)) {
             event.preventDefault();
             event.stopPropagation();

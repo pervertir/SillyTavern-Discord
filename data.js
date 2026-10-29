@@ -4,6 +4,7 @@
 
 import { imagesLabel } from './lib/image-links.js';
 import { t } from './ui.js';
+import { onEvent } from './life.js';
 
 /** SillyTavern's own pinned chats, kept in account storage by welcome-screen.js */
 const PINNED_KEY = 'pinnedChats';
@@ -80,7 +81,7 @@ export function channelLabel(group, chatId) {
     return chatId.startsWith(prefix) ? chatId.slice(prefix.length) : chatId;
 }
 
-export async function refreshData() {
+async function refreshData() {
     const context = SillyTavern.getContext();
     const id = ++requestId;
     let data = [];
@@ -272,8 +273,8 @@ export async function openCharacter(avatar) {
 export function initData({ max, opened }) {
     getMax = max;
     onOpened = opened;
-    const { eventSource, eventTypes } = SillyTavern.getContext();
-    eventSource.on(eventTypes.CHAT_CHANGED, () => {
+    const { eventTypes } = SillyTavern.getContext();
+    onEvent(eventTypes.CHAT_CHANGED, () => {
         emit();
         scheduleRefresh(300);
     });
@@ -282,7 +283,7 @@ export function initData({ max, opened }) {
         eventTypes.CHAT_RENAMED, eventTypes.CHARACTER_DELETED, eventTypes.CHARACTER_RENAMED, eventTypes.GROUP_UPDATED,
         eventTypes.GROUP_CHAT_CREATED, eventTypes.CHARACTER_EDITED]) {
         if (type) {
-            eventSource.on(type, () => scheduleRefresh());
+            onEvent(type, () => scheduleRefresh());
         }
     }
     return refreshData();
