@@ -6,6 +6,7 @@
 import { avatarFor, jump, plainText } from './search.js';
 import { context, escapeHtml, iconButton, shieldFromOutsideClose, t } from './ui.js';
 import { monogramizeAll } from './monograms.js';
+import { listen, onEvent } from './life.js';
 
 const LIST_ID = 'dsc-pins';
 
@@ -48,7 +49,7 @@ function markAll() {
     });
 }
 
-export function closePins() {
+function closePins() {
     document.getElementById(LIST_ID)?.remove();
     document.querySelector('#dsc-head .dsc-tool-pin')?.classList.remove('dsc-open');
 }
@@ -164,28 +165,28 @@ export function togglePins(anchor) {
  */
 export function initPins(options) {
     actions = { ...actions, ...options };
-    const { eventSource, eventTypes } = SillyTavern.getContext();
-    eventSource.on(eventTypes.CHAT_CHANGED, () => {
+    const { eventTypes } = SillyTavern.getContext();
+    onEvent(eventTypes.CHAT_CHANGED, () => {
         closePins();
         setTimeout(markAll, 0);
     });
     for (const type of [eventTypes.MORE_MESSAGES_LOADED, eventTypes.MESSAGE_DELETED]) {
-        eventSource.on(type, () => setTimeout(() => {
+        onEvent(type, () => setTimeout(() => {
             markAll();
             renderList();
         }, 0));
     }
     for (const type of [eventTypes.USER_MESSAGE_RENDERED, eventTypes.CHARACTER_MESSAGE_RENDERED, eventTypes.MESSAGE_UPDATED, eventTypes.MESSAGE_EDITED]) {
-        eventSource.on(type, mesId => setTimeout(() => markPinned(Number(mesId)), 0));
+        onEvent(type, mesId => setTimeout(() => markPinned(Number(mesId)), 0));
     }
-    document.addEventListener('pointerdown', (event) => {
+    listen(document, 'pointerdown', (event) => {
         const list = document.getElementById(LIST_ID);
         const target = /** @type {HTMLElement} */ (event.target);
         if (list && !list.contains(target) && !target.closest('.dsc-tool-pin')) {
             closePins();
         }
     }, true);
-    document.addEventListener('keydown', (event) => {
+    listen(document, 'keydown', (event) => {
         if (event.key === 'Escape' && document.getElementById(LIST_ID)) {
             event.preventDefault();
             event.stopPropagation();

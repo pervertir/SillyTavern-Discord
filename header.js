@@ -9,7 +9,8 @@ import { initPins, togglePins } from './pins.js';
 import { initSearch } from './search.js';
 import { SHORTCUTS, showShortcuts, withShortcut } from './shortcuts.js';
 import { openCharacterPanel, selectServer } from './sidebar.js';
-import { clickOption, getColorIndex, icon, iconButton, openDrawer, openMenu, shieldFromOutsideClose, t, toChannelName, toUsername } from './ui.js';
+import { clickOption, fullPictureUrl, getColorIndex, icon, iconButton, openDrawer, openMenu, shieldFromOutsideClose, t, toChannelName, toUsername } from './ui.js';
+import { listen, onEvent } from './life.js';
 
 const HEAD_ID = 'dsc-head';
 const ASIDE_ID = 'dsc-aside';
@@ -421,7 +422,8 @@ function renderProfile(aside, character) {
     avatar.dataset.name = character.name;
     const img = document.createElement('img');
     img.alt = '';
-    img.src = src;
+    img.decoding = 'async';
+    img.src = fullPictureUrl('avatar', character.avatar);
     const status = document.createElement('span');
     status.className = 'dsc-status';
     status.dataset.dscPresence = character.avatar;
@@ -498,7 +500,7 @@ function renderProfile(aside, character) {
     monogramizeAll(aside, '.dsc-prof-avatar img', () => character.name);
 }
 
-export function refreshAside() {
+function refreshAside() {
     const aside = document.getElementById(ASIDE_ID);
     if (!aside) {
         return;
@@ -550,7 +552,7 @@ export function refreshPresenceViews() {
 
 /** Shows a character's profile in the right-hand panel (a sheet on phones), opening the panel
     if it's hidden, as Discord does when you click someone's name or picture. */
-export function showProfile(avatar) {
+function showProfile(avatar) {
     const context = SillyTavern.getContext();
     const current = currentCharacter();
     profileOverride = current?.avatar === avatar ? '' : avatar;
@@ -592,7 +594,7 @@ function characterOfMessage(mes) {
 /** A click on a character's picture or name in the chat opens their profile (caught on the
     way down, ahead of SillyTavern's own picture zoom, which listens on the chat itself). */
 function initProfileClicks() {
-    document.addEventListener('click', (event) => {
+    listen(document, 'click', (event) => {
         if (!document.body.classList.contains('discord-theme')) {
             return;
         }
@@ -624,33 +626,33 @@ function initProfileClicks() {
             openPopout(hit, { avatar: character.avatar }, 'right');
         }
     }, true);
-    SillyTavern.getContext().eventSource.on(SillyTavern.getContext().eventTypes.CHAT_CHANGED, () => {
+    onEvent(SillyTavern.getContext().eventTypes.CHAT_CHANGED, () => {
         profileOverride = '';
         closeProfileSheet();
         closePopout();
     });
-    document.addEventListener('pointerdown', (event) => {
+    listen(document, 'pointerdown', (event) => {
         const popout = document.getElementById(POPOUT_ID);
         const target = /** @type {HTMLElement} */ (event.target);
         if (popout && !popout.contains(target) && !document.getElementById('dsc-menu')?.contains(target)) {
             closePopout();
         }
     }, true);
-    document.addEventListener('keydown', (event) => {
+    listen(document, 'keydown', (event) => {
         if (event.key === 'Escape' && document.getElementById(POPOUT_ID)) {
             event.preventDefault();
             event.stopPropagation();
             closePopout();
         }
     }, true);
-    window.addEventListener('resize', closePopout);
+    listen(window, 'resize', closePopout);
 }
 
 /* ---------- profile popout ---------- */
 
 const POPOUT_ID = 'dsc-popout';
 
-export function closePopout() {
+function closePopout() {
     document.getElementById(POPOUT_ID)?.remove();
 }
 
@@ -675,7 +677,8 @@ function renderPersona(popout, picture = '') {
     const img = document.createElement('img');
     img.alt = '';
     if (src) {
-        img.src = src;
+        img.decoding = 'async';
+        img.src = avatarId ? fullPictureUrl('persona', avatarId) : src;
         isPlaceholder(src).then(placeholder => !placeholder && bannerColor(src).then(color => color && (banner.style.background = color)));
     }
     avatar.append(img);
@@ -745,7 +748,7 @@ function messageBox(character) {
  *   or yourself (with your message's picture)
  * @param {'left'|'right'} side Which side of the anchor the card opens on
  */
-export function openPopout(anchor, who, side) {
+function openPopout(anchor, who, side) {
     const already = document.getElementById(POPOUT_ID);
     if (already && already.dataset.who === (who.avatar ?? 'me')) {
         // a second click on the same person closes it, as in Discord
@@ -981,7 +984,7 @@ function renderFriends() {
     list.replaceChildren();
     if (!people.length) {
         const empties = {
-            online: "No one's around right now. Say hi to someone and they'll come online.",
+            online: 'No one\'s around right now. Say hi to someone and they\'ll come online.',
             favorites: 'No favorites yet. Star a character in their profile to keep them here.',
             all: needle ? 'No one by that name.' : 'No friends yet. Add one with Add Friend.',
         };

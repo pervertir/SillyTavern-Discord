@@ -3,11 +3,12 @@
 // Discord's Keybinds popup does.
 
 import { escapeHtml, t } from './ui.js';
+import { listen } from './life.js';
 
-export const IS_MAC = /Mac|iPhone|iPad|iPod/i.test(navigator.userAgentData?.platform || navigator.platform || navigator.userAgent);
+const IS_MAC = /Mac|iPhone|iPad|iPod/i.test(navigator.userAgentData?.platform || navigator.platform || navigator.userAgent);
 
-const MAC_KEYS = { Mod: '⌘', Shift: '⇧', Alt: '⌥', Ctrl: '⌃', Enter: '↩', Up: '↑', Down: '↓', Esc: 'Esc', '/': '/', ',': ',', "'": "'" };
-const PC_KEYS = { Mod: 'Ctrl', Shift: 'Shift', Alt: 'Alt', Ctrl: 'Ctrl', Enter: 'Enter', Up: 'Up', Down: 'Down', Esc: 'Esc', '/': '/', ',': ',', "'": "'" };
+const MAC_KEYS = { Mod: '⌘', Shift: '⇧', Alt: '⌥', Ctrl: '⌃', Enter: '↩', Up: '↑', Down: '↓', Esc: 'Esc', '/': '/', ',': ',', '\'': '\'' };
+const PC_KEYS = { Mod: 'Ctrl', Shift: 'Shift', Alt: 'Alt', Ctrl: 'Ctrl', Enter: 'Enter', Up: 'Up', Down: 'Down', Esc: 'Esc', '/': '/', ',': ',', '\'': '\'' };
 
 export const SHORTCUTS = {
     switcher: ['Mod', 'K'],
@@ -18,7 +19,7 @@ export const SHORTCUTS = {
     nextConversation: ['Alt', 'Down'],
     previousServer: ['Mod', 'Alt', 'Up'],
     nextServer: ['Mod', 'Alt', 'Down'],
-    newChat: ['Mod', "'"],
+    newChat: ['Mod', '\''],
     newGroup: ['Mod', 'Shift', 'T'],
     pin: ['Mod', 'P'],
     members: ['Mod', 'U'],
@@ -58,7 +59,7 @@ function matches(event, keys) {
     if (key === ',') {
         return event.code === 'Comma';
     }
-    if (key === "'") {
+    if (key === '\'') {
         return event.code === 'Quote';
     }
     return event.code === `Key${key}`;
@@ -133,7 +134,7 @@ export async function showShortcuts() {
  * @param {() => void} actions.emoji
  */
 export function initShortcuts(actions) {
-    document.addEventListener('keydown', (event) => {
+    listen(document, 'keydown', (event) => {
         if (!actions.enabled() || event.repeat) {
             return;
         }

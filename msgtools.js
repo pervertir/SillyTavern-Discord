@@ -5,6 +5,7 @@
 import { isPinnedMessage, togglePinMessage } from './pins.js';
 import { openPicker } from './reactions.js';
 import { clickOption, openMenu, t } from './ui.js';
+import { listen } from './life.js';
 
 function messageData(mes) {
     return SillyTavern.getContext().chat[Number(mes.getAttribute('mesid'))];
@@ -75,7 +76,7 @@ export function initMessageTools() {
     const chat = document.getElementById('chat');
     const on = () => document.body.classList.contains('discord-theme');
 
-    chat?.addEventListener('contextmenu', (event) => {
+    listen(chat, 'contextmenu', (event) => {
         const target = /** @type {HTMLElement} */ (event.target);
         const mes = target.closest('.mes');
         // leave the browser's menu for text fields and links
@@ -87,7 +88,7 @@ export function initMessageTools() {
     });
 
     // editing: Enter saves, Shift+Enter is a new line, Esc cancels
-    chat?.addEventListener('keydown', (event) => {
+    listen(chat, 'keydown', (event) => {
         const box = /** @type {HTMLElement} */ (event.target);
         if (!on() || !box.classList?.contains('edit_textarea') || event.isComposing) {
             return;
@@ -105,7 +106,7 @@ export function initMessageTools() {
     }, true);
 
     // ↑ in an empty message box edits your last message
-    document.getElementById('send_textarea')?.addEventListener('keydown', (event) => {
+    listen(document.getElementById('send_textarea'), 'keydown', (event) => {
         const box = /** @type {HTMLTextAreaElement} */ (event.target);
         if (!on() || event.key !== 'ArrowUp' || box.value || event.shiftKey || event.altKey || event.ctrlKey || event.metaKey) {
             return;

@@ -3,7 +3,6 @@
    the whole look on and off; body.dsc-light switches to the light palette.
    tokens.css comes first because everything uses it, and mobile.css last. */
 
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&display=swap");
 @import url("css/tokens.css");
 @import url("css/boot.css");
 @import url("css/frame.css");

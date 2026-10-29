@@ -5,6 +5,7 @@
 // never inside code.
 
 import { messageOf, t } from './ui.js';
+import { listen, onEvent } from './life.js';
 
 const SPOILER = /\|\|([^|\n](?:[^\n]*?[^|\n])?)\|\|/g;
 
@@ -147,15 +148,15 @@ const editingFrom = new Map();
 
 export function initExtras() {
     // an edit starts with SillyTavern's pencil (the theme's Edit Message clicks it too)
-    document.addEventListener('click', (event) => {
+    listen(document, 'click', (event) => {
         const mes = /** @type {HTMLElement} */ (event.target).closest?.('#chat .mes');
         if (mes && /** @type {HTMLElement} */ (event.target).closest('.mes_edit')) {
             const id = Number(mes.getAttribute('mesid'));
             editingFrom.set(id, SillyTavern.getContext().chat[id]?.mes ?? '');
         }
     }, true);
-    const { eventSource, eventTypes } = SillyTavern.getContext();
-    eventSource.on(eventTypes.MESSAGE_EDITED, (mesId) => {
+    const { eventTypes } = SillyTavern.getContext();
+    onEvent(eventTypes.MESSAGE_EDITED, (mesId) => {
         const id = Number(mesId);
         const message = SillyTavern.getContext().chat[id];
         if (!message || !editingFrom.has(id)) {
@@ -179,14 +180,14 @@ export function initExtras() {
         }
         return false;
     };
-    document.addEventListener('click', (event) => {
+    listen(document, 'click', (event) => {
         if (reveal(event.target)) {
             // the first click reveals; it doesn't follow a link or open a picture under it
             event.preventDefault();
             event.stopPropagation();
         }
     }, true);
-    document.addEventListener('keydown', (event) => {
+    listen(document, 'keydown', (event) => {
         if ((event.key === 'Enter' || event.key === ' ') && reveal(event.target)) {
             event.preventDefault();
         }

@@ -5,6 +5,7 @@
 // watcher over the chat.
 
 import { context, t } from './ui.js';
+import { listen, onEvent } from './life.js';
 
 const GROUP_GAP_MS = 7 * 60 * 1000;
 
@@ -41,7 +42,7 @@ function momentOf(mes) {
 }
 
 /** "Today at 4:20 PM", "Yesterday at 9:03 AM", or "10/21/2026 3:15 PM". */
-export function formatMessageTime(time) {
+function formatMessageTime(time) {
     const { timestampToMoment } = SillyTavern.getContext();
     const now = timestampToMoment(Date.now());
     if (time.isSame(now, 'day')) {
@@ -152,7 +153,7 @@ export function labelMessages(mesId) {
 function initTaps() {
     const chat = document.getElementById('chat');
     const touch = window.matchMedia('(hover: none)');
-    chat?.addEventListener('click', (event) => {
+    listen(chat, 'click', (event) => {
         if (!touch.matches || !document.body.classList.contains('discord-theme')) {
             return;
         }
@@ -172,18 +173,18 @@ function initTaps() {
 
 export function initMessages() {
     initTaps();
-    const { eventSource, eventTypes } = SillyTavern.getContext();
+    const { eventTypes } = SillyTavern.getContext();
     const one = (mesId) => labelMessages(mesId);
     // a whole chat is printed before CHAT_CHANGED settles, so label after the current task
     const all = () => setTimeout(() => labelMessages(), 0);
 
-    eventSource.on(eventTypes.CHARACTER_MESSAGE_RENDERED, one);
-    eventSource.on(eventTypes.USER_MESSAGE_RENDERED, one);
-    eventSource.on(eventTypes.MESSAGE_SWIPED, one);
-    eventSource.on(eventTypes.MESSAGE_UPDATED, one);
-    eventSource.on(eventTypes.MESSAGE_EDITED, one);
-    eventSource.on(eventTypes.CHAT_CHANGED, all);
-    eventSource.on(eventTypes.MORE_MESSAGES_LOADED, all);
-    eventSource.on(eventTypes.MESSAGE_DELETED, all);
+    onEvent(eventTypes.CHARACTER_MESSAGE_RENDERED, one);
+    onEvent(eventTypes.USER_MESSAGE_RENDERED, one);
+    onEvent(eventTypes.MESSAGE_SWIPED, one);
+    onEvent(eventTypes.MESSAGE_UPDATED, one);
+    onEvent(eventTypes.MESSAGE_EDITED, one);
+    onEvent(eventTypes.CHAT_CHANGED, all);
+    onEvent(eventTypes.MORE_MESSAGES_LOADED, all);
+    onEvent(eventTypes.MESSAGE_DELETED, all);
     all();
 }

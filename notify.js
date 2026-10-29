@@ -9,6 +9,7 @@
 import { setUnreadBadge } from './disguise.js';
 import { imagesLabel } from './lib/image-links.js';
 import { openMenu, t } from './ui.js';
+import { listen, onEvent } from './life.js';
 
 const STATUSES = [
     { id: 'online', label: 'Online' },
@@ -28,7 +29,7 @@ function watching() {
 }
 
 /** Paints your dot and status line in the user panel. */
-export function refreshMyStatus() {
+function refreshMyStatus() {
     const status = getSettings().myStatus || 'online';
     const panel = document.getElementById('dsc-user');
     const dot = /** @type {HTMLElement} */ (panel?.querySelector('.dsc-status'));
@@ -150,8 +151,8 @@ export function initNotify(options) {
     }
     refreshMyStatus();
 
-    const { eventSource, eventTypes } = SillyTavern.getContext();
-    eventSource.on(eventTypes.CHARACTER_MESSAGE_RENDERED, (mesId, type) => {
+    const { eventTypes } = SillyTavern.getContext();
+    onEvent(eventTypes.CHARACTER_MESSAGE_RENDERED, (mesId, type) => {
         if (type === 'first_message' || watching() || !getSettings().enabled) {
             return;
         }
@@ -167,8 +168,8 @@ export function initNotify(options) {
         setUnreadBadge(unread);
         notifyDesktop(message, character);
     });
-    window.addEventListener('focus', clearUnread);
-    document.addEventListener('visibilitychange', () => {
+    listen(window, 'focus', clearUnread);
+    listen(document, 'visibilitychange', () => {
         if (watching()) {
             clearUnread();
         }

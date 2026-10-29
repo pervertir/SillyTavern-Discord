@@ -5,6 +5,7 @@
 //   SillyTavern's own power button, so it's clear why the page is greyed out when it's off.
 
 import { t } from './ui.js';
+import { listen, onEvent } from './life.js';
 
 const ALL_KEY = 'dsc-all-samplers';
 
@@ -106,7 +107,7 @@ function instructRow() {
         }
         setTimeout(sync, 0);
     });
-    power.addEventListener('change', () => setTimeout(sync, 0));
+    listen(power, 'change', () => setTimeout(sync, 0));
     row.append(text, box);
     const header = column.querySelector(':scope > .flex-container, :scope > h4, :scope > div');
     (header ?? column.firstElementChild)?.after(row);
@@ -128,7 +129,7 @@ export function fillSliders(root = document) {
 
 export function initForms() {
     for (const type of ['input', 'change']) {
-        document.addEventListener(type, (event) => {
+        listen(document, type, (event) => {
             const target = /** @type {HTMLElement} */ (event.target);
             if (target instanceof HTMLInputElement && target.type === 'range') {
                 fill(target);
@@ -138,6 +139,6 @@ export function initForms() {
     fillSliders();
     foldSamplers();
     instructRow();
-    const { eventSource, eventTypes } = SillyTavern.getContext();
-    eventSource.on(eventTypes.SETTINGS_LOADED_AFTER ?? eventTypes.SETTINGS_UPDATED, () => setTimeout(instructRow, 0));
+    const { eventTypes } = SillyTavern.getContext();
+    onEvent(eventTypes.SETTINGS_LOADED_AFTER ?? eventTypes.SETTINGS_UPDATED, () => setTimeout(instructRow, 0));
 }

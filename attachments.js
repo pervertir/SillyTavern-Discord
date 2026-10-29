@@ -6,6 +6,7 @@
 
 import { openViewer } from './embeds.js';
 import { messageOf, t } from './ui.js';
+import { GatedObserver, listen, onEvent } from './life.js';
 
 /** The message's pictures, for the viewer. */
 function pictures(mes) {
@@ -44,7 +45,7 @@ export function initAttachments() {
     const chat = document.getElementById('chat');
     // a click on a picture opens the theme's viewer instead of SillyTavern's zoom popup (the
     // magnifier in the toolbar still opens that one)
-    chat?.addEventListener('click', (event) => {
+    listen(chat, 'click', (event) => {
         const img = /** @type {HTMLElement} */ (event.target).closest?.('.mes_img');
         if (!img || !document.body.classList.contains('discord-theme') || img.classList.contains('error')) {
             return;
@@ -60,25 +61,25 @@ export function initAttachments() {
         openViewer(list, Math.max(0, list.findIndex(x => x.index === index)));
     }, true);
     // the file name opens its contents, as clicking a file's name does in Discord
-    chat?.addEventListener('click', (event) => {
+    listen(chat, 'click', (event) => {
         const name = /** @type {HTMLElement} */ (event.target).closest?.('.mes_file_name');
         if (name && document.body.classList.contains('discord-theme')) {
             /** @type {HTMLElement} */ (name.closest('.mes_file_container')?.querySelector('.mes_file_open'))?.click();
         }
     });
-    const { eventSource, eventTypes } = SillyTavern.getContext();
+    const { eventTypes } = SillyTavern.getContext();
     const one = mesId => setTimeout(() => refresh(document.querySelector(`#chat > .mes[mesid="${Number(mesId)}"]`)), 0);
     for (const type of [eventTypes.USER_MESSAGE_RENDERED, eventTypes.CHARACTER_MESSAGE_RENDERED, eventTypes.MESSAGE_UPDATED, eventTypes.MESSAGE_EDITED, eventTypes.MESSAGE_SWIPED, eventTypes.MESSAGE_FILE_EMBEDDED].filter(Boolean)) {
-        eventSource.on(type, one);
+        onEvent(type, one);
     }
     const all = () => setTimeout(() => document.querySelectorAll('#chat > .mes').forEach(refresh), 0);
     for (const type of [eventTypes.CHAT_CHANGED, eventTypes.MORE_MESSAGES_LOADED]) {
-        eventSource.on(type, all);
+        onEvent(type, all);
     }
     // file cards are also redrawn on their own (attaching or removing a file), and messages
     // can arrive without a rendered event
     if (chat) {
-        new MutationObserver((records) => {
+        new GatedObserver((records) => {
             for (const record of records) {
                 const target = /** @type {HTMLElement} */ (record.target);
                 if (target.classList?.contains('mes_file_wrapper')) {

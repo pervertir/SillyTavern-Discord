@@ -11,6 +11,7 @@
 import { applyExtras } from './extras.js';
 import { findImageLinks } from './lib/image-links.js';
 import { alreadyDone, markDone, messageOf, shieldFromOutsideClose, t } from './ui.js';
+import { GatedObserver, listen, onEvent } from './life.js';
 
 let enabled = () => true;
 /** a reply is being written: its message is left alone until it's done */
@@ -199,7 +200,7 @@ function embedMessage(mes) {
     }
 }
 
-export function embedAll() {
+function embedAll() {
     document.querySelectorAll('#chat > .mes').forEach(mes => embedMessage(/** @type {HTMLElement} */ (mes)));
 }
 
@@ -207,7 +208,7 @@ export function embedAll() {
     shows, so while pictures are on that one notice is cleared as it appears. */
 function hideBlockedNotice() {
     const title = SillyTavern.getContext().translate('External media has been blocked');
-    const watch = (container) => new MutationObserver(() => {
+    const watch = (container) => new GatedObserver(() => {
         if (!enabled()) {
             return;
         }
@@ -223,7 +224,7 @@ function hideBlockedNotice() {
         return;
     }
     // toastr makes its container with the first toast; watch the page until then
-    const wait = new MutationObserver(() => {
+    const wait = new GatedObserver(() => {
         const container = document.getElementById('toast-container');
         if (container) {
             wait.disconnect();
@@ -242,12 +243,12 @@ function hideBlockedNotice() {
 /** @param {{enabled: () => boolean}} options enabled: the theme is on and \"Show image links as pictures\" is set */
 export function initEmbeds(options) {
     enabled = options.enabled;
-    const { eventSource, eventTypes } = SillyTavern.getContext();
-    eventSource.on(eventTypes.GENERATION_STARTED, (type, params, dryRun) => {
+    const { eventTypes } = SillyTavern.getContext();
+    onEvent(eventTypes.GENERATION_STARTED, (type, params, dryRun) => {
         generating = !dryRun;
     });
     for (const type of [eventTypes.GENERATION_ENDED, eventTypes.GENERATION_STOPPED]) {
-        eventSource.on(type, () => {
+        onEvent(type, () => {
             generating = false;
         });
     }
@@ -258,12 +259,12 @@ export function initEmbeds(options) {
         }
     }, 0);
     for (const type of [eventTypes.USER_MESSAGE_RENDERED, eventTypes.CHARACTER_MESSAGE_RENDERED, eventTypes.MESSAGE_UPDATED, eventTypes.MESSAGE_EDITED, eventTypes.MESSAGE_SWIPED]) {
-        eventSource.on(type, one);
+        onEvent(type, one);
     }
     for (const type of [eventTypes.CHAT_CHANGED, eventTypes.MORE_MESSAGES_LOADED]) {
-        eventSource.on(type, () => setTimeout(embedAll, 0));
+        onEvent(type, () => setTimeout(embedAll, 0));
     }
-    document.addEventListener('keydown', (event) => {
+    listen(document, 'keydown', (event) => {
         const viewer = /** @type {any} */ (document.getElementById('dsc-viewer'));
         if (viewer?.dscStep && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
             event.preventDefault();

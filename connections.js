@@ -5,6 +5,7 @@
 // model, Connect) follows. The logos are the ones SillyTavern ships in /img.
 
 import { getInitials, t } from './ui.js';
+import { listen, onEvent } from './life.js';
 
 const ROOT_ID = 'dsc-conn';
 
@@ -153,10 +154,10 @@ export function render() {
 export function initConnections() {
     render();
     for (const id of GROUPS.map(x => x.select)) {
-        select(id)?.addEventListener('change', () => setTimeout(render, 0));
+        listen(select(id), 'change', () => setTimeout(render, 0));
     }
-    const { eventSource, eventTypes } = SillyTavern.getContext();
+    const { eventTypes } = SillyTavern.getContext();
     for (const type of [eventTypes.ONLINE_STATUS_CHANGED, eventTypes.CHATCOMPLETION_SOURCE_CHANGED, eventTypes.MAIN_API_CHANGED, eventTypes.SETTINGS_LOADED_AFTER].filter(Boolean)) {
-        eventSource.on(type, () => setTimeout(render, 0));
+        onEvent(type, () => setTimeout(render, 0));
     }
 }

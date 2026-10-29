@@ -5,6 +5,7 @@
 // - a long press on a phone opens the same menus a right-click does.
 
 import { t } from './ui.js';
+import { GatedObserver, listen } from './life.js';
 
 let openConnections = () => {};
 
@@ -17,7 +18,7 @@ function createNotice() {
     notice.id = 'dsc-notice';
     notice.setAttribute('role', 'status');
     const text = document.createElement('span');
-    text.textContent = t("You're not connected to an AI, so no one can reply yet.");
+    text.textContent = t('You\'re not connected to an AI, so no one can reply yet.');
     const action = document.createElement('button');
     action.type = 'button';
     action.textContent = t('Connect');
@@ -33,7 +34,7 @@ function watchConnection() {
         return;
     }
     const update = () => document.body.classList.toggle('dsc-offline-api', form.classList.contains('no-connection'));
-    new MutationObserver(update).observe(form, { attributes: true, attributeFilter: ['class'] });
+    new GatedObserver(update).observe(form, { attributes: true, attributeFilter: ['class'] });
     update();
 }
 
@@ -46,7 +47,7 @@ function createJumpBar() {
     const bar = document.createElement('div');
     bar.id = 'dsc-jump';
     const text = document.createElement('span');
-    text.textContent = t("You're viewing older messages");
+    text.textContent = t('You\'re viewing older messages');
     const jump = document.createElement('button');
     jump.type = 'button';
     jump.textContent = t('Jump to Present');
@@ -54,7 +55,7 @@ function createJumpBar() {
     bar.append(text, jump);
     form.prepend(bar);
     let frame = 0;
-    chat.addEventListener('scroll', () => {
+    listen(chat, 'scroll', () => {
         cancelAnimationFrame(frame);
         frame = requestAnimationFrame(() => {
             const far = chat.scrollHeight - chat.scrollTop - chat.clientHeight > chat.clientHeight * 1.5;
@@ -67,7 +68,7 @@ function createJumpBar() {
 function longPress() {
     let timer = 0;
     let start = null;
-    document.addEventListener('touchstart', (event) => {
+    listen(document, 'touchstart', (event) => {
         if (!document.body.classList.contains('discord-theme') || event.touches.length !== 1) {
             return;
         }
@@ -94,7 +95,7 @@ function longPress() {
         }
     };
     for (const type of ['touchend', 'touchmove', 'touchcancel']) {
-        document.addEventListener(type, cancel, { passive: true });
+        listen(document, type, cancel, { passive: true });
     }
 }
 

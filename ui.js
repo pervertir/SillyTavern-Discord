@@ -1,6 +1,8 @@
 // Small shared parts: icons, buttons, Discord's black tooltips, its context menus, and the
 // helpers that drive SillyTavern's own menus.
 
+import { listen } from './life.js';
+
 let cachedContext = null;
 
 /** SillyTavern's context, built once per task: getContext() builds a large object on every call,
@@ -72,7 +74,7 @@ export function translateTree(root) {
     }
 }
 
-export const MOBILE_QUERY = '(max-width: 1000px)';
+const MOBILE_QUERY = '(max-width: 1000px)';
 
 export function isPhone() {
     return window.matchMedia(MOBILE_QUERY).matches;
@@ -102,7 +104,7 @@ export function iconButton(className, label, iconName, size = 24) {
 }
 
 /** Clicks a SillyTavern drawer's toggle, the way its own top bar does. */
-export function toggleDrawer(drawerId) {
+function toggleDrawer(drawerId) {
     document.querySelector(`#${drawerId} > .drawer-toggle`)?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 }
 
@@ -154,6 +156,15 @@ export function getInitials(name) {
     const first = [...words[0]][0] ?? '';
     const last = words.length > 1 ? [...words[words.length - 1]][0] ?? '' : '';
     return (first + last).toUpperCase();
+}
+
+/**
+ * The full-size picture of a character ('avatar') or persona ('persona'). SillyTavern's
+ * thumbnails are 96×144, which blur anywhere a picture is drawn larger than about 48px on a
+ * high-density screen, so profiles and banners use the original.
+ */
+export function fullPictureUrl(type, file) {
+    return `${type === 'persona' ? 'User Avatars' : 'characters'}/${encodeURIComponent(file)}`;
 }
 
 /** Discord's default avatar colors; a name always gets the same one */
@@ -210,7 +221,7 @@ function getTip() {
     return tip;
 }
 
-export function hideTooltip() {
+function hideTooltip() {
     if (tip) {
         tip.hidden = true;
     }
@@ -259,7 +270,7 @@ export function shieldFromOutsideClose(element) {
 }
 
 export function initTooltips() {
-    document.addEventListener('pointerover', (event) => {
+    listen(document, 'pointerover', (event) => {
         const target = /** @type {HTMLElement} */ (event.target).closest?.('[data-dsc-tip]');
         if (target === tipTarget) {
             return;
@@ -269,9 +280,9 @@ export function initTooltips() {
             showTooltip(/** @type {HTMLElement} */ (target));
         }
     });
-    document.addEventListener('pointerdown', hideTooltip, true);
-    window.addEventListener('blur', hideTooltip);
-    document.addEventListener('scroll', hideTooltip, true);
+    listen(document, 'pointerdown', hideTooltip, true);
+    listen(window, 'blur', hideTooltip);
+    listen(document, 'scroll', hideTooltip, true);
 }
 
 /* Context menus: Discord's dark floating menu, opened by a button or a right click */
@@ -279,7 +290,7 @@ export function initTooltips() {
 const MENU_ID = 'dsc-menu';
 let menuAnchor = null;
 
-export function closeMenu() {
+function closeMenu() {
     const menu = document.getElementById(MENU_ID);
     if (menu) {
         menu.hidden = true;
@@ -299,13 +310,13 @@ function getMenu() {
     menu.hidden = true;
     document.body.append(menu);
     shieldFromOutsideClose(menu);
-    document.addEventListener('pointerdown', (event) => {
+    listen(document, 'pointerdown', (event) => {
         const target = /** @type {Node} */ (event.target);
         if (!menu.hidden && !menu.contains(target) && !menuAnchor?.contains(target)) {
             closeMenu();
         }
     });
-    document.addEventListener('keydown', (event) => {
+    listen(document, 'keydown', (event) => {
         if (event.key === 'Escape' && !menu.hidden) {
             event.stopPropagation();
             closeMenu();

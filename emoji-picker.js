@@ -5,6 +5,7 @@
 
 import { EMOJI_CATEGORIES, searchEmoji } from './lib/emoji-data.js';
 import { shieldFromOutsideClose, t } from './ui.js';
+import { listen, onEvent } from './life.js';
 
 const PICKER_ID = 'dsc-emoji-picker';
 const RECENT_KEY = 'dsc-recent-emoji';
@@ -46,7 +47,7 @@ function insert(char) {
     }, 0);
 }
 
-export function closeEmojiPicker() {
+function closeEmojiPicker() {
     document.getElementById(PICKER_ID)?.remove();
     document.querySelector('.dsc-compose-tool.dsc-open')?.classList.remove('dsc-open');
 }
@@ -177,14 +178,14 @@ export function toggleEmojiPicker(anchor) {
 }
 
 export function initEmojiPicker() {
-    document.addEventListener('pointerdown', (event) => {
+    listen(document, 'pointerdown', (event) => {
         const picker = document.getElementById(PICKER_ID);
         const target = /** @type {HTMLElement} */ (event.target);
         if (picker && !picker.contains(target) && !target.closest('.dsc-compose-tool.dsc-open')) {
             closeEmojiPicker();
         }
     }, true);
-    document.addEventListener('keydown', (event) => {
+    listen(document, 'keydown', (event) => {
         if (event.key === 'Escape' && document.getElementById(PICKER_ID)) {
             event.preventDefault();
             event.stopPropagation();
@@ -192,5 +193,5 @@ export function initEmojiPicker() {
             document.getElementById('send_textarea')?.focus();
         }
     }, true);
-    SillyTavern.getContext().eventSource.on(SillyTavern.getContext().eventTypes.CHAT_CHANGED, closeEmojiPicker);
+    onEvent(SillyTavern.getContext().eventTypes.CHAT_CHANGED, closeEmojiPicker);
 }

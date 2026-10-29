@@ -12,6 +12,7 @@
 import { getDirectMessages, onDataChange } from './data.js';
 import { play } from './sounds.js';
 import { t } from './ui.js';
+import { gated, GatedObserver, onEvent } from './life.js';
 
 const STORE_KEY = 'dsc-presence-v1';
 const ONLINE_MS = 15 * 60 * 1000;
@@ -84,9 +85,9 @@ export function statusOf(avatar) {
     return 'offline';
 }
 
-export const STATUS_LABELS = { online: 'Online', idle: 'Idle', dnd: 'Do Not Disturb', offline: 'Offline' };
+const STATUS_LABELS = { online: 'Online', idle: 'Idle', dnd: 'Do Not Disturb', offline: 'Offline' };
 
-export function statusLabel(avatar) {
+function statusLabel(avatar) {
     return t(STATUS_LABELS[statusOf(avatar)]);
 }
 
@@ -197,7 +198,7 @@ function watchForPlaceholder() {
             last.classList.add('dsc-pending');
         }
     };
-    pendingWatch = new MutationObserver(mark);
+    pendingWatch = new GatedObserver(mark);
     pendingWatch.observe(chat, { childList: true });
     mark();
 }
@@ -227,9 +228,9 @@ let groupType = '';
 export function initPresence(opts) {
     options = { ...options, ...opts };
     load();
-    const { eventSource, eventTypes } = SillyTavern.getContext();
+    const { eventTypes } = SillyTavern.getContext();
 
-    eventSource.on(eventTypes.GENERATION_STARTED, (type, params, dryRun) => {
+    onEvent(eventTypes.GENERATION_STARTED, (type, params, dryRun) => {
         const context = SillyTavern.getContext();
         const normal = !dryRun && (type === undefined || type === 'normal') && !params?.quiet_prompt;
         pendingReply = normal && !context.groupId;
@@ -244,7 +245,7 @@ export function initPresence(opts) {
     });
 
     // one-on-one: the user's message is on screen; hold the reply here if they're away
-    eventSource.on(eventTypes.USER_MESSAGE_RENDERED, async () => {
+    onEvent(eventTypes.USER_MESSAGE_RENDERED, async () => {
         const context = SillyTavern.getContext();
         if (!pendingReply || context.groupId) {
             return;
@@ -257,10 +258,10 @@ export function initPresence(opts) {
     });
 
     // groups: each member in turn
-    eventSource.on(eventTypes.GROUP_WRAPPER_STARTED, (data) => {
+    onEvent(eventTypes.GROUP_WRAPPER_STARTED, (data) => {
         groupType = data?.type ?? '';
     });
-    eventSource.on(eventTypes.GROUP_MEMBER_DRAFTED, async (chId) => {
+    onEvent(eventTypes.GROUP_MEMBER_DRAFTED, async (chId) => {
         const character = SillyTavern.getContext().characters[chId];
         if (!character) {
             return;
@@ -273,17 +274,17 @@ export function initPresence(opts) {
         await wake(character.avatar, character.name);
     });
 
-    eventSource.on(eventTypes.GENERATION_STARTED, (type, params, dryRun) => {
+    onEvent(eventTypes.GENERATION_STARTED, (type, params, dryRun) => {
         if (!dryRun && type !== 'quiet' && type !== 'impersonate') {
             watchForPlaceholder();
         }
     });
     for (const type of [eventTypes.STREAM_TOKEN_RECEIVED, eventTypes.CHARACTER_MESSAGE_RENDERED, eventTypes.GENERATION_ENDED, eventTypes.GENERATION_STOPPED, eventTypes.CHAT_CHANGED]) {
         if (type) {
-            eventSource.on(type, hideTyping);
+            onEvent(type, hideTyping);
         }
     }
-    eventSource.on(eventTypes.CHARACTER_MESSAGE_RENDERED, (mesId) => {
+    onEvent(eventTypes.CHARACTER_MESSAGE_RENDERED, (mesId) => {
         const message = SillyTavern.getContext().chat[Number(mesId)];
         const character = message?.original_avatar
             ?? SillyTavern.getContext().characters.find(x => x.name === message?.name)?.avatar;
@@ -293,8 +294,8 @@ export function initPresence(opts) {
     });
 
     onDataChange(() => paintPresence());
-    setInterval(() => {
+    setInterval(gated(() => {
         paintPresence();
         options.changed();
-    }, 60 * 1000);
+    }), 60 * 1000);
 }

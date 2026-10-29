@@ -9,6 +9,7 @@ import { paintPresence } from './presence.js';
 import { clickOption, closeDrawers, getAcronym, getColorIndex, getInitials, icon, iconButton, isDrawerOpen, openDrawer, openMenu, t, toChannelName } from './ui.js';
 import { formatKeys, SHORTCUTS } from './shortcuts.js';
 import { isFolder, leaveFolder, locate, move, moveFolder, normalize, step, ungroup, updateFolder } from './lib/server-layout.js';
+import { onEvent } from './life.js';
 
 const RAIL_ID = 'dsc-guilds';
 const SIDE_ID = 'dsc-side';
@@ -27,10 +28,6 @@ let actions = {
     getLayout: () => /** @type {any[]} */ ([]),
     setLayout: (_layout) => {},
 };
-
-export function getSelectedServer() {
-    return selectedServer;
-}
 
 /* ---------- server rail ---------- */
 
@@ -638,11 +635,18 @@ export function markCurrent() {
         return;
     }
     const body = document.body.classList;
-    const page = body.contains('dsc-discover') ? 'discover'
-        : body.contains('dsc-chars-open') ? 'friends'
-        : isDrawerOpen('extensions-settings-button') ? 'nitro'
-            : isDrawerOpen('backgrounds-button') ? 'shop'
-                : body.contains('dsc-friends') || body.contains('dsc-no-chat') ? 'friends' : '';
+    let page = '';
+    if (body.contains('dsc-discover')) {
+        page = 'discover';
+    } else if (body.contains('dsc-chars-open')) {
+        page = 'friends';
+    } else if (isDrawerOpen('extensions-settings-button')) {
+        page = 'nitro';
+    } else if (isDrawerOpen('backgrounds-button')) {
+        page = 'shop';
+    } else if (body.contains('dsc-friends') || body.contains('dsc-no-chat')) {
+        page = 'friends';
+    }
     for (const row of side.querySelectorAll('.dsc-nav-row')) {
         row.classList.toggle('dsc-selected', row.dataset.nav === page);
     }
@@ -856,9 +860,9 @@ export function initSidebar(options) {
     createRail();
     createSide();
     onDataChange(renderAll);
-    const { eventSource, eventTypes } = SillyTavern.getContext();
-    eventSource.on(eventTypes.CHAT_CHANGED, followChat);
-    eventSource.on(eventTypes.GROUP_UPDATED, renderAll);
+    const { eventTypes } = SillyTavern.getContext();
+    onEvent(eventTypes.CHAT_CHANGED, followChat);
+    onEvent(eventTypes.GROUP_UPDATED, renderAll);
     followChat();
     refreshPersona();
 }

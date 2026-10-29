@@ -3,6 +3,7 @@
 // looks: a tiny version of the picture is compared with a tiny version of the defaults.
 
 import { getColorIndex, getInitials } from './ui.js';
+import { GatedObserver, onEvent } from './life.js';
 
 const DEFAULT_PICTURES = ['img/ai4.png', 'img/user-default.png'];
 const SIZE = 12;
@@ -59,7 +60,7 @@ export function isPlaceholder(src) {
 }
 
 /** Puts a default avatar over a placeholder picture (the picture stays, hidden, for SillyTavern). */
-export async function monogramize(img, name) {
+async function monogramize(img, name) {
     const holder = img?.parentElement;
     if (!holder) {
         return;
@@ -112,33 +113,33 @@ function rowName(img) {
     return img.closest('.character_select, .group_select, .avatar-container')?.querySelector('.ch_name')?.textContent?.trim() ?? '';
 }
 
-export function monogramizeMessages() {
+function monogramizeMessages() {
     monogramizeAll(document.getElementById('chat'), '.mes .avatar img', messageName);
 }
 
 export function initMonograms() {
-    const { eventSource, eventTypes } = SillyTavern.getContext();
+    const { eventTypes } = SillyTavern.getContext();
     const one = (mesId) => {
         const mes = document.querySelector(`#chat .mes[mesid="${Number(mesId)}"]`);
         monogramizeAll(mes, '.avatar img', messageName);
     };
     const later = () => setTimeout(monogramizeMessages, 0);
-    eventSource.on(eventTypes.CHARACTER_MESSAGE_RENDERED, one);
-    eventSource.on(eventTypes.USER_MESSAGE_RENDERED, one);
-    eventSource.on(eventTypes.CHAT_CHANGED, later);
-    eventSource.on(eventTypes.MORE_MESSAGES_LOADED, later);
-    eventSource.on(eventTypes.PERSONA_CHANGED, later);
+    onEvent(eventTypes.CHARACTER_MESSAGE_RENDERED, one);
+    onEvent(eventTypes.USER_MESSAGE_RENDERED, one);
+    onEvent(eventTypes.CHAT_CHANGED, later);
+    onEvent(eventTypes.MORE_MESSAGES_LOADED, later);
+    onEvent(eventTypes.PERSONA_CHANGED, later);
 
     // the character list
     const people = () => monogramizeAll(document.getElementById('rm_print_characters_block'), '.avatar img', rowName);
-    eventSource.on(eventTypes.CHARACTER_PAGE_LOADED, () => setTimeout(people, 0));
+    onEvent(eventTypes.CHARACTER_PAGE_LOADED, () => setTimeout(people, 0));
     people();
 
     // personas: SillyTavern redraws the list without an event, so watch the list itself
     const profiles = document.getElementById('user_avatar_block');
     if (profiles) {
         const run = () => monogramizeAll(profiles, '.avatar img', rowName);
-        new MutationObserver(run).observe(profiles, { childList: true });
+        new GatedObserver(run).observe(profiles, { childList: true });
         run();
     }
     later();
