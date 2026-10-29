@@ -22,11 +22,18 @@ const processed = new WeakMap();
     keeps long chats quick: every rewrite wakes SillyTavern's own page watchers. */
 export function alreadyDone(element, key) {
     const seen = processed.get(element);
-    return !!seen && seen.key === key && seen.first === element.firstChild && seen.last === element.lastChild;
+    return !!seen && seen.keys.has(key) && seen.first === element.firstChild && seen.last === element.lastChild;
 }
 
+/** Records that one pass (its own key: splitting, pictures…) is done for the text as it stands.
+    Passes are kept apart, so one finishing never makes another think it's done too. */
 export function markDone(element, key) {
-    processed.set(element, { key, first: element.firstChild, last: element.lastChild });
+    const seen = processed.get(element);
+    if (seen && seen.first === element.firstChild && seen.last === element.lastChild) {
+        seen.keys.add(key);
+    } else {
+        processed.set(element, { keys: new Set([key]), first: element.firstChild, last: element.lastChild });
+    }
 }
 
 /** The chat message behind a message element. */

@@ -64,7 +64,7 @@ function renderParts(mes, { reveal = false } = {}) {
     // the same text and arguments SillyTavern formats the whole message with
     const source = message.extra?.display_text || message.mes;
     // already drawn from this same text (and not redrawn by SillyTavern since): leave it
-    const key = embedKey(source) + `|${message.extra?.dsc_edited ?? ''}`;
+    const key = `split|${embedKey(source)}|${message.extra?.dsc_edited ?? ''}`;
     if (!reveal && alreadyDone(text, key)) {
         return;
     }

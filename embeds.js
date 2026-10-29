@@ -190,7 +190,7 @@ function embedMessage(mes) {
     const message = messageOf(mes);
     if (message) {
         const source = message.extra?.display_text || message.mes;
-        const key = embedKey(source) + `|${message.extra?.dsc_edited ?? ''}`;
+        const key = `pictures|${embedKey(source)}|${message.extra?.dsc_edited ?? ''}`;
         if (alreadyDone(text, key)) {
             return;
         }

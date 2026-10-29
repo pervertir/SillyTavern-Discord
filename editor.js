@@ -43,6 +43,10 @@ function openScenario() {
 function currentName() {
     const context = SillyTavern.getContext();
     if (mode === 'group') {
+        // creating: the new server has no name yet (the open one isn't it)
+        if (visible('rm_group_submit')) {
+            return /** @type {HTMLInputElement} */ (document.getElementById('rm_group_chat_name'))?.value || '';
+        }
         const group = context.groupId ? context.groups.find(x => String(x.id) === String(context.groupId)) : null;
         return group?.name ?? '';
     }

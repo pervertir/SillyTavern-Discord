@@ -168,3 +168,16 @@ body.discord-theme.dsc-rtl #send_textarea {
 body.discord-theme.dsc-rtl :is(#dsc-settings, .dsc-page, #top-settings-holder) :is(input[type="range"], .neo-range-slider) {
     background: linear-gradient(to left, var(--dsc-blurple) 0 var(--dsc-fill, 0%), var(--dsc-secondary-button, rgba(128, 132, 142, 0.4)) var(--dsc-fill, 0%) 100%) !important;
 }
+
+/* in the server and character editors the sidebar names what's being edited; SillyTavern's
+   own "selected" title above the form only repeats it (and shows the open server while a new
+   one is being made) */
+body.discord-theme.dsc-editor-open #rm_button_selected_ch {
+    display: none !important;
+}
+
+@media screen and (max-width: 1000px) {
+    body.discord-theme .dsc-set-search {
+        margin: 8px 4px 12px;
+    }
+}
