@@ -86,6 +86,8 @@ const defaultSettings = Object.freeze({
     /** Desktop notifications for replies that arrive while the window isn't in front */
     desktopNotifications: false,
     recentMax: 50,
+    /** The server rail's order and folders (lib/server-layout.js) */
+    serverLayout: [],
     /** SillyTavern's UI theme preset and Custom CSS are paused while the theme is on */
     pauseUserTheme: true,
 });
@@ -522,7 +524,7 @@ async function start() {
         initTooltips();
 
         listLoaded = initData({ max: () => getSettings().recentMax, opened: showChat });
-        initSidebar({ showFriends, openSwitcher, openSettings, showChat, showDiscover: openDiscover });
+        initSidebar({ showFriends, openSwitcher, openSettings, showChat, showDiscover: openDiscover, getLayout: () => getSettings().serverLayout, setLayout: (layout) => { getSettings().serverLayout = layout; saveSettings(); } });
         initHeader({ showAside, toggleAside, openSwitcher, back });
         initCustomize({ settings: getSettings, save: saveSettings });
         initPages({ settings: getSettings, save: saveSettings, play, enableDesktop: enableDesktopNotifications });

@@ -8,6 +8,7 @@ import { repaintUnread } from './notify.js';
 import { paintPresence } from './presence.js';
 import { clickOption, closeDrawers, getAcronym, getColorIndex, getInitials, icon, iconButton, isDrawerOpen, openDrawer, openMenu, t, toChannelName } from './ui.js';
 import { formatKeys, SHORTCUTS } from './shortcuts.js';
+import { isFolder, leaveFolder, locate, move, moveFolder, normalize, step, ungroup, updateFolder } from './lib/server-layout.js';
 
 const RAIL_ID = 'dsc-guilds';
 const SIDE_ID = 'dsc-side';
@@ -22,6 +23,9 @@ let actions = {
     openSettings: (_drawerId) => {},
     showChat: () => {},
     showDiscover: () => {},
+    /** the rail's order and folders (lib/server-layout.js), kept in the theme's settings */
+    getLayout: () => /** @type {any[]} */ ([]),
+    setLayout: (_layout) => {},
 };
 
 export function getSelectedServer() {
@@ -46,7 +50,11 @@ function railItem(className, tip) {
 }
 
 function buildServer(group) {
+    if (!group) {
+        return null;
+    }
     const item = railItem('dsc-server', group.name);
+    item.draggable = true;
     item.dataset.group = String(group.id);
     const button = item.querySelector('button');
     if (group.avatar_url && !String(group.avatar_url).includes('img/')) {
@@ -64,6 +72,149 @@ function buildServer(group) {
         button.append(acronym);
     }
     return item;
+}
+
+/** The rail's order and folders, with any new server added and any gone one dropped. */
+function currentLayout() {
+    return normalize(actions.getLayout(), getServers().map(group => String(group.id)));
+}
+
+function saveLayout(layout) {
+    actions.setLayout(layout);
+    renderRail();
+}
+
+const FOLDER_COLORS = [['', 'Default'], ['#5865f2', 'Blurple'], ['#57f287', 'Green'], ['#fee75c', 'Yellow'], ['#eb459e', 'Fuchsia'], ['#ed4245', 'Red'], ['#9b84ee', 'Purple'], ['#80848e', 'Gray']];
+
+/** A folder: four small icons while closed; open, a folder icon with its servers under it. */
+function buildFolder(folder, byId) {
+    const wrap = document.createElement('div');
+    wrap.className = 'dsc-folder';
+    wrap.classList.toggle('dsc-folder-open', folder.open);
+    wrap.dataset.folder = folder.folder;
+    if (folder.color) {
+        wrap.style.setProperty('--dsc-folder-color', folder.color);
+    }
+    const names = folder.ids.map(id => byId.get(id)?.name).filter(Boolean);
+    const head = railItem('dsc-folder-head', folder.name || names.join(', '));
+    head.dataset.folder = folder.folder;
+    head.draggable = true;
+    const button = head.querySelector('button');
+    button.setAttribute('aria-expanded', String(folder.open));
+    if (folder.open) {
+        button.append(icon('folder', 24));
+    } else {
+        const grid = document.createElement('span');
+        grid.className = 'dsc-folder-grid';
+        for (const id of folder.ids.slice(0, 4)) {
+            const mini = buildServer(byId.get(id))?.querySelector('.dsc-guild-icon > *');
+            const cell = document.createElement('span');
+            cell.className = 'dsc-folder-mini';
+            if (mini) {
+                cell.append(mini);
+            }
+            grid.append(cell);
+        }
+        button.append(grid);
+    }
+    wrap.append(head);
+    if (folder.open) {
+        const items = document.createElement('div');
+        items.className = 'dsc-folder-items';
+        items.append(...folder.ids.map(id => buildServer(byId.get(id))).filter(Boolean));
+        wrap.append(items);
+    }
+    return wrap;
+}
+
+function openFolderMenu(anchor, folderId, at) {
+    const folder = currentLayout().find(entry => isFolder(entry) && entry.folder === folderId);
+    if (!folder) {
+        return;
+    }
+    openMenu(anchor, [
+        { label: folder.open ? 'Collapse Folder' : 'Expand Folder', icon: 'folder', run: () => saveLayout(updateFolder(currentLayout(), folderId, { open: !folder.open })) },
+        { label: 'Rename Folder', icon: 'edit', run: () => renameFolder(folderId, folder.name) },
+        { label: 'Ungroup Folder', icon: 'close', run: () => saveLayout(ungroup(currentLayout(), folderId)) },
+        'separator',
+        ...FOLDER_COLORS.map(([color, name]) => ({
+            label: name,
+            color: color || 'var(--dsc-blurple)',
+            checked: folder.color === color,
+            run: () => saveLayout(updateFolder(currentLayout(), folderId, { color })),
+        })),
+    ], at);
+}
+
+async function renameFolder(folderId, name) {
+    const { callGenericPopup, POPUP_TYPE } = SillyTavern.getContext();
+    const value = await callGenericPopup(t('Folder Name'), POPUP_TYPE.INPUT, name ?? '', { okButton: t('Save') });
+    if (typeof value === 'string') {
+        saveLayout(updateFolder(currentLayout(), folderId, { name: value.trim().slice(0, 60) }));
+    }
+}
+
+/** Dragging servers and folders in the rail, as in Discord: onto the upper or lower edge of an
+    icon to put it before or after, onto the middle to make (or join) a folder. */
+function initDragging(list) {
+    let dragged = null;
+    const clear = () => list.querySelectorAll('.dsc-drop-before, .dsc-drop-after, .dsc-drop-into').forEach(x => x.classList.remove('dsc-drop-before', 'dsc-drop-after', 'dsc-drop-into'));
+    const targetOf = (event) => {
+        const item = /** @type {HTMLElement} */ (event.target).closest?.('.dsc-server, .dsc-folder-head');
+        if (!item || !dragged) {
+            return null;
+        }
+        const id = item.classList.contains('dsc-folder-head') ? item.dataset.folder : item.dataset.group;
+        if (id === dragged.id) {
+            return null;
+        }
+        const box = item.getBoundingClientRect();
+        const y = (event.clientY - box.top) / box.height;
+        // a folder can only go before or after; a server can also go into another
+        const position = dragged.folder ? (y < 0.5 ? 'before' : 'after') : (y < 0.25 ? 'before' : y > 0.75 ? 'after' : 'into');
+        return { item, id, position };
+    };
+    list.addEventListener('dragstart', (event) => {
+        const item = /** @type {HTMLElement} */ (event.target).closest?.('.dsc-server, .dsc-folder-head');
+        if (!item) {
+            return;
+        }
+        dragged = item.classList.contains('dsc-folder-head') ? { id: item.dataset.folder, folder: true } : { id: item.dataset.group, folder: false };
+        event.dataTransfer?.setData('text/plain', dragged.id);
+        if (event.dataTransfer) {
+            event.dataTransfer.effectAllowed = 'move';
+        }
+        item.classList.add('dsc-dragging');
+    });
+    list.addEventListener('dragover', (event) => {
+        const target = targetOf(event);
+        clear();
+        if (!target) {
+            return;
+        }
+        event.preventDefault();
+        target.item.classList.add(`dsc-drop-${target.position}`);
+    });
+    list.addEventListener('dragleave', (event) => {
+        if (!list.contains(/** @type {Node} */ (event.relatedTarget))) {
+            clear();
+        }
+    });
+    list.addEventListener('drop', (event) => {
+        const target = targetOf(event);
+        clear();
+        if (!target || !dragged) {
+            return;
+        }
+        event.preventDefault();
+        const layout = currentLayout();
+        saveLayout(dragged.folder ? moveFolder(layout, dragged.id, target.id, target.position) : move(layout, dragged.id, target.id, target.position));
+    });
+    list.addEventListener('dragend', () => {
+        clear();
+        list.querySelectorAll('.dsc-dragging').forEach(x => x.classList.remove('dsc-dragging'));
+        dragged = null;
+    });
 }
 
 function createRail() {
@@ -90,12 +241,26 @@ function createRail() {
     discover.querySelector('button').addEventListener('click', () => actions.showDiscover());
 
     list.addEventListener('click', (event) => {
+        const head = /** @type {HTMLElement} */ (event.target).closest('.dsc-folder-head');
+        if (head) {
+            const folder = currentLayout().find(entry => isFolder(entry) && entry.folder === head.dataset.folder);
+            if (folder) {
+                saveLayout(updateFolder(currentLayout(), folder.folder, { open: !folder.open }));
+            }
+            return;
+        }
         const item = /** @type {HTMLElement} */ (event.target).closest('.dsc-server');
         if (item) {
             selectServer(item.dataset.group, true);
         }
     });
     list.addEventListener('contextmenu', (event) => {
+        const head = /** @type {HTMLElement} */ (event.target).closest('.dsc-folder-head');
+        if (head) {
+            event.preventDefault();
+            openFolderMenu(head.querySelector('button'), head.dataset.folder, { x: event.clientX, y: event.clientY });
+            return;
+        }
         const item = /** @type {HTMLElement} */ (event.target).closest('.dsc-server');
         if (!item) {
             return;
@@ -103,6 +268,7 @@ function createRail() {
         event.preventDefault();
         openServerMenu(item.querySelector('button'), item.dataset.group, { x: event.clientX, y: event.clientY });
     });
+    initDragging(list);
 
     rail.append(home, sep, list, add, discover);
     document.body.append(rail);
@@ -116,11 +282,13 @@ function renderRail() {
     const list = rail.querySelector('.dsc-guild-list');
     const servers = getServers();
     const current = getCurrentPlace();
-    // rebuild only when the set of servers or their names changed
-    const signature = servers.map(group => `${group.id}:${group.name}:${group.avatar_url ?? ''}`).join('|');
+    const layout = currentLayout();
+    // rebuild only when the servers, their names or the order and folders changed
+    const signature = `${servers.map(group => `${group.id}:${group.name}:${group.avatar_url ?? ''}`).join('|')}#${JSON.stringify(layout)}`;
     if (list.dataset.signature !== signature) {
         list.dataset.signature = signature;
-        list.replaceChildren(...servers.map(buildServer));
+        const byId = new Map(servers.map(group => [String(group.id), group]));
+        list.replaceChildren(...layout.map(entry => (isFolder(entry) ? buildFolder(entry, byId) : buildServer(byId.get(entry)))).filter(Boolean));
     }
     const discovering = document.body.classList.contains('dsc-discover');
     rail.querySelector('.dsc-home').classList.toggle('dsc-selected', !selectedServer && !discovering);
@@ -137,12 +305,32 @@ function openServerMenu(anchor, groupId, at) {
     if (!group) {
         return;
     }
+    const where = locate(currentLayout(), String(groupId));
     openMenu(anchor, [
         { label: 'Open', icon: 'chat', run: () => selectServer(groupId, true) },
         { label: 'Create Channel', icon: 'plus', run: () => createChannel(groupId) },
         'separator',
+        // the rail's order without dragging (keyboard and screen readers too)
+        { label: 'Move Up', icon: 'chevron', run: () => saveLayout(step(currentLayout(), String(groupId), -1)) },
+        { label: 'Move Down', icon: 'chevron', run: () => saveLayout(step(currentLayout(), String(groupId), 1)) },
+        where?.folder
+            ? { label: 'Remove from Folder', icon: 'folder', run: () => saveLayout(leaveFolder(currentLayout(), String(groupId))) }
+            : { label: 'Add to Folder with Next Server', icon: 'folder', run: () => folderWithNext(String(groupId)) },
+        'separator',
         { label: 'Server Settings', icon: 'gear', run: () => editServer(groupId) },
     ], at);
+}
+
+/** Makes a folder of a server and the next one in the rail (the menu's way to make a folder). */
+function folderWithNext(groupId) {
+    const layout = currentLayout();
+    const where = locate(layout, groupId);
+    const next = where && layout[where.index + 1];
+    if (!next) {
+        toastr.info(t('Drag a server onto another to make a folder.'));
+        return;
+    }
+    saveLayout(isFolder(next) ? move(layout, groupId, next.folder, 'into') : move(layout, groupId, next, 'into'));
 }
 
 /** Shows the group editor in SillyTavern's character panel. */

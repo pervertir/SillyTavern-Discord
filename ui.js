@@ -281,6 +281,12 @@ export function openMenu(anchor, items, at = 'below') {
             note.textContent = t(item.note);
             label.append(note);
         }
+        if (item.color) {
+            const swatch = document.createElement('span');
+            swatch.className = 'dsc-menu-swatch';
+            swatch.style.background = item.color;
+            row.append(swatch);
+        }
         if (item.dot) {
             // a status shape before the label, as in Discord's status menu
             const dot = document.createElement('span');
