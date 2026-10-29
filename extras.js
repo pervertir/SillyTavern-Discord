@@ -24,7 +24,7 @@ function spoiler(content) {
     const span = document.createElement('span');
     span.className = 'dsc-spoiler';
     span.setAttribute('role', 'button');
-    span.setAttribute('aria-label', 'Spoiler');
+    span.setAttribute('aria-label', t('Spoiler'));
     span.tabIndex = 0;
     const inner = document.createElement('span');
     inner.className = 'dsc-spoiler-text';

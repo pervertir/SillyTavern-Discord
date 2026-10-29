@@ -597,7 +597,7 @@ body.discord-theme:is(.dsc-settings-open, .dsc-settings-list) .dsc-tb-title > * 
 }
 
 body.discord-theme:is(.dsc-settings-open, .dsc-settings-list) .dsc-tb-title::after {
-    content: var(--dsc-settings-title, 'User Settings');
+    content: var(--dsc-settings-title, var(--dsc-t-user-settings, 'User Settings'));
 }
 
 /* Keyboard focus: Discord's blue ring on anything you reach with Tab */

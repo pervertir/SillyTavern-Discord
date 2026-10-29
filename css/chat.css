@@ -1138,7 +1138,7 @@ body.discord-theme .dsc-activity-time {
 
 /* Discord's hint under a message being edited (msgtools.js does what it says) */
 body.discord-theme #chat .mes .mes_block:has(> .mes_text > .edit_textarea)::after {
-    content: 'escape to cancel • enter to save';
+    content: var(--dsc-t-edit-hint, 'escape to cancel • enter to save');
     display: block;
     margin: 2px 0 6px;
     color: var(--dsc-muted);

@@ -38,6 +38,33 @@ export function t(text) {
     return SillyTavern.getContext().translate(text);
 }
 
+/** Translates a block of the theme's own HTML (the Extensions panel): its words, placeholders
+    and titles, each looked up as written. */
+export function translateTree(root) {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) {
+        nodes.push(walker.currentNode);
+    }
+    for (const node of nodes) {
+        const text = node.nodeValue.replace(/\s+/g, ' ').trim();
+        if (text && /[A-Za-z]/.test(text)) {
+            const translated = t(text);
+            if (translated !== text) {
+                node.nodeValue = node.nodeValue.replace(node.nodeValue.trim(), translated);
+            }
+        }
+    }
+    for (const element of root.querySelectorAll('[placeholder], [title]')) {
+        for (const name of ['placeholder', 'title']) {
+            const value = element.getAttribute(name);
+            if (value) {
+                element.setAttribute(name, t(value));
+            }
+        }
+    }
+}
+
 export const MOBILE_QUERY = '(max-width: 1000px)';
 
 export function isPhone() {

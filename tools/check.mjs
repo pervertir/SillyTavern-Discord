@@ -16,9 +16,9 @@ const ST_DIR = process.env.DSC_ST_DIR || '/Volumes/980Pro/Workspace/AI/SillyTave
 const DATA = process.env.DSC_DATA || '/Volumes/980Pro/tmp-st-discord/data';
 const PORT = process.env.DSC_PORT || '8004';
 const URL = `http://127.0.0.1:${PORT}/`;
-const SCRIPTS = ['leaks', 'off', 'grp', 'bugs', 'flash', 'a11y', 'surfaces'];
+const SCRIPTS = ['leaks', 'off', 'grp', 'bugs', 'flash', 'a11y', 'surfaces', 'i18n'];
 /** Output that means a script found a problem */
-const FAILED = /: [1-9]\d* leaks|same: false|errors \[\s*'|errors: \[\s*'|TimeoutError|Error: |: [1-9]\d* unnamed|[1-9]\d* (no alt|pictures without alt|low contrast|low-contrast)|[1-9]\d* focused controls without|[1-9]\d* painted surfaces|[1-9]\d* corner problems/;
+const FAILED = /: [1-9]\d* leaks|same: false|errors \[\s*'|errors: \[\s*'|TimeoutError|Error: |: [1-9]\d* unnamed|[1-9]\d* (no alt|pictures without alt|low contrast|low-contrast)|[1-9]\d* focused controls without|[1-9]\d* painted surfaces|[1-9]\d* corner problems|[1-9]\d* untranslated/;
 
 function run(cmd, args, options = {}) {
     const result = spawnSync(cmd, args, { encoding: 'utf8', timeout: 240000, ...options });
@@ -67,7 +67,13 @@ try {
         failed = true;
     } else {
         for (const name of SCRIPTS) {
-            const result = run('node', [path.join(ROOT, 'test/e2e', `${name}.mjs`)], { cwd: path.join(ROOT, 'test/e2e'), env: { ...process.env, DSC_URL: URL } });
+            let result = run('node', [path.join(ROOT, 'test/e2e', `${name}.mjs`)], { cwd: path.join(ROOT, 'test/e2e'), env: { ...process.env, DSC_URL: URL } });
+            // the headless browser itself sometimes dies under load: that run says nothing about
+            // the theme, so it runs once more (and says so); any other failure stands
+            if (/Target page, context or browser has been closed/.test(result.out)) {
+                console.log(`  (${name}: the test browser closed by itself; running it again)`);
+                result = run('node', [path.join(ROOT, 'test/e2e', `${name}.mjs`)], { cwd: path.join(ROOT, 'test/e2e'), env: { ...process.env, DSC_URL: URL } });
+            }
             const bad = result.code !== 0 || FAILED.test(result.out);
             failed ||= bad;
             console.log(`${bad ? '✗' : '✓'} ${name}`);

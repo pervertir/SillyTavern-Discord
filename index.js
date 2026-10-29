@@ -32,7 +32,7 @@ import { initSettings, openSettings, refreshSettings, SETTINGS_DRAWERS } from '.
 import { formatKeys, initShortcuts, SHORTCUTS } from './shortcuts.js';
 import { initSidebar, markCurrent, openCharacterPanel, refreshPersona, stepConversation, stepServer } from './sidebar.js';
 import { initSwitcher, openSwitcher } from './switcher.js';
-import { clickOption, closeDrawers, initTooltips, isPhone, t } from './ui.js';
+import { clickOption, closeDrawers, initTooltips, isPhone, t, translateTree } from './ui.js';
 
 const MODULE_NAME = 'discordTheme';
 /** Folder path under scripts/extensions/, e.g. third-party/SillyTavern-Discord */
@@ -137,6 +137,34 @@ function setEnabled(on) {
 
 const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
+/** Text drawn by the styles (CSS content), handed to them translated as --dsc-t-* variables */
+const CSS_TEXT = [
+    ['edit-hint', 'escape to cancel • enter to save'],
+    ['user-settings', 'User Settings'],
+    ['server-settings', 'Server Settings'],
+    ['characters', 'Characters'],
+    ['back', 'Back'],
+];
+
+/** Loads the theme's own words for SillyTavern's chosen language into SillyTavern's translator
+    (locales/<language>.json; English needs none). Right-to-left languages read right to left. */
+async function loadLocale() {
+    const { getCurrentLocale, addLocaleData } = SillyTavern.getContext();
+    const locale = getCurrentLocale?.() ?? 'en';
+    document.body.classList.toggle('dsc-rtl', /^(ar|he|fa|ur)\b/i.test(locale));
+    if (!locale || /^en\b/i.test(locale) || !addLocaleData) {
+        return;
+    }
+    try {
+        const response = await fetch(new URL(`./locales/${locale.toLowerCase()}.json`, import.meta.url));
+        if (response.ok) {
+            addLocaleData(locale, await response.json());
+        }
+    } catch (error) {
+        console.warn('[Discord] No translation for', locale, error);
+    }
+}
+
 /** Settings objects already given their defaults */
 const filledSettings = new WeakSet();
 
@@ -190,9 +218,16 @@ function applySettings() {
     body.toggle('dsc-times', on && !!settings.discordTimes);
     body.toggle('dsc-show-bg', on && !!settings.showBackground);
     if (on) {
+        // text the styles draw themselves, in the user's language
+        for (const [name, text] of CSS_TEXT) {
+            document.body.style.setProperty(`--dsc-t-${name}`, JSON.stringify(t(text)));
+        }
         document.body.style.setProperty('--dsc-chat-font', `${Number(settings.chatFont) || 16}px`);
         document.body.style.setProperty('--dsc-group-gap', `${Number.isFinite(Number(settings.groupGap)) ? Number(settings.groupGap) : 16}px`);
     } else {
+        for (const [name] of CSS_TEXT) {
+            document.body.style.removeProperty(`--dsc-t-${name}`);
+        }
         document.body.style.removeProperty('--dsc-chat-font');
         document.body.style.removeProperty('--dsc-group-gap');
     }
@@ -398,6 +433,7 @@ async function renderSettingsPanel() {
         return;
     }
     container.insertAdjacentHTML('beforeend', html);
+    translateTree(container.querySelector('.dsc-settings-panel'));
 
     const settings = getSettings();
     const byId = id => /** @type {HTMLInputElement} */ (document.getElementById(id));
@@ -497,6 +533,7 @@ async function renderSettingsPanel() {
 }
 
 async function init() {
+    await loadLocale();
     applySettings();
     exclusive = registerTheme({
         id: 'discord',

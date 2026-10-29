@@ -38,9 +38,9 @@ body.discord-theme :is(#rm_button_characters, #rm_button_back, #rm_button_back_f
 }
 
 body.discord-theme #rm_button_characters::after {
-    content: 'Characters';
+    content: var(--dsc-t-characters, 'Characters');
 }
 
 body.discord-theme :is(#rm_button_back, #rm_button_back_from_group)::after {
-    content: 'Back';
+    content: var(--dsc-t-back, 'Back');
 }

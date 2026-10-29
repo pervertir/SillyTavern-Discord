@@ -225,11 +225,11 @@ body.discord-theme #top-settings-holder .drawer-content .floating_panel_maximize
     }
 
     body.discord-theme.dsc-editor-open .dsc-tb-title::after {
-        content: 'User Settings';
+        content: var(--dsc-t-user-settings, 'User Settings');
     }
 
     body.discord-theme.dsc-editor-open.dsc-editor-group .dsc-tb-title::after {
-        content: 'Server Settings';
+        content: var(--dsc-t-server-settings, 'Server Settings');
     }
 }
 

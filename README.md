@@ -65,11 +65,13 @@ SillyTavern draws its own logo before any extension loads. To show Discord's loa
 
 - The font is gg sans if it's installed on your computer. Otherwise it falls back to Noto Sans, loaded from Google Fonts.
 - Requires SillyTavern 1.19.0 or newer.
+- The theme speaks SillyTavern's language: pick one under Settings > Advanced > Language (SillyTavern reloads). All of SillyTavern's languages are included (`locales/`); Arabic reads right to left.
 
 ## Development
 
 - While it's off, the theme leaves no trace in SillyTavern's page: no elements, classes, attributes or styles, and its handlers do nothing (see `life.js`). Only its own options in the Extensions list remain.
 - `npm test` runs the unit tests.
+- Every word the theme shows goes through `t()`. After adding or changing one, run `node tools/strings.mjs --write` to update `locales/en.json`, then add it to every other file in `locales/`. The unit tests fail if a locale is missing a string, and the check fails if any of the theme's words show in English while SillyTavern is set to German.
 - `npm run check` runs everything that must pass before a push:
   - the unit tests;
   - the zero-traces test, with the theme off at load, turned off live, and turned off again after turning it back on;

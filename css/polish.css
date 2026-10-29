@@ -149,3 +149,22 @@ body.discord-theme.dsc-editor-open #right-nav-panel.openDrawer {
 body.discord-theme #Backgrounds :is(#bg_tabs, .bg_tab_panel, #bg-header-fixed) {
     box-shadow: none !important;
 }
+
+/* ---------- right-to-left languages (Arabic): body.dsc-rtl, set by index.js ---------- */
+
+/* the theme's panels, menus and settings read right to left; the rail keeps its place */
+body.discord-theme.dsc-rtl :is(#dsc-side, #dsc-aside, #dsc-head, #dsc-settings .dsc-set-main, #dsc-settings .dsc-set-nav, .dsc-page, #top-settings-holder .drawer-content, #dsc-menu, #dsc-popout, #dsc-search, #dsc-pins, #dsc-emoji-picker, .dsc-editor-foot, #dsc-friends) {
+    direction: rtl;
+}
+
+/* each message follows its own direction: Arabic right to left, English left to right */
+body.discord-theme.dsc-rtl #chat .mes_text,
+body.discord-theme.dsc-rtl #send_textarea {
+    unicode-bidi: plaintext;
+    text-align: start;
+}
+
+/* sliders fill from the right in right-to-left pages, as their thumbs move */
+body.discord-theme.dsc-rtl :is(#dsc-settings, .dsc-page, #top-settings-holder) :is(input[type="range"], .neo-range-slider) {
+    background: linear-gradient(to left, var(--dsc-blurple) 0 var(--dsc-fill, 0%), var(--dsc-secondary-button, rgba(128, 132, 142, 0.4)) var(--dsc-fill, 0%) 100%) !important;
+}
