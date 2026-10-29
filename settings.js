@@ -340,7 +340,8 @@ export function refreshSettings() {
     }
     const openId = SETTINGS_DRAWERS.find(id => document.getElementById(id)?.classList.contains('dsc-open'));
     // closed some other way (SillyTavern's own Escape, a shortcut): show whole menus again
-    if (!openId && currentPart) {
+    // (not while moving between sections: the old menu closes before the new one opens)
+    if (!openId && currentPart && !document.body.classList.contains('dsc-settings-switching')) {
         showPart('', '');
     }
     // a SillyTavern menu opened some other way takes over from the theme's page
