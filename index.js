@@ -117,6 +117,16 @@ function reloadPage(message) {
 }
 
 /**
+ * SillyTavern's install hook (manifest.json "hooks"). A new extension is loaded into the open
+ * page; reload so the theme starts from a clean page, as it does on every later visit.
+ */
+export function onInstall() {
+    if (getSettings().enabled) {
+        reloadPage(t('Discord theme installed, reloading…'));
+    }
+}
+
+/**
  * SillyTavern's update hook (manifest.json "hooks"). It runs in the page that is still showing
  * the old version, so reload to load the new one while the theme is on; with it off there is
  * nothing on screen to refresh.

@@ -356,6 +356,7 @@
     "Turn off other UI themes (such as Moonlit Echoes, Yodayo Tavern or Microsoft Teams) while this one is on. The chat background image is hidden unless you turn it on above.": "Disattiva gli altri temi dell'interfaccia (come Moonlit Echoes, Yodayo Tavern o Microsoft Teams) mentre questo è attivo. L'immagine di sfondo della chat è nascosta a meno che tu non la attivi sopra.",
     "Turning it on turns off other theme extensions so they don't clash.": "Attivandolo si disattivano le altre estensioni di tema per evitare conflitti.",
     "Turning the Discord theme on…": "Attivazione del tema Discord…",
+    "Discord theme installed, reloading…": "Tema Discord installato, ricaricamento…",
     "Discord theme updated, reloading…": "Tema Discord aggiornato, ricaricamento…",
     "Typing dots speed": "Velocità dei puntini di scrittura",
     "Typing indicator": "Indicatore di scrittura",

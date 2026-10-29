@@ -356,6 +356,7 @@
     "Turn off other UI themes (such as Moonlit Echoes, Yodayo Tavern or Microsoft Teams) while this one is on. The chat background image is hidden unless you turn it on above.": "ปิดธีม UI อื่นๆ (เช่น Moonlit Echoes, Yodayo Tavern หรือ Microsoft Teams) ขณะที่ธีมนี้เปิดอยู่ ภาพพื้นหลังแชทจะถูกซ่อน เว้นแต่คุณจะเปิดไว้ด้านบน",
     "Turning it on turns off other theme extensions so they don't clash.": "การเปิดใช้งานจะปิดส่วนขยายธีมอื่นๆ เพื่อไม่ให้ขัดกัน",
     "Turning the Discord theme on…": "กำลังเปิดธีม Discord…",
+    "Discord theme installed, reloading…": "ติดตั้งธีม Discord แล้ว กำลังโหลดใหม่…",
     "Discord theme updated, reloading…": "อัปเดตธีม Discord แล้ว กำลังโหลดใหม่…",
     "Typing dots speed": "ความเร็วจุดกำลังพิมพ์",
     "Typing indicator": "ตัวบ่งชี้การพิมพ์",

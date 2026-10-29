@@ -356,6 +356,7 @@
     "Turn off other UI themes (such as Moonlit Echoes, Yodayo Tavern or Microsoft Teams) while this one is on. The chat background image is hidden unless you turn it on above.": "開啟此主題時關閉其他 UI 主題（例如 Moonlit Echoes、Yodayo Tavern 或 Microsoft Teams）。除非在上方開啟，否則聊天背景圖片會被隱藏。",
     "Turning it on turns off other theme extensions so they don't clash.": "開啟後會關閉其他主題擴充功能，以免衝突。",
     "Turning the Discord theme on…": "正在開啟 Discord 主題…",
+    "Discord theme installed, reloading…": "Discord 主題已安裝，正在重新載入…",
     "Discord theme updated, reloading…": "Discord 主題已更新，正在重新載入…",
     "Typing dots speed": "輸入圓點速度",
     "Typing indicator": "輸入提示",
