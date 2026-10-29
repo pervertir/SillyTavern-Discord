@@ -113,7 +113,29 @@ function instructRow() {
     sync();
 }
 
+/** Discord's slider fill: blurple up to the thumb (css/polish.css reads --dsc-fill). */
+function fill(range) {
+    const min = Number(range.min) || 0;
+    const max = Number(range.max) || 100;
+    const share = max > min ? (Number(range.value) - min) / (max - min) : 0;
+    range.style.setProperty('--dsc-fill', `${Math.max(0, Math.min(100, share * 100))}%`);
+}
+
+/** Fills every slider in a part of the page (SillyTavern also moves them from its code). */
+export function fillSliders(root = document) {
+    root.querySelectorAll('input[type="range"]').forEach(fill);
+}
+
 export function initForms() {
+    for (const type of ['input', 'change']) {
+        document.addEventListener(type, (event) => {
+            const target = /** @type {HTMLElement} */ (event.target);
+            if (target instanceof HTMLInputElement && target.type === 'range') {
+                fill(target);
+            }
+        }, true);
+    }
+    fillSliders();
     foldSamplers();
     instructRow();
     const { eventSource, eventTypes } = SillyTavern.getContext();

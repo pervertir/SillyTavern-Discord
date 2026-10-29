@@ -1,0 +1,134 @@
+/* Settings polish: content sits on the page as in Discord (no inner box), SillyTavern's own
+   settings header goes (Language and Account on the Advanced page; search in the sidebar),
+   Discord's sliders and radio buttons. */
+
+/* ---------- no inner box: the page is the background, with room for the scrollbar ---------- */
+
+body.discord-theme #top-settings-holder > .drawer:not(#rightNavHolder) > .drawer-content,
+body.discord-theme #top-settings-holder > .drawer:not(#rightNavHolder) > .drawer-content:is(.fillLeft, .fillRight),
+body.discord-theme.dsc-settings-page.dsc-settings-open .dsc-page.dsc-page-active {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    padding-right: 16px !important;
+    scrollbar-gutter: stable;
+}
+
+body.discord-theme #top-settings-holder .drawer-content :is(.scrollableInner, .inline-drawer-content) {
+    background: transparent;
+}
+
+/* ---------- SillyTavern's own header in User Settings ---------- */
+
+/* its title and search box: the page title and the sidebar's search take their place */
+body.discord-theme #user-settings-block [name="userSettingsRowOne"] > .flex-container:first-child,
+body.discord-theme #user-settings-block #settingsSearch,
+body.discord-theme #user-settings-block #version_display {
+    display: none !important;
+}
+
+/* Language and Account: a tidy row on the Advanced page only */
+body.discord-theme #user-settings-block:has(#UI-Theme-Block.dsc-part-hidden):has(#power-user-options-block.dsc-part-hidden):not(:has(#UI-Customization.dsc-part-hidden)) > .flex-container:first-child {
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 16px;
+    padding: 0 0 16px;
+    border-bottom: 1px solid var(--dsc-divider);
+}
+
+body.discord-theme #user-settings-block > .flex-container:first-child {
+    display: none !important;
+}
+
+body.discord-theme #user-settings-block [name="userSettingsRowOne"],
+body.discord-theme #user-settings-block [name="UserSettingsRowTwo"] {
+    flex: none;
+    gap: 8px;
+    margin: 0;
+}
+
+body.discord-theme #user-settings-block #UI-language-block {
+    align-items: center;
+    gap: 8px;
+    color: var(--dsc-header-2, var(--dsc-muted));
+    font: 500 14px/18px var(--dsc-font);
+}
+
+/* ---------- the sidebar's search (settings.js) ---------- */
+
+body.discord-theme .dsc-set-search {
+    margin: 0 10px 8px;
+}
+
+body.discord-theme .dsc-set-search input {
+    width: 100%;
+    height: 28px;
+    box-sizing: border-box;
+    padding: 0 8px;
+    border: none;
+    border-radius: 4px;
+    background: var(--dsc-rail);
+    color: var(--dsc-text);
+    font: 400 14px/28px var(--dsc-font);
+    outline: none;
+}
+
+body.discord-theme .dsc-set-search input::placeholder {
+    color: var(--dsc-muted);
+}
+
+body.discord-theme #dsc-settings .dsc-set-nav .dsc-set-item.dsc-search-miss {
+    display: none;
+}
+
+/* ---------- Discord's slider: blurple up to the thumb, a white thumb with a shadow ---------- */
+
+body.discord-theme input[type="range"],
+body.discord-theme .neo-range-slider {
+    background: linear-gradient(to right, var(--dsc-blurple) 0 var(--dsc-fill, 0%), var(--dsc-secondary-button, rgba(128, 132, 142, 0.4)) var(--dsc-fill, 0%) 100%) !important;
+}
+
+body.discord-theme input[type="range"]::-webkit-slider-thumb {
+    border-radius: 5px !important;
+    border: 1px solid #dcddde !important;
+    background: #ffffff !important;
+    box-shadow: 0 3px 1px 0 rgba(0, 0, 0, 0.05), 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 3px 3px 0 rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.12) !important;
+    cursor: ew-resize;
+}
+
+body.discord-theme input[type="range"]::-moz-range-thumb {
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- Discord's radio: a hollow ring, a dot inside when chosen ---------- */
+
+body.discord-theme input[type="radio"] {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    border: 2px solid var(--dsc-icon, #80848e);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+body.discord-theme input[type="radio"]:checked {
+    border-color: var(--dsc-blurple);
+    background: radial-gradient(circle, var(--dsc-blurple) 0 4px, transparent 4.5px);
+}
+
+body.discord-theme input[type="radio"]:focus-visible {
+    outline: 2px solid var(--dsc-blurple);
+    outline-offset: 2px;
+}

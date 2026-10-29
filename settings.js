@@ -3,7 +3,8 @@
 // SillyTavern's own menus, opened in place; only the frame around them is the theme's.
 
 import { ensurePage, undock } from './customize.js';
-import { closeDrawers, icon, isPhone, openDrawer, shieldFromOutsideClose, t } from './ui.js';
+import { fillSliders } from './forms.js';
+import { closeDrawers, icon, isDrawerOpen, isPhone, openDrawer, shieldFromOutsideClose, t } from './ui.js';
 
 const OVERLAY_ID = 'dsc-settings';
 const LAST_KEY = 'dsc-last-settings-section';
@@ -102,6 +103,32 @@ function createOverlay() {
     phoneTitle.textContent = t('User Settings');
     phoneHead.append(phoneTitle);
     nav.append(phoneHead);
+    // Discord's search at the top of the sidebar: it narrows the list, and searches
+    // SillyTavern's User Settings through SillyTavern's own settings search
+    const search = document.createElement('label');
+    search.className = 'dsc-set-search';
+    const searchBox = document.createElement('input');
+    searchBox.type = 'search';
+    searchBox.placeholder = t('Search');
+    searchBox.setAttribute('aria-label', t('Search Settings'));
+    searchBox.addEventListener('input', () => {
+        const query = searchBox.value.trim().toLowerCase();
+        for (const item of nav.querySelectorAll('.dsc-set-item:not(.dsc-set-theme)')) {
+            item.classList.toggle('dsc-search-miss', !!query && !item.textContent.toLowerCase().includes(query));
+        }
+        const settingsSearch = /** @type {HTMLTextAreaElement|null} */ (document.getElementById('settingsSearch'));
+        if (settingsSearch) {
+            if (query && !isDrawerOpen('user-settings-button')) {
+                openSection('user-settings-button', '');
+            } else if (query && currentPart) {
+                showPart('user-settings-button', '');
+            }
+            settingsSearch.value = searchBox.value;
+            settingsSearch.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+    });
+    search.append(searchBox);
+    nav.append(search);
     for (const section of SECTIONS) {
         if (section.heading) {
             const heading = document.createElement('h2');
@@ -235,6 +262,7 @@ export function openPage(pageId) {
     }
     shieldFromOutsideClose(page);
     page.scrollTo({ top: 0 });
+    fillSliders(page);
     document.body.classList.remove('dsc-settings-list');
     document.body.classList.add('dsc-settings-page');
     actions.drawersChanged();
@@ -311,6 +339,7 @@ export function openSection(drawerId, part = '') {
     showPart(drawerId, part);
     openDrawer(drawerId);
     refreshSettings();
+    setTimeout(() => fillSliders(document.getElementById(drawerId) ?? document), 300);
 }
 
 /** Opens the settings: on a section, or (no section given) where you left them. On phones

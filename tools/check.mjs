@@ -51,7 +51,7 @@ if (await reachable()) {
     console.error(`Something is already serving port ${PORT}; stop it first (the check starts its own).`);
     process.exit(1);
 }
-const server = spawn('node', ['server.js', '--port', PORT, '--dataRoot', DATA, '--listen', 'false', '--basicAuthMode', 'false'], { cwd: ST_DIR, stdio: 'ignore' });
+const server = spawn('node', ['server.js', '--port', PORT, '--dataRoot', DATA, '--listen', 'false', '--basicAuthMode', 'false', '--browserLaunchEnabled', 'false'], { cwd: ST_DIR, stdio: 'ignore' });
 const stop = () => {
     if (server.exitCode === null && !server.killed) {
         server.kill();

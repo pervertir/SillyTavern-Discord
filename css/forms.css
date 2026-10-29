@@ -225,12 +225,6 @@ body.discord-theme #left-nav-panel .range-block:not(:has(input[type="range"])) >
     justify-content: flex-start;
 }
 
-/* The Teams theme's call-history cards, which it adds to Advanced Formatting even while off.
-   Only those: Teams also tags SillyTavern's own drawers with mst- classes. */
-body.discord-theme #top-settings-holder .mst-call-card {
-    display: none !important;
-}
-
 /* ---------- everyday samplers first, the rest behind "Show all samplers" (forms.js) ---------- */
 
 body.discord-theme:not(.dsc-all-samplers) #left-nav-panel .dsc-more-sampler.dsc-more-sampler.dsc-more-sampler.dsc-more-sampler {

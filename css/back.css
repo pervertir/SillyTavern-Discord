@@ -1,0 +1,46 @@
+/* SillyTavern's "back" controls, drawn with list or arrow icons, as Discord's back links:
+   a left chevron and a label. Only the look changes; SillyTavern's buttons keep their clicks. */
+
+body.discord-theme :is(#rm_button_characters, #rm_button_back, #rm_button_back_from_group) {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 4px;
+    width: auto !important;
+    height: 32px;
+    min-width: 0;
+    margin: 0;
+    padding: 0 10px 0 6px !important;
+    border: none;
+    border-radius: var(--dsc-radius-button, 8px);
+    background: none;
+    color: var(--dsc-header-2, var(--dsc-muted));
+    font: 500 14px/1 var(--dsc-font) !important;
+    white-space: nowrap;
+    cursor: pointer;
+    opacity: 1;
+    filter: none;
+}
+
+body.discord-theme :is(#rm_button_characters, #rm_button_back, #rm_button_back_from_group):hover {
+    background: var(--dsc-hover);
+    color: var(--dsc-header);
+}
+
+/* the list / arrow glyph becomes Discord's back chevron */
+body.discord-theme :is(#rm_button_characters, #rm_button_back, #rm_button_back_from_group)::before {
+    content: '' !important;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: currentColor;
+    -webkit-mask: var(--dsc-i-back) center / contain no-repeat;
+    mask: var(--dsc-i-back) center / contain no-repeat;
+}
+
+body.discord-theme #rm_button_characters::after {
+    content: 'Characters';
+}
+
+body.discord-theme :is(#rm_button_back, #rm_button_back_from_group)::after {
+    content: 'Back';
+}
