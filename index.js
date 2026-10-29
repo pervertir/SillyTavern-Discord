@@ -7,6 +7,7 @@ import { initCompose, openEmojiFromShortcut } from './compose.js';
 import { initCustomize } from './customize.js';
 import { registerTheme } from './lib/theme-exclusive.js';
 import { initExtras } from './extras.js';
+import { initForms } from './forms.js';
 import { embedAll, initEmbeds } from './embeds.js';
 import { initAppearance, renderAppearance } from './appearance.js';
 import { hideDiscover, initDiscover, showDiscover } from './discover.js';
@@ -503,6 +504,7 @@ async function init() {
     initReactions();
     initExtras();
     initAttachments();
+    initForms();
     initOverlays({ connections: () => openSettings('sys-settings-button') });
     initEmbeds({ enabled: () => !!getSettings().enabled && !!getSettings().showImageLinks });
     initSplit({
