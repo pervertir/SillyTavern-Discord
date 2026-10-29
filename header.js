@@ -5,6 +5,7 @@ import { channelLabel, getCurrentPlace, getDirectMessages, getGroup, isPinned, o
 import { formatListTime } from './messages.js';
 import { isPlaceholder, monogramizeAll } from './monograms.js';
 import { paintPresence, statusOf } from './presence.js';
+import { initSearch } from './search.js';
 import { SHORTCUTS, showShortcuts, withShortcut } from './shortcuts.js';
 import { openCharacterPanel, selectServer } from './sidebar.js';
 import { clickOption, getColorIndex, icon, iconButton, openDrawer, openMenu, shieldFromOutsideClose, t, toChannelName, toUsername } from './ui.js';
@@ -116,12 +117,8 @@ function createHeader() {
     const input = document.createElement('input');
     input.type = 'text';
     input.placeholder = t('Search');
-    input.setAttribute('aria-label', withShortcut(t('Search'), SHORTCUTS.switcher));
-    input.readOnly = true;
-    input.addEventListener('focus', () => {
-        input.blur();
-        actions.openSwitcher('');
-    });
+    input.setAttribute('aria-label', withShortcut(t('Search'), SHORTCUTS.search));
+    initSearch(input);
     search.append(input, icon('search', 16));
     tools.append(search);
 

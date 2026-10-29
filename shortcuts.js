@@ -11,6 +11,7 @@ const PC_KEYS = { Mod: 'Ctrl', Shift: 'Shift', Alt: 'Alt', Ctrl: 'Ctrl', Enter: 
 
 export const SHORTCUTS = {
     switcher: ['Mod', 'K'],
+    search: ['Mod', 'F'],
     keybinds: ['Mod', '/'],
     settings: ['Mod', ','],
     previousConversation: ['Alt', 'Up'],
@@ -74,6 +75,7 @@ export async function showShortcuts() {
         <div class="dsc-kb-grid">
             ${rows([
                 ['Quick Switcher', SHORTCUTS.switcher],
+                ['Search', SHORTCUTS.search],
                 ['Toggle Hotkeys', SHORTCUTS.keybinds],
                 ['User Settings', SHORTCUTS.settings],
                 ['Navigate Channels', ['Alt', 'Up']],

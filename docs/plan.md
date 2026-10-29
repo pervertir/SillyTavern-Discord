@@ -24,7 +24,7 @@ update Deep's install after every push.
 4. **Link previews** as Discord embeds (title, site, description). This is opt-in, since it fetches pages.
 5. **"(edited)"** after edited messages.
 6. **Pinned Messages:** the pin icon shows a list of pinned messages (SillyTavern checkpoints and bookmarks), with Jump.
-7. **Search in chat:** the header search finds text in the open chat, shows results like Discord's and jumps to them. Today it only opens the quick switcher.
+7. ✅ **Search in chat** (done, desktop). Type in the header search (or Ctrl/⌘+F) and press Enter: results open on the right, newest or oldest first, words marked, `from:name` to filter; Jump scrolls to the message, loading older ones if needed. Still to do: a search button on phones.
 8. **Emoji picker:** a real Discord-style picker on the emoji button, with recent emoji. Extensions move to their own button.
 
 ### People and servers
