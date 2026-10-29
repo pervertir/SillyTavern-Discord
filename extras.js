@@ -4,7 +4,7 @@
 // spoilers and subtext as plain text, so they're found in the formatted message's text,
 // never inside code.
 
-import { t } from './ui.js';
+import { messageOf, t } from './ui.js';
 
 const SPOILER = /\|\|([^|\n](?:[^\n]*?[^|\n])?)\|\|/g;
 
@@ -115,7 +115,7 @@ export function applyExtras(container) {
 function markEdited(container) {
     container.querySelectorAll(':scope .dsc-edited').forEach(x => x.remove());
     const mes = container.closest('.mes');
-    const message = mes && SillyTavern.getContext().chat[Number(mes.getAttribute('mesid'))];
+    const message = mes && messageOf(mes);
     const when = message?.extra?.dsc_edited;
     if (!when) {
         return;

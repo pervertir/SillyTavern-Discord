@@ -1,6 +1,39 @@
 // Small shared parts: icons, buttons, Discord's black tooltips, its context menus, and the
 // helpers that drive SillyTavern's own menus.
 
+let cachedContext = null;
+
+/** SillyTavern's context, built once per task: getContext() builds a large object on every call,
+    which adds up when it's called for each message of a long chat. */
+export function context() {
+    if (!cachedContext) {
+        cachedContext = SillyTavern.getContext();
+        queueMicrotask(() => {
+            cachedContext = null;
+        });
+    }
+    return cachedContext;
+}
+
+const processed = new WeakMap();
+
+/** Whether a message's text was already drawn by the theme for this key and SillyTavern hasn't
+    redrawn it since (its first and last nodes are still the ones the theme left). Skipping those
+    keeps long chats quick: every rewrite wakes SillyTavern's own page watchers. */
+export function alreadyDone(element, key) {
+    const seen = processed.get(element);
+    return !!seen && seen.key === key && seen.first === element.firstChild && seen.last === element.lastChild;
+}
+
+export function markDone(element, key) {
+    processed.set(element, { key, first: element.firstChild, last: element.lastChild });
+}
+
+/** The chat message behind a message element. */
+export function messageOf(mes) {
+    return context().chat[Number(mes?.getAttribute('mesid'))];
+}
+
 export function t(text) {
     return SillyTavern.getContext().translate(text);
 }

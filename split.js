@@ -5,7 +5,8 @@
 // comes in part by part with the typing dots between, unless it was already streamed in.
 
 import { splitMessage } from './lib/message-splitter.js';
-import { embedImages } from './embeds.js';
+import { embedImages, embedKey } from './embeds.js';
+import { alreadyDone, markDone } from './ui.js';
 import { clock } from './messages.js';
 import { hideTyping, showTyping } from './presence.js';
 
@@ -62,10 +63,18 @@ function renderParts(mes, { reveal = false } = {}) {
     }
     // the same text and arguments SillyTavern formats the whole message with
     const source = message.extra?.display_text || message.mes;
+    // already drawn from this same text (and not redrawn by SillyTavern since): leave it
+    const key = embedKey(source) + `|${message.extra?.dsc_edited ?? ''}`;
+    if (!reveal && alreadyDone(text, key)) {
+        return;
+    }
     const parts = splitMessage(source);
     if (parts.length < 2) {
-        delete text.dataset.dscParts;
+        if ('dscParts' in text.dataset) {
+            delete text.dataset.dscParts;
+        }
         embedImages(text, source);
+        markDone(text, key);
         return;
     }
     const overrides = message.extra?.uses_system_ui ? { MESSAGE_ALLOW_SYSTEM_UI: true } : {};
@@ -86,6 +95,7 @@ function renderParts(mes, { reveal = false } = {}) {
         finishCodeBlocks(row);
         embedImages(row, parts[index]);
     });
+    markDone(text, key);
 
     reveals.get(id)?.cancel();
     if (!reveal || !paced()) {

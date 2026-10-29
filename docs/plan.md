@@ -42,7 +42,7 @@ update Deep's install after every push.
 ### Platform
 17. **Real-device phone test:** iPhone Safari and Android Chrome, keyboard open, safe areas, home-screen (PWA) mode.
 18. ✅ **Accessibility** (done): every control named, every picture with alt text, WCAG AA text contrast in Dark/Ash/Onyx/Light (Ash's channel color raised), visible focus on every control by keyboard; checked on the main screen, settings pages, profile card, menus and emoji picker, and part of `npm run check` (test/e2e/a11y.mjs).
-19. **Deep's real library at scale:** check speed and layout by counting elements only, never screenshots, with hundreds of characters and long chats.
+19. ✅ **Speed at scale** (done): measured on a synthetic library (300 characters, 20 servers, a 1,000-message chat; Deep's own library was only counted, 14 characters). Chat open 0.72→0.57 s, loading 1,000 messages 2.14→1.60 s, member list 189→97 ms, load 2.2→1.8 s; scrolling (p95 18 ms) and typing (33 ms) match SillyTavern without the theme. Fixes: messages already drawn are skipped, context built once per task, label writes only on change, settings defaults filled once.
 20. ✅ **First run** (done): with no characters, Friends says where to start, with Create and Import buttons; no AI connected already shows the not-connected bar.
 21. **Translations:** route the theme's own text through SillyTavern's translator for other languages.
 

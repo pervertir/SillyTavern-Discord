@@ -4,7 +4,7 @@
 // elements; CSS does the rest. Work happens on SillyTavern's message events, never on a
 // watcher over the chat.
 
-import { t } from './ui.js';
+import { context, t } from './ui.js';
 
 const GROUP_GAP_MS = 7 * 60 * 1000;
 
@@ -20,14 +20,24 @@ export function setClock(fn) {
     use24h = fn;
 }
 
+/** Parsed send times, by their text: each message's time is read for itself and its neighbour */
+const moments = new Map();
+
 function momentOf(mes) {
-    const { chat, timestampToMoment } = SillyTavern.getContext();
+    const { chat, timestampToMoment } = context();
     const message = chat[Number(mes.getAttribute('mesid'))];
     if (!message?.send_date) {
         return null;
     }
-    const time = timestampToMoment(message.send_date);
-    return time?.isValid?.() ? time : null;
+    const key = String(message.send_date);
+    if (!moments.has(key)) {
+        if (moments.size > 5000) {
+            moments.clear();
+        }
+        const time = timestampToMoment(message.send_date);
+        moments.set(key, time?.isValid?.() ? time : null);
+    }
+    return moments.get(key);
 }
 
 /** "Today at 4:20 PM", "Yesterday at 9:03 AM", or "10/21/2026 3:15 PM". */
@@ -76,6 +86,21 @@ function previousMessage(mes) {
     return node;
 }
 
+/** Sets (or, with null, removes) a data attribute only when it changes: each write is a page
+    change that SillyTavern's own page watchers react to, which adds up over a long chat. */
+function setData(element, key, value) {
+    if (!element) {
+        return;
+    }
+    if (value === null) {
+        if (key in element.dataset) {
+            delete element.dataset[key];
+        }
+    } else if (element.dataset[key] !== value) {
+        element.dataset[key] = value;
+    }
+}
+
 function labelMessage(mes) {
     const time = momentOf(mes);
     const stamp = /** @type {HTMLElement} */ (mes.querySelector('.timestamp'));
@@ -83,24 +108,18 @@ function labelMessage(mes) {
     const previousTime = previous ? momentOf(previous) : null;
 
     if (time) {
-        if (stamp) {
-            stamp.dataset.dscTime = formatMessageTime(time);
-            stamp.dataset.dscShort = clock(time);
-            stamp.dataset.dscTip = time.format('LLLL');
-        }
-        mes.dataset.dscShort = clock(time);
+        setData(stamp, 'dscTime', formatMessageTime(time));
+        setData(stamp, 'dscShort', clock(time));
+        setData(stamp, 'dscTip', time.format('LLLL'));
+        setData(mes, 'dscShort', clock(time));
     } else {
-        delete stamp?.dataset.dscTime;
-        delete stamp?.dataset.dscShort;
-        delete mes.dataset.dscShort;
+        setData(stamp, 'dscTime', null);
+        setData(stamp, 'dscShort', null);
+        setData(mes, 'dscShort', null);
     }
 
     const newDay = !!time && (!previousTime || !time.isSame(previousTime, 'day'));
-    if (newDay) {
-        mes.dataset.dscDay = time.format('LL');
-    } else {
-        delete mes.dataset.dscDay;
-    }
+    setData(mes, 'dscDay', newDay ? time.format('LL') : null);
 
     const continues = !!previous && !!time && !!previousTime && !newDay
         && !isSystemNote(mes) && !isSystemNote(previous)

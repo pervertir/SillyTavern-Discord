@@ -5,11 +5,11 @@
 // contents, remove) stay, in Discord's small hover toolbar.
 
 import { openViewer } from './embeds.js';
-import { t } from './ui.js';
+import { messageOf, t } from './ui.js';
 
 /** The message's pictures, for the viewer. */
 function pictures(mes) {
-    const message = SillyTavern.getContext().chat[Number(mes.getAttribute('mesid'))];
+    const message = messageOf(mes);
     const media = Array.isArray(message?.extra?.media) ? message.extra.media : [];
     return media.map((item, index) => ({ item, index })).filter(({ item }) => !item.type || item.type === 'image')
         .map(({ item, index }) => ({ url: item.url, alt: item.title || '', index }));
@@ -17,7 +17,7 @@ function pictures(mes) {
 
 /** A download button on each file card, as Discord's. */
 function addDownloads(mes) {
-    const message = SillyTavern.getContext().chat[Number(mes.getAttribute('mesid'))];
+    const message = messageOf(mes);
     const files = Array.isArray(message?.extra?.files) ? message.extra.files : [];
     for (const card of mes.querySelectorAll('.mes_file_container')) {
         const file = files[Number(card.getAttribute('data-index'))];

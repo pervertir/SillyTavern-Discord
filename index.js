@@ -137,16 +137,23 @@ function setEnabled(on) {
 
 const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
+/** Settings objects already given their defaults */
+const filledSettings = new WeakSet();
+
 function getSettings() {
     const { extensionSettings } = SillyTavern.getContext();
     if (!extensionSettings[MODULE_NAME]) {
         extensionSettings[MODULE_NAME] = structuredClone(defaultSettings);
     }
     const settings = extensionSettings[MODULE_NAME];
-    for (const key of Object.keys(defaultSettings)) {
-        if (!Object.hasOwn(settings, key)) {
-            settings[key] = structuredClone(defaultSettings[key]);
+    // fill in any new defaults once per settings object (this is called for every message)
+    if (!filledSettings.has(settings)) {
+        for (const key of Object.keys(defaultSettings)) {
+            if (!Object.hasOwn(settings, key)) {
+                settings[key] = structuredClone(defaultSettings[key]);
+            }
         }
+        filledSettings.add(settings);
     }
     return settings;
 }

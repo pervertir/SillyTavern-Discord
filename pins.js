@@ -4,7 +4,7 @@
 // footer keeps "Pin Chat" (pinning the conversation to the top of the list) within reach.
 
 import { avatarFor, jump, plainText } from './search.js';
-import { escapeHtml, iconButton, shieldFromOutsideClose, t } from './ui.js';
+import { context, escapeHtml, iconButton, shieldFromOutsideClose, t } from './ui.js';
 import { monogramizeAll } from './monograms.js';
 
 const LIST_ID = 'dsc-pins';
@@ -37,12 +37,12 @@ export async function togglePinMessage(mesId) {
 function markPinned(mesId) {
     const mes = document.querySelector(`#chat > .mes[mesid="${mesId}"]`);
     if (mes) {
-        mes.classList.toggle('dsc-pinned', isPinnedMessage(SillyTavern.getContext().chat[mesId]));
+        mes.classList.toggle('dsc-pinned', isPinnedMessage(context().chat[mesId]));
     }
 }
 
 function markAll() {
-    const { chat } = SillyTavern.getContext();
+    const { chat } = context();
     document.querySelectorAll('#chat > .mes').forEach((mes) => {
         mes.classList.toggle('dsc-pinned', isPinnedMessage(chat[Number(mes.getAttribute('mesid'))]));
     });

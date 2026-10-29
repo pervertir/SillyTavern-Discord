@@ -10,7 +10,7 @@
 
 import { applyExtras } from './extras.js';
 import { findImageLinks } from './lib/image-links.js';
-import { shieldFromOutsideClose, t } from './ui.js';
+import { alreadyDone, markDone, messageOf, shieldFromOutsideClose, t } from './ui.js';
 
 let enabled = () => true;
 /** a reply is being written: its message is left alone until it's done */
@@ -173,6 +173,11 @@ export function embedImages(container, raw) {
     container.append(holder);
 }
 
+/** What a message's pictures and extras depend on: the setting and the text. */
+export function embedKey(source) {
+    return `${enabled() ? 1 : 0}|${document.body.classList.contains('discord-theme') ? 1 : 0}|${source}`;
+}
+
 /** Embeds for a whole message that wasn't split. */
 function embedMessage(mes) {
     const text = /** @type {HTMLElement} */ (mes.querySelector('.mes_text'));
@@ -182,9 +187,15 @@ function embedMessage(mes) {
     if (generating && mes.classList.contains('last_mes')) {
         return;
     }
-    const message = SillyTavern.getContext().chat[Number(mes.getAttribute('mesid'))];
+    const message = messageOf(mes);
     if (message) {
-        embedImages(text, message.extra?.display_text || message.mes);
+        const source = message.extra?.display_text || message.mes;
+        const key = embedKey(source) + `|${message.extra?.dsc_edited ?? ''}`;
+        if (alreadyDone(text, key)) {
+            return;
+        }
+        embedImages(text, source);
+        markDone(text, key);
     }
 }
 

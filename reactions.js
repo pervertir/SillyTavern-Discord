@@ -3,7 +3,7 @@
 // pill adds or takes back yours. They're saved in the message's extra data, so they survive
 // reloads and never reach the prompt.
 
-import { shieldFromOutsideClose, t } from './ui.js';
+import { context, shieldFromOutsideClose, t } from './ui.js';
 
 const PICKER_ID = 'dsc-react-picker';
 const RECENT_KEY = 'dsc-recent-reactions';
@@ -70,9 +70,8 @@ async function toggle(mesId, emoji) {
 }
 
 /** The pills under a message. */
-export function renderReactions(mesId) {
-    const mes = document.querySelector(`#chat > .mes[mesid="${Number(mesId)}"]`);
-    const message = SillyTavern.getContext().chat[Number(mesId)];
+export function renderReactions(mesId, mes = document.querySelector(`#chat > .mes[mesid="${Number(mesId)}"]`)) {
+    const message = context().chat[Number(mesId)];
     const block = mes?.querySelector('.mes_block');
     if (!block) {
         return;
@@ -180,7 +179,7 @@ function addButton(mes) {
 function renderAll() {
     document.querySelectorAll('#chat > .mes').forEach((mes) => {
         addButton(mes);
-        renderReactions(mes.getAttribute('mesid'));
+        renderReactions(mes.getAttribute('mesid'), mes);
     });
 }
 
