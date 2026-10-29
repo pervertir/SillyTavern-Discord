@@ -355,9 +355,6 @@
     "Today at": "Hôm nay lúc",
     "Turn off other UI themes (such as Moonlit Echoes, Yodayo Tavern or Microsoft Teams) while this one is on. The chat background image is hidden unless you turn it on above.": "Tắt các chủ đề giao diện khác (như Moonlit Echoes, Yodayo Tavern hoặc Microsoft Teams) khi chủ đề này đang bật. Ảnh nền trò chuyện bị ẩn trừ khi bạn bật nó ở trên.",
     "Turning it on turns off other theme extensions so they don't clash.": "Bật chủ đề này sẽ tắt các tiện ích chủ đề khác để chúng không xung đột.",
-    "Turning the Discord theme on…": "Đang bật chủ đề Discord…",
-    "Discord theme installed, reloading…": "Đã cài đặt chủ đề Discord, đang tải lại…",
-    "Discord theme updated, reloading…": "Đã cập nhật chủ đề Discord, đang tải lại…",
     "Typing dots speed": "Tốc độ chấm đang nhập",
     "Typing indicator": "Chỉ báo đang nhập",
     "Undeafen": "Bật âm thanh",
@@ -397,5 +394,9 @@
     "https://… or /backgrounds/…": "https://… hoặc /backgrounds/…",
     "is typing…": "đang nhập…",
     "name color": "màu tên",
-    "pick a color": "chọn một màu"
+    "pick a color": "chọn một màu",
+    "The Discord theme is on.": "Đã bật chủ đề Discord.",
+    "Discord theme installed.": "Đã cài đặt chủ đề Discord.",
+    "Discord theme updated.": "Đã cập nhật chủ đề Discord.",
+    "Reloading…": "Đang tải lại…"
 }

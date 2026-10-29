@@ -37,6 +37,9 @@ for (const m of html.matchAll(/>([^<>{}]*[A-Za-z][^<>{}]*)</g)) {
     const text = m[1].replace(/\s+/g, ' ').trim();
     if (text) found.add(text);
 }
+// the shared one-theme file translates its own few words with tr()
+const shared = fs.readFileSync(path.join(ROOT, 'lib/theme-exclusive.js'), 'utf8');
+for (const m of shared.matchAll(/\btr\(\s*'((?:[^'\\]|\\.)+)'\s*\)/g)) found.add(unq(m[1]));
 // text the styles draw, handed over as --dsc-t-* variables (index.js CSS_TEXT)
 const index = fs.readFileSync(path.join(ROOT, 'index.js'), 'utf8');
 for (const m of index.matchAll(/\['[a-z-]+', '((?:[^'\\]|\\.)+)'\]/g)) found.add(unq(m[1]));

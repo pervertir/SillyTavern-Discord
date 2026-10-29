@@ -355,9 +355,6 @@
     "Today at": "Vandaag om",
     "Turn off other UI themes (such as Moonlit Echoes, Yodayo Tavern or Microsoft Teams) while this one is on. The chat background image is hidden unless you turn it on above.": "Andere UI-thema's (zoals Moonlit Echoes, Yodayo Tavern of Microsoft Teams) uitzetten zolang dit thema aan staat. De chatachtergrond is verborgen, tenzij je hem hierboven aanzet.",
     "Turning it on turns off other theme extensions so they don't clash.": "Als je dit aanzet, worden andere thema-extensies uitgezet zodat ze niet botsen.",
-    "Turning the Discord theme on…": "Discord-thema wordt aangezet…",
-    "Discord theme installed, reloading…": "Discord-thema geïnstalleerd, opnieuw laden…",
-    "Discord theme updated, reloading…": "Discord-thema bijgewerkt, opnieuw laden…",
     "Typing dots speed": "Snelheid typpuntjes",
     "Typing indicator": "Typindicator",
     "Undeafen": "Dempen opheffen",
@@ -397,5 +394,9 @@
     "https://… or /backgrounds/…": "https://… of /backgrounds/…",
     "is typing…": "is aan het typen…",
     "name color": "naamkleur",
-    "pick a color": "kies een kleur"
+    "pick a color": "kies een kleur",
+    "The Discord theme is on.": "Het Discord-thema staat aan.",
+    "Discord theme installed.": "Discord-thema geïnstalleerd.",
+    "Discord theme updated.": "Discord-thema bijgewerkt.",
+    "Reloading…": "Opnieuw laden…"
 }

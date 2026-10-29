@@ -355,9 +355,6 @@
     "Today at": "今天",
     "Turn off other UI themes (such as Moonlit Echoes, Yodayo Tavern or Microsoft Teams) while this one is on. The chat background image is hidden unless you turn it on above.": "开启此主题时关闭其他 UI 主题（如 Moonlit Echoes、Yodayo Tavern 或 Microsoft Teams）。除非在上方开启，否则聊天背景图片会被隐藏。",
     "Turning it on turns off other theme extensions so they don't clash.": "开启后会关闭其他主题扩展，以免冲突。",
-    "Turning the Discord theme on…": "正在开启 Discord 主题…",
-    "Discord theme installed, reloading…": "Discord 主题已安装，正在重新加载…",
-    "Discord theme updated, reloading…": "Discord 主题已更新，正在重新加载…",
     "Typing dots speed": "输入圆点速度",
     "Typing indicator": "输入提示",
     "Undeafen": "取消拒听",
@@ -397,5 +394,9 @@
     "https://… or /backgrounds/…": "https://… 或 /backgrounds/…",
     "is typing…": "正在输入…",
     "name color": "名称颜色",
-    "pick a color": "选择颜色"
+    "pick a color": "选择颜色",
+    "The Discord theme is on.": "Discord 主题已开启。",
+    "Discord theme installed.": "Discord 主题已安装。",
+    "Discord theme updated.": "Discord 主题已更新。",
+    "Reloading…": "正在重新加载…"
 }

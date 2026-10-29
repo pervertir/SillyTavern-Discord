@@ -6,7 +6,7 @@ import { initAttachments } from './attachments.js';
 import { initCompose, openEmojiFromShortcut } from './compose.js';
 import { initConnections } from './connections.js';
 import { initCustomize } from './customize.js';
-import { registerTheme } from './lib/theme-exclusive.js';
+import { registerTheme, reloadPage } from './lib/theme-exclusive.js';
 import { initExtras } from './extras.js';
 import { initForms } from './forms.js';
 import { GatedObserver, listen, onEvent, setGate, teardown } from './life.js';
@@ -106,14 +106,15 @@ function turnOn() {
     } else if (tornDown) {
         // its handlers are already registered on this page: a reload builds it cleanly, once
         // the setting is saved
-        reloadPage(t('Turning the Discord theme on…'));
+        reloadWhenOn(t('The Discord theme is on.'));
     }
 }
 
-/** Reloads once, after the debounced settings save has gone out. */
-function reloadPage(message) {
-    toastr.info(message);
-    setTimeout(() => location.reload(), 1500);
+/** Reloads once the settings are saved (lib/theme-exclusive.js), unless the theme was turned off meanwhile. */
+function reloadWhenOn(message) {
+    if (getSettings().enabled) {
+        reloadPage(message, { stillWanted: () => !!getSettings().enabled });
+    }
 }
 
 /**
@@ -121,9 +122,7 @@ function reloadPage(message) {
  * page; reload so the theme starts from a clean page, as it does on every later visit.
  */
 export function onInstall() {
-    if (getSettings().enabled) {
-        reloadPage(t('Discord theme installed, reloading…'));
-    }
+    reloadWhenOn(t('Discord theme installed.'));
 }
 
 /**
@@ -132,9 +131,7 @@ export function onInstall() {
  * nothing on screen to refresh.
  */
 export function onUpdate() {
-    if (getSettings().enabled) {
-        reloadPage(t('Discord theme updated, reloading…'));
-    }
+    reloadWhenOn(t('Discord theme updated.'));
 }
 
 /** Takes everything of the theme out of SillyTavern's page. */
