@@ -106,8 +106,24 @@ function turnOn() {
     } else if (tornDown) {
         // its handlers are already registered on this page: a reload builds it cleanly, once
         // the setting is saved
-        toastr.info(t('Turning the Discord theme on…'));
-        setTimeout(() => location.reload(), 1500);
+        reloadPage(t('Turning the Discord theme on…'));
+    }
+}
+
+/** Reloads once, after the debounced settings save has gone out. */
+function reloadPage(message) {
+    toastr.info(message);
+    setTimeout(() => location.reload(), 1500);
+}
+
+/**
+ * SillyTavern's update hook (manifest.json "hooks"). It runs in the page that is still showing
+ * the old version, so reload to load the new one while the theme is on; with it off there is
+ * nothing on screen to refresh.
+ */
+export function onUpdate() {
+    if (getSettings().enabled) {
+        reloadPage(t('Discord theme updated, reloading…'));
     }
 }
 
