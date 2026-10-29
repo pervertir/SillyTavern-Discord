@@ -28,7 +28,7 @@ update Deep's install after every push.
 8. **Emoji picker:** a real Discord-style picker on the emoji button, with recent emoji. Extensions move to their own button.
 
 ### People and servers
-9. **Profile popout:** clicking a member or picture opens Discord's small popout (banner, picture, About Me, Message) instead of going straight to the chat.
+9. ✅ **Profile popout** (done). Clicking a picture or name in the chat, or a member in the list, opens Discord's card beside it (banner, picture, status, About Me, Member Since, Mutual Servers, View Full Profile, and a Message box that sends in their DM); your own messages open your persona card with Edit Profile. Phones keep the profile sheet.
 10. **Server icons from the group's picture,** server folders, and dragging to reorder servers and DMs.
 11. **Channels:** rename a channel (rename the chat) and delete it with confirmation from its menu; a "Create Channel" dialog in Discord style.
 12. **Member roles:** group members shown by role (talking now, muted, others).

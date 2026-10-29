@@ -7,7 +7,7 @@ import { isPlaceholder, monogramizeAll } from './monograms.js';
 import { paintPresence, statusOf } from './presence.js';
 import { SHORTCUTS, showShortcuts, withShortcut } from './shortcuts.js';
 import { openCharacterPanel, selectServer } from './sidebar.js';
-import { clickOption, getColorIndex, icon, iconButton, openMenu, t, toChannelName, toUsername } from './ui.js';
+import { clickOption, getColorIndex, icon, iconButton, openDrawer, openMenu, shieldFromOutsideClose, t, toChannelName, toUsername } from './ui.js';
 
 const HEAD_ID = 'dsc-head';
 const ASIDE_ID = 'dsc-aside';
@@ -292,8 +292,14 @@ function createAside() {
     aside.id = ASIDE_ID;
     aside.addEventListener('click', (event) => {
         const row = /** @type {HTMLElement} */ (event.target).closest('.dsc-member');
-        if (row?.dataset.avatar) {
-            openCharacter(row.dataset.avatar);
+        if (!row?.dataset.avatar) {
+            return;
+        }
+        // Discord opens the member's profile card beside the list; phones show the sheet
+        if (window.matchMedia(SHEET_QUERY).matches) {
+            showProfile(row.dataset.avatar);
+        } else {
+            openPopout(row, { avatar: row.dataset.avatar }, 'left');
         }
     });
     aside.addEventListener('contextmenu', (event) => {
@@ -567,20 +573,190 @@ function initProfileClicks() {
             return;
         }
         const target = /** @type {HTMLElement} */ (event.target);
-        const hit = target.closest?.('#chat .mes .avatar, #chat .mes .name_text');
+        const hit = /** @type {HTMLElement} */ (target.closest?.('#chat .mes .avatar, #chat .mes .name_text'));
         const mes = hit?.closest('.mes');
-        const character = mes && characterOfMessage(mes);
+        if (!mes) {
+            return;
+        }
+        const sheet = window.matchMedia(SHEET_QUERY).matches;
+        // your own messages: your profile card (on desktop)
+        if (mes.getAttribute('is_user') === 'true') {
+            if (!sheet) {
+                event.preventDefault();
+                event.stopPropagation();
+                openPopout(hit, { persona: true, picture: mes.querySelector('.avatar img')?.getAttribute('src') ?? '' }, 'right');
+            }
+            return;
+        }
+        const character = characterOfMessage(mes);
         if (!character) {
             return;
         }
         event.preventDefault();
         event.stopPropagation();
-        showProfile(character.avatar);
+        if (sheet) {
+            showProfile(character.avatar);
+        } else {
+            openPopout(hit, { avatar: character.avatar }, 'right');
+        }
     }, true);
     SillyTavern.getContext().eventSource.on(SillyTavern.getContext().eventTypes.CHAT_CHANGED, () => {
         profileOverride = '';
         closeProfileSheet();
+        closePopout();
     });
+    document.addEventListener('pointerdown', (event) => {
+        const popout = document.getElementById(POPOUT_ID);
+        const target = /** @type {HTMLElement} */ (event.target);
+        if (popout && !popout.contains(target) && !document.getElementById('dsc-menu')?.contains(target)) {
+            closePopout();
+        }
+    }, true);
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && document.getElementById(POPOUT_ID)) {
+            event.preventDefault();
+            event.stopPropagation();
+            closePopout();
+        }
+    }, true);
+    window.addEventListener('resize', closePopout);
+}
+
+/* ---------- profile popout ---------- */
+
+const POPOUT_ID = 'dsc-popout';
+
+export function closePopout() {
+    document.getElementById(POPOUT_ID)?.remove();
+}
+
+/** Your own card: persona picture, name and description, with Edit Profile. */
+function renderPersona(popout, picture = '') {
+    const { name1, getThumbnailUrl, powerUserSettings } = SillyTavern.getContext();
+    // the persona's file: from the clicked message's picture, else the one picked in Persona Management
+    let avatarId = '';
+    try {
+        avatarId = picture ? new URL(picture, location.href).searchParams.get('file') ?? '' : '';
+    } catch {
+        avatarId = '';
+    }
+    avatarId ||= document.querySelector('#user_avatar_block .avatar-container.selected')?.getAttribute('data-avatar-id') ?? '';
+    const src = picture || (avatarId ? getThumbnailUrl('persona', avatarId) : '');
+    const banner = document.createElement('div');
+    banner.className = 'dsc-prof-banner';
+    banner.style.background = DEFAULT_BANNERS[getColorIndex(name1)];
+    const avatar = document.createElement('span');
+    avatar.className = 'dsc-avatar dsc-prof-avatar';
+    avatar.dataset.name = name1;
+    const img = document.createElement('img');
+    img.alt = '';
+    if (src) {
+        img.src = src;
+        isPlaceholder(src).then(placeholder => !placeholder && bannerColor(src).then(color => color && (banner.style.background = color)));
+    }
+    avatar.append(img);
+    const card = document.createElement('div');
+    card.className = 'dsc-prof-card';
+    const name = document.createElement('h2');
+    name.className = 'dsc-prof-name';
+    name.textContent = name1;
+    const user = document.createElement('div');
+    user.className = 'dsc-prof-user';
+    user.textContent = toUsername(name1);
+    card.append(name, user);
+    const about = plain(powerUserSettings?.persona_descriptions?.[avatarId]?.description ?? powerUserSettings?.persona_description);
+    if (about) {
+        const block = document.createElement('section');
+        block.className = 'dsc-prof-section';
+        const h = document.createElement('h3');
+        h.textContent = t('About Me');
+        const p = document.createElement('p');
+        p.textContent = about;
+        block.append(h, p);
+        card.append(block);
+    }
+    const edit = document.createElement('button');
+    edit.type = 'button';
+    edit.className = 'dsc-prof-full';
+    edit.textContent = t('Edit Profile');
+    edit.addEventListener('click', () => {
+        closePopout();
+        openDrawer('persona-management-button');
+    });
+    popout.replaceChildren(banner, avatar, card, edit);
+    monogramizeAll(popout, '.dsc-prof-avatar img', () => name1);
+}
+
+/** The "Message @name" box at the bottom of a character's card: sends in their DM. */
+function messageBox(character) {
+    const box = document.createElement('input');
+    box.type = 'text';
+    box.className = 'dsc-popout-message';
+    box.placeholder = `${t('Message')} @${toUsername(character.name)}`;
+    box.setAttribute('aria-label', box.placeholder);
+    box.addEventListener('keydown', async (event) => {
+        if (event.key !== 'Enter' || event.isComposing || !box.value.trim()) {
+            return;
+        }
+        event.preventDefault();
+        const text = box.value;
+        closePopout();
+        if (currentCharacter()?.avatar !== character.avatar || currentGroup()) {
+            await openCharacter(character.avatar);
+        }
+        const input = /** @type {HTMLTextAreaElement} */ (document.getElementById('send_textarea'));
+        if (input) {
+            input.value = text;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            document.getElementById('send_but')?.click();
+        }
+    });
+    return box;
+}
+
+/**
+ * Discord's profile popout: a small card beside what was clicked.
+ * @param {Element} anchor The picture, name or member row clicked
+ * @param {{avatar?: string, persona?: boolean, picture?: string}} who A character (by avatar),
+ *   or yourself (with your message's picture)
+ * @param {'left'|'right'} side Which side of the anchor the card opens on
+ */
+export function openPopout(anchor, who, side) {
+    const already = document.getElementById(POPOUT_ID);
+    if (already && already.dataset.who === (who.avatar ?? 'me')) {
+        // a second click on the same person closes it, as in Discord
+        closePopout();
+        return;
+    }
+    closePopout();
+    const popout = document.createElement('div');
+    popout.id = POPOUT_ID;
+    popout.setAttribute('role', 'dialog');
+    popout.dataset.who = who.avatar ?? 'me';
+    if (who.persona) {
+        renderPersona(popout, who.picture);
+        popout.setAttribute('aria-label', SillyTavern.getContext().name1);
+    } else {
+        const character = SillyTavern.getContext().characters.find(x => x.avatar === who.avatar);
+        if (!character) {
+            return;
+        }
+        renderProfile(popout, character);
+        popout.querySelector('.dsc-prof-close')?.remove();
+        popout.querySelector('.dsc-prof-full')?.addEventListener('click', closePopout);
+        popout.append(messageBox(character));
+        popout.setAttribute('aria-label', character.name);
+    }
+    shieldFromOutsideClose(popout);
+    document.body.append(popout);
+    const box = anchor.getBoundingClientRect();
+    const own = popout.getBoundingClientRect();
+    const gap = 8;
+    let left = side === 'left' ? box.left - own.width - gap : box.right + gap;
+    left = Math.max(gap, Math.min(left, window.innerWidth - own.width - gap));
+    const top = Math.max(gap, Math.min(box.top, window.innerHeight - own.height - gap));
+    popout.style.left = `${Math.round(left)}px`;
+    popout.style.top = `${Math.round(top)}px`;
 }
 
 /* ---------- Friends page ---------- */

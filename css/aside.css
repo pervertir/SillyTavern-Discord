@@ -266,3 +266,79 @@ body.discord-theme #chat .mes:not([is_user="true"]) :is(.avatar, .name_text) {
         border-radius: 16px 16px 0 0;
     }
 }
+
+/* ---------- the profile popout (header.js openPopout) ---------- */
+
+body.discord-theme #dsc-popout {
+    position: fixed;
+    z-index: 3050;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    max-height: calc(100dvh - 16px);
+    padding-bottom: 12px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: var(--dsc-radius-modal, 12px);
+    background: var(--dsc-panel);
+    box-shadow: 0 0 0 1px var(--dsc-divider), 0 8px 24px rgba(0, 0, 0, 0.32);
+    --dsc-ring: var(--dsc-panel);
+    animation: dsc-popout-in 0.12s ease-out;
+    scrollbar-width: thin;
+}
+
+@keyframes dsc-popout-in {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: none; }
+}
+
+body.discord-theme #dsc-popout .dsc-prof-banner {
+    height: 105px;
+}
+
+body.discord-theme #dsc-popout .dsc-prof-card {
+    margin: 12px 12px 0;
+}
+
+body.discord-theme #dsc-popout .dsc-prof-section p {
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+body.discord-theme #dsc-popout .dsc-prof-links {
+    margin-top: 8px;
+}
+
+body.discord-theme #dsc-popout .dsc-prof-full {
+    margin: 8px 12px 0;
+    width: auto;
+}
+
+body.discord-theme #dsc-popout .dsc-popout-message {
+    margin: 12px 12px 0;
+    padding: 10px 12px;
+    border: 1px solid var(--dsc-divider);
+    border-radius: var(--dsc-radius-input, 8px);
+    background: var(--dsc-input);
+    color: var(--dsc-text);
+    font: 400 14px/18px var(--dsc-font);
+    outline: none;
+}
+
+body.discord-theme #dsc-popout .dsc-popout-message:focus {
+    border-color: var(--dsc-blurple);
+}
+
+body.discord-theme #dsc-popout .dsc-popout-message::placeholder {
+    color: var(--dsc-muted);
+}
+
+body.discord-theme #chat .mes[is_user="true"] :is(.avatar, .name_text) {
+    cursor: pointer;
+}
+
+body.discord-theme #dsc-aside .dsc-member {
+    cursor: pointer;
+}
