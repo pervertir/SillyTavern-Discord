@@ -13,7 +13,7 @@ body.discord-theme #dsc-aside {
     bottom: 0;
     width: var(--dsc-aside-w);
     box-sizing: border-box;
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 31;
@@ -22,7 +22,7 @@ body.discord-theme #dsc-aside {
 
 /* Profile */
 body.discord-theme #dsc-aside:not(.dsc-members) {
-    background: var(--dsc-panel);
+    background: var(--dsc-paint-panel);
     --dsc-ring: var(--dsc-panel);
 }
 
@@ -38,7 +38,7 @@ body.discord-theme .dsc-prof-avatar {
     height: 80px;
     margin: -40px 0 0 16px;
     border: 6px solid var(--dsc-panel);
-    background: var(--dsc-panel);
+    background: var(--dsc-paint-panel);
 }
 
 body.discord-theme .dsc-prof-avatar .dsc-status {
@@ -280,7 +280,7 @@ body.discord-theme #dsc-popout {
     overflow-x: hidden;
     overflow-y: auto;
     border-radius: var(--dsc-radius-modal, 12px);
-    background: var(--dsc-panel);
+    background: var(--dsc-paint-panel);
     box-shadow: 0 0 0 1px var(--dsc-divider), 0 8px 24px rgba(0, 0, 0, 0.32);
     --dsc-ring: var(--dsc-panel);
     animation: dsc-popout-in 0.12s ease-out;
@@ -321,7 +321,7 @@ body.discord-theme #dsc-popout .dsc-popout-message {
     padding: 10px 12px;
     border: 1px solid var(--dsc-divider);
     border-radius: var(--dsc-radius-input, 8px);
-    background: var(--dsc-input);
+    background: var(--dsc-paint-input);
     color: var(--dsc-text);
     font: 400 14px/18px var(--dsc-font);
     outline: none;
@@ -364,7 +364,7 @@ body.discord-theme #dsc-search {
     width: var(--dsc-search-w, 420px);
     box-sizing: border-box;
     border-left: 1px solid var(--dsc-divider);
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
 }
 
 body.discord-theme:is(.dsc-friends-mode, .dsc-no-chat) #dsc-search {
@@ -440,7 +440,7 @@ body.discord-theme .dsc-search-result {
     padding: 10px 12px;
     border: 1px solid var(--dsc-divider);
     border-radius: var(--dsc-radius-card, 8px);
-    background: var(--dsc-chat);
+    background: var(--dsc-paint-chat);
     cursor: pointer;
 }
 
@@ -549,7 +549,7 @@ body.discord-theme #dsc-pins {
     max-height: min(70dvh, 640px);
     overflow: hidden;
     border-radius: var(--dsc-radius-modal, 12px);
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
     box-shadow: 0 0 0 1px var(--dsc-divider), 0 8px 24px rgba(0, 0, 0, 0.32);
     animation: dsc-popout-in 0.12s ease-out;
 }
@@ -656,7 +656,7 @@ body.discord-theme .dsc-pins-foot {
     flex: none;
     padding: 10px 16px;
     border-top: 1px solid var(--dsc-divider);
-    background: var(--dsc-panel);
+    background: var(--dsc-paint-panel);
 }
 
 body.discord-theme .dsc-pins-foot button {

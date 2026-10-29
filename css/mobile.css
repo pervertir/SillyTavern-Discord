@@ -76,7 +76,7 @@
         height: var(--dsc-tabbar-h);
         padding: 0 0 env(safe-area-inset-bottom, 0px);
         box-sizing: border-box;
-        background: var(--dsc-panel);
+        background: var(--dsc-paint-panel);
         border-top: 1px solid var(--dsc-divider);
         z-index: 3007;
     }
@@ -187,7 +187,7 @@
         width: auto;
         height: 36px;
         transform: translateY(-50%);
-        background: var(--dsc-input);
+        background: var(--dsc-paint-input);
     }
 
     body.discord-theme.dsc-m-search #dsc-head .dsc-head-search input {
@@ -358,7 +358,7 @@
         justify-content: stretch;
         padding-top: var(--dsc-safe-top);
         box-sizing: border-box;
-        background: var(--dsc-chat);
+        background: var(--dsc-paint-chat);
     }
 
     body.discord-theme .dsc-set-nav {

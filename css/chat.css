@@ -13,7 +13,7 @@ body.discord-theme #dsc-head {
     height: var(--dsc-head-h);
     padding: 0 8px 0 16px;
     box-sizing: border-box;
-    background: var(--dsc-chat);
+    background: var(--dsc-paint-chat);
     box-shadow: var(--dsc-header-shadow);
     position: relative;
     z-index: 3;
@@ -225,7 +225,7 @@ body.discord-theme #chat {
     max-height: none;
     margin-right: var(--dsc-aside-w);
     padding: 0 0 26px;
-    background: var(--dsc-chat);
+    background: var(--dsc-paint-chat);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     text-shadow: none;
@@ -311,7 +311,7 @@ body.discord-theme #chat .mes[data-dsc-day]::after {
     top: -23px;
     left: 50%;
     padding: 0 4px;
-    background: var(--dsc-chat);
+    background: var(--dsc-paint-chat);
     color: var(--dsc-muted);
     font-size: 12px;
     line-height: 13px;
@@ -504,7 +504,7 @@ body.discord-theme #chat .mes .mes_text blockquote {
 body.discord-theme #chat .mes .mes_text code {
     padding: 0 0.2em;
     border-radius: 4px;
-    background: var(--dsc-panel);
+    background: var(--dsc-paint-panel);
     font-family: var(--dsc-mono);
     font-size: 85%;
     line-height: 1.125rem;
@@ -516,7 +516,7 @@ body.discord-theme #chat .mes .mes_text pre {
     margin: 6px 0 0;
     border: 1px solid var(--dsc-rail);
     border-radius: 4px;
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
     overflow-x: auto;
 }
 
@@ -591,7 +591,7 @@ body.discord-theme #chat .mes .mes_buttons {
     box-sizing: border-box;
     border: 1px solid var(--dsc-divider);
     border-radius: 8px;
-    background: var(--dsc-chat);
+    background: var(--dsc-paint-chat);
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
     opacity: 0;
     pointer-events: none;
@@ -667,7 +667,7 @@ body.discord-theme #chat .mes .mes_edit_buttons {
     padding: 0;
     border: 1px solid var(--dsc-divider);
     border-radius: 8px;
-    background: var(--dsc-chat);
+    background: var(--dsc-paint-chat);
     z-index: 3;
     filter: none;
 }
@@ -700,7 +700,7 @@ body.discord-theme #chat .mes .edit_textarea {
     box-sizing: border-box;
     border: none;
     border-radius: 8px;
-    background: var(--dsc-input);
+    background: var(--dsc-paint-input);
     color: var(--dsc-text);
     font: 400 16px/22px var(--dsc-font);
     box-shadow: none;
@@ -976,13 +976,13 @@ body.discord-theme .dsc-fr-tool {
     margin: 0;
     border: none;
     border-radius: 50%;
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
     color: var(--dsc-icon);
     cursor: pointer;
 }
 
 body.discord-theme .dsc-friend:hover .dsc-fr-tool {
-    background: var(--dsc-rail);
+    background: var(--dsc-paint-rail);
 }
 
 body.discord-theme .dsc-fr-tool:hover {

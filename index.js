@@ -216,7 +216,8 @@ function applyThemeClasses(settings, on) {
     const nitro = on ? getNitroTheme(settings.nitroTheme) : null;
     const dark = nitro ? nitro.base === 'dark' : isDark(settings);
     body.toggle('dsc-light', on && !dark);
-    body.toggle('dsc-ash', on && !nitro && dark && settings.appearance === 'ash');
+    // dark Nitro themes are built on Ash
+    body.toggle('dsc-ash', on && dark && (nitro ? true : settings.appearance === 'ash'));
     body.toggle('dsc-onyx', on && !nitro && dark && settings.appearance === 'onyx');
     applyNitroTheme(nitro);
 }

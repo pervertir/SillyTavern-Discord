@@ -224,7 +224,7 @@ body.discord-theme :is(#extensions_settings, #extensions_settings2) .inline-draw
     margin-bottom: 8px;
     border: none;
     border-radius: 8px;
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
 }
 
 body.discord-theme :is(#extensions_settings, #extensions_settings2) .inline-drawer-toggle.inline-drawer-header {
@@ -294,7 +294,7 @@ body.discord-theme .list-group .list-group-item:hover {
 body.discord-theme :is(dialog.popup, #character_popup, #dialogue_popup) {
     border: none;
     border-radius: 4px;
-    background: var(--dsc-chat);
+    background: var(--dsc-paint-chat);
     color: var(--dsc-text);
     box-shadow: 0 0 0 1px rgba(32, 34, 37, 0.6), 0 2px 10px 0 rgba(0, 0, 0, 0.2);
     backdrop-filter: none;

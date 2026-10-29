@@ -434,7 +434,7 @@ body.discord-theme .dsc-conn-logo {
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    background: var(--dsc-rail);
+    background: var(--dsc-paint-rail);
     color: var(--dsc-header);
     font: 700 13px/1 var(--dsc-font);
 }

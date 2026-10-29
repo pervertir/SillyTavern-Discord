@@ -6,7 +6,7 @@ body.discord-theme #form_sheld {
     margin: 0 var(--dsc-aside-w) 0 0;
     padding: 0 16px 24px;
     box-sizing: border-box;
-    background: var(--dsc-chat);
+    background: var(--dsc-paint-chat);
     white-space: normal;
 }
 
@@ -16,14 +16,14 @@ body.discord-theme #send_form {
     padding: 0;
     border: none;
     border-radius: 8px;
-    background: var(--dsc-input);
+    background: var(--dsc-paint-input);
     box-shadow: none;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
 }
 
 body.discord-theme #send_form.no-connection {
-    background: var(--dsc-input);
+    background: var(--dsc-paint-input);
 }
 
 body.discord-theme #nonQRFormItems {
@@ -193,7 +193,7 @@ body.discord-theme #file_form .file_attached {
     gap: 8px;
     padding: 8px;
     border-radius: 4px;
-    background: var(--dsc-side);
+    background: var(--dsc-paint-side);
     font-size: 14px;
 }
 
