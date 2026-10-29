@@ -51,7 +51,7 @@ A SillyTavern extension that makes SillyTavern look and work like Discord after 
 | ![The phone home screen](docs/screenshots/phone-home.webp) | ![A conversation on a phone](docs/screenshots/phone-chat.webp) | ![User Settings on a phone, in Light](docs/screenshots/phone-settings-light.webp) |
 | Home | A conversation | User Settings (Light) |
 
-`node tools/gallery.mjs` retakes these on the clean test profile, and `node tools/social-preview.mjs` renders the repository's social preview ([docs/social-preview.png](docs/social-preview.png)) from them.
+`node tools/gallery.mjs` retakes these on the clean test profile. `node tools/social-preview.mjs` takes its own shots the same way and renders the repository's social preview ([docs/social-preview.png](docs/social-preview.png)).
 
 ## Install
 

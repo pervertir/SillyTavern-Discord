@@ -1,6 +1,7 @@
 <!doctype html>
-<!-- The repository's social preview (1280×640): node tools/social-preview.mjs renders it to
-     docs/social-preview.png from the gallery's chat screenshot. -->
+<!-- The repository's social preview (1280×640): the name on the left, the phone in the middle and the
+     looks cascading on the right. node tools/social-preview.mjs takes the shots and renders it to
+     docs/social-preview.png. -->
 <html>
 <head>
 <meta charset="utf-8">
@@ -10,54 +11,104 @@
         width: 1280px;
         height: 640px;
         overflow: hidden;
-        background: #1a1a1e;
         font-family: "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
     .card {
         position: relative;
-        display: flex;
-        align-items: center;
         width: 1280px;
         height: 640px;
-        background: radial-gradient(circle at 15% 20%, #6b77ff 0, #5865f2 35%, #3c45a5 100%);
-    }
-    .text {
-        flex: none;
-        width: 470px;
-        padding: 0 0 0 72px;
-        box-sizing: border-box;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 12% 30%, rgba(88, 101, 242, 0.55) 0, rgba(88, 101, 242, 0) 45%),
+            radial-gradient(circle at 85% 90%, rgba(235, 69, 158, 0.28) 0, rgba(235, 69, 158, 0) 40%),
+            linear-gradient(135deg, #1e1f3b 0%, #121318 100%);
         color: #ffffff;
     }
+
+    /* left: the name */
+    .text {
+        position: absolute;
+        left: 64px;
+        top: 0;
+        bottom: 0;
+        width: 380px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
     .logo {
-        width: 72px;
-        height: 72px;
-        margin-bottom: 28px;
+        width: 64px;
+        height: 64px;
+        margin-bottom: 26px;
     }
     h1 {
-        margin: 0 0 16px;
+        margin: 0 0 18px;
         font-size: 50px;
         font-weight: 800;
-        line-height: 1.05;
+        line-height: 1.04;
         letter-spacing: -0.5px;
     }
     p {
         margin: 0;
-        font-size: 22px;
-        line-height: 1.4;
-        opacity: 0.9;
+        font-size: 21px;
+        line-height: 1.42;
+        color: rgba(255, 255, 255, 0.82);
     }
-    .shot {
+
+    /* middle: the phone */
+    .phone {
         position: absolute;
-        right: -60px;
-        top: 70px;
-        width: 860px;
-        border-radius: 14px;
-        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.12);
-        overflow: hidden;
+        left: 470px;
+        top: 50%;
+        width: 246px;
+        height: 532px;
+        transform: translateY(-50%);
+        padding: 9px;
+        box-sizing: border-box;
+        border-radius: 40px;
+        background: #0b0b0e;
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55), 0 0 0 1.5px rgba(255, 255, 255, 0.14);
+        z-index: 10;
     }
-    .shot img {
+    .phone img {
         display: block;
         width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top;
+        border-radius: 31px;
+    }
+
+    /* right: the looks */
+    .stack {
+        position: absolute;
+        left: 752px;
+        top: 70px;
+        width: 470px;
+        height: 500px;
+    }
+    .look {
+        position: absolute;
+        width: 360px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.14);
+        transform: rotate(-3deg);
+    }
+    .look img {
+        display: block;
+        width: 100%;
+    }
+    .look span {
+        position: absolute;
+        right: 10px;
+        top: 9px;
+        padding: 3px 10px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.62);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
     }
 </style>
 </head>
@@ -68,7 +119,17 @@
         <h1>SillyTavern Discord Theme</h1>
         <p>Your characters, in Discord. Servers, DMs, typing dots and every settings page, on desktop and phone.</p>
     </div>
-    <div class="shot"><img src="../docs/screenshots/chat-dark.webp" alt=""></div>
+
+    <div class="phone"><img src="../docs/screenshots/raw/preview/phone.png" alt=""></div>
+
+    <div class="stack">
+        <div class="look" style="left: 0; top: 0"><img src="../docs/screenshots/raw/preview/light.png" alt=""><span>Light</span></div>
+        <div class="look" style="left: 22px; top: 52px"><img src="../docs/screenshots/raw/preview/ash.png" alt=""><span>Ash</span></div>
+        <div class="look" style="left: 44px; top: 104px"><img src="../docs/screenshots/raw/preview/dark.png" alt=""><span>Dark</span></div>
+        <div class="look" style="left: 66px; top: 156px"><img src="../docs/screenshots/raw/preview/onyx.png" alt=""><span>Onyx</span></div>
+        <div class="look" style="left: 88px; top: 208px"><img src="../docs/screenshots/raw/preview/aurora.png" alt=""><span>Aurora</span></div>
+        <div class="look" style="left: 110px; top: 260px"><img src="../docs/screenshots/raw/preview/chroma-glow.png" alt=""><span>Chroma Glow</span></div>
+    </div>
 </div>
 </body>
 </html>
