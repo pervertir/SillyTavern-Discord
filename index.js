@@ -3,7 +3,7 @@
 // and quick switcher) and exposes a small settings panel.
 
 import { initAttachments } from './attachments.js';
-import { initCompose, openExtensionsMenu } from './compose.js';
+import { initCompose, openEmojiFromShortcut } from './compose.js';
 import { initCustomize } from './customize.js';
 import { registerTheme } from './lib/theme-exclusive.js';
 import { initExtras } from './extras.js';
@@ -528,7 +528,7 @@ async function init() {
         pin: togglePinCurrent,
         members: toggleAside,
         inbox: () => openInbox(),
-        emoji: openExtensionsMenu,
+        emoji: openEmojiFromShortcut,
     });
     applySettings();
 

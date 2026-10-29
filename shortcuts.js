@@ -85,7 +85,7 @@ export async function showShortcuts() {
                 ['Pin or Unpin the Chat', SHORTCUTS.pin],
                 ['Toggle Member List', SHORTCUTS.members],
                 ['Chat History', SHORTCUTS.inbox],
-                ['Extensions Menu', SHORTCUTS.emoji],
+                ['Emoji Picker', SHORTCUTS.emoji],
                 ['Send a Message', ['Enter']],
                 ['New Line', ['Shift', 'Enter']],
                 ['Close a Menu or Dialog', ['Esc']],

@@ -25,7 +25,7 @@ update Deep's install after every push.
 5. **"(edited)"** after edited messages.
 6. ✅ **Pinned Messages** (done). "Pin Message" in the message menu; the header's pin icon opens the Pinned Messages list (newest first) with Jump and Unpin; a small pin marks pinned messages. Pins live in the message's extra data (never in the prompt). Pinning the chat itself moved to the list's footer, the sidebar menu and Ctrl/⌘+P.
 7. ✅ **Search in chat** (done, desktop). Type in the header search (or Ctrl/⌘+F) and press Enter: results open on the right, newest or oldest first, words marked, `from:name` to filter; Jump scrolls to the message, loading older ones if needed. Still to do: a search button on phones.
-8. **Emoji picker:** a real Discord-style picker on the emoji button, with recent emoji. Extensions move to their own button.
+8. ✅ **Emoji picker** (done). The emoji button (and Ctrl/⌘+E) opens Discord's picker: search, category rail, Frequently Used, name preview; a pick goes in at the cursor, Shift+click adds several. Extensions moved to their own Apps button beside it.
 
 ### People and servers
 9. ✅ **Profile popout** (done). Clicking a picture or name in the chat, or a member in the list, opens Discord's card beside it (banner, picture, status, About Me, Member Since, Mutual Servers, View Full Profile, and a Message box that sends in their DM); your own messages open your persona card with Edit Profile. Phones keep the profile sheet.

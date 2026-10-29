@@ -280,7 +280,7 @@
         border-radius: 8px;
     }
 
-    body.discord-theme .dsc-compose-tool:not(:last-child) {
+    body.discord-theme .dsc-compose-tool:not(.dsc-compose-emoji, .dsc-compose-apps) {
         display: none;
     }
 
