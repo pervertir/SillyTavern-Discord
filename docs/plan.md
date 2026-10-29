@@ -11,6 +11,7 @@ update Deep's install after every push.
 - **Chat:** cozy and compact layouts, grouping, date lines, hover bar, right-click message menu, Reply, Enter/Esc editing, ↑ to edit, typing dots, short split messages revealed one by one, presence (online, idle, Do Not Disturb, offline) with held replies, sounds, Jump to Present, the not-connected bar, the "/" command picker.
 - **Settings:** full-screen Discord settings split into one-topic pages; Appearance (themes, colours, display, font size, spacing, 24-hour time); Profile and Server Settings editors; lorebooks as channels.
 - **Customize:** Settings > App Settings > Customize changes every colour, font, size, shape, spacing, visible part, name colour, chat background and animation, plus custom CSS; live, with a preview, per-section reset, export and import (shared format: AI/shared/customize-spec.md).
+- **One theme at a time:** turning Discord on turns off our other themes live and disables other theme extensions (with Reload); SillyTavern's UI theme preset and Custom CSS pause while it's on (lib/theme-exclusive.js, shared: AI/shared/theme-exclusive.md).
 - **Phones:** Home, Notifications and You tabs; sheets; long-press menus.
 - **QA:** 87 components checked and fixed (docs/qa-checklist.md).
 
@@ -19,7 +20,7 @@ update Deep's install after every push.
 ### Messages
 1. ✅ **Reactions** (done). Add a reaction from the hover bar or menu. They're stored in the message's extra data, so they survive reloads; the prompt is unaffected.
 2. ✅ **Spoilers** (done). `||text||` hides until clicked (emoji and formatting inside too) and is never cut by split replies; `-# text` lines show as small subtext; masked links `[text](url)` already come from SillyTavern's formatter.
-3. **Images and files:** attachments and generated images as Discord image embeds, with a click-to-enlarge viewer.
+3. ✅ **Images and files** (done). Attached and generated pictures and videos as Discord attachments with a hover toolbar (SillyTavern's zoom, caption and delete kept); pictures open in the viewer with arrows between a message's pictures; files as Discord file cards with download and view.
 4. **Link previews** as Discord embeds (title, site, description). This is opt-in, since it fetches pages.
 5. **"(edited)"** after edited messages.
 6. **Pinned Messages:** the pin icon shows a list of pinned messages (SillyTavern checkpoints and bookmarks), with Jump.

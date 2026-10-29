@@ -22,28 +22,60 @@ function closeViewer() {
     document.getElementById('dsc-viewer')?.remove();
 }
 
-function openViewer(url, alt) {
+/**
+ * The viewer: a picture over a dark backdrop with its link underneath; with several
+ * pictures, arrows (and ← →) move between them and a counter shows where you are.
+ * @param {string|{url: string, alt?: string}[]} items One picture's address, or a list
+ * @param {string|number} [altOrIndex] The picture's description, or the list's starting index
+ */
+export function openViewer(items, altOrIndex = '') {
     closeViewer();
+    const list = typeof items === 'string' ? [{ url: items, alt: String(altOrIndex) }] : items;
+    let index = typeof items === 'string' ? 0 : Math.max(0, Math.min(list.length - 1, Number(altOrIndex) || 0));
     const viewer = document.createElement('div');
     viewer.id = 'dsc-viewer';
     viewer.setAttribute('role', 'dialog');
-    viewer.setAttribute('aria-label', alt || t('Image'));
     const img = document.createElement('img');
-    img.src = url;
-    img.alt = alt;
     img.referrerPolicy = 'no-referrer';
     const open = document.createElement('a');
-    open.href = url;
     open.target = '_blank';
     open.rel = 'noopener noreferrer';
     open.referrerPolicy = 'no-referrer';
     open.textContent = t('Open in Browser');
+    const counter = document.createElement('span');
+    counter.className = 'dsc-viewer-count';
+    const show = () => {
+        const { url, alt = '' } = list[index];
+        img.src = url;
+        img.alt = alt;
+        open.href = url;
+        viewer.setAttribute('aria-label', alt || t('Image'));
+        counter.textContent = list.length > 1 ? `${index + 1} / ${list.length}` : '';
+    };
     viewer.append(img, open);
+    if (list.length > 1) {
+        const arrow = (direction) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = `dsc-viewer-arrow dsc-viewer-${direction < 0 ? 'prev' : 'next'}`;
+            button.setAttribute('aria-label', t(direction < 0 ? 'Previous' : 'Next'));
+            button.textContent = direction < 0 ? '‹' : '›';
+            button.addEventListener('click', () => step(direction));
+            return button;
+        };
+        viewer.append(arrow(-1), arrow(1), counter);
+    }
+    const step = (direction) => {
+        index = (index + direction + list.length) % list.length;
+        show();
+    };
+    viewer.dscStep = step;
     viewer.addEventListener('click', (event) => {
         if (event.target === viewer) {
             closeViewer();
         }
     });
+    show();
     shieldFromOutsideClose(viewer);
     document.body.append(viewer);
 }
@@ -78,7 +110,11 @@ function imageEmbed({ url, alt }) {
         link.textContent = url;
         box.replaceWith(link);
     });
-    img.addEventListener('click', () => openViewer(url, alt));
+    img.addEventListener('click', () => {
+        // every picture of the message, so the viewer's arrows move between them
+        const all = [...(box.closest('.mes')?.querySelectorAll('.dsc-embed img') ?? [img])];
+        openViewer(all.map(x => ({ url: x.getAttribute('src'), alt: x.alt })), all.indexOf(img));
+    });
     img.src = url;
     box.append(img);
     return box;
@@ -217,7 +253,14 @@ export function initEmbeds(options) {
         eventSource.on(type, () => setTimeout(embedAll, 0));
     }
     document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && document.getElementById('dsc-viewer')) {
+        const viewer = /** @type {any} */ (document.getElementById('dsc-viewer'));
+        if (viewer?.dscStep && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
+            event.preventDefault();
+            event.stopPropagation();
+            viewer.dscStep(event.key === 'ArrowLeft' ? -1 : 1);
+            return;
+        }
+        if (event.key === 'Escape' && viewer) {
             event.preventDefault();
             event.stopPropagation();
             closeViewer();

@@ -2,8 +2,10 @@
 // rail, conversation list, your panel, chat header, profile panel, Friends page, settings
 // and quick switcher) and exposes a small settings panel.
 
+import { initAttachments } from './attachments.js';
 import { initCompose, openExtensionsMenu } from './compose.js';
 import { initCustomize } from './customize.js';
+import { registerTheme } from './lib/theme-exclusive.js';
 import { initExtras } from './extras.js';
 import { embedAll, initEmbeds } from './embeds.js';
 import { initAppearance, renderAppearance } from './appearance.js';
@@ -80,7 +82,25 @@ const defaultSettings = Object.freeze({
     /** Desktop notifications for replies that arrive while the window isn't in front */
     desktopNotifications: false,
     recentMax: 50,
+    /** SillyTavern's UI theme preset and Custom CSS are paused while the theme is on */
+    pauseUserTheme: true,
 });
+
+/** One theme at a time (lib/theme-exclusive.js, shared with the other themes) */
+let exclusive = { activated: () => {}, changed: () => {} };
+
+/** Turns the theme on or off live, as its toggle does. */
+function setEnabled(on) {
+    getSettings().enabled = on;
+    applySettings();
+    saveSettings();
+    const toggle = /** @type {HTMLInputElement} */ (document.getElementById('dsc_enabled'));
+    if (toggle) {
+        toggle.checked = on;
+    }
+    renderAllParts();
+    embedAll();
+}
 
 const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -337,6 +357,7 @@ async function renderSettingsPanel() {
     const settings = getSettings();
     const byId = id => /** @type {HTMLInputElement} */ (document.getElementById(id));
     const enabled = byId('dsc_enabled');
+    const pauseUserTheme = byId('dsc_pause_user_theme');
     const appearance = byId('dsc_appearance');
     const nitro = /** @type {HTMLSelectElement} */ (document.getElementById('dsc_nitro'));
     for (const theme of NITRO_THEMES) {
@@ -361,6 +382,7 @@ async function renderSettingsPanel() {
     const wakeDelay = byId('dsc_wake_delay');
 
     enabled.checked = settings.enabled;
+    pauseUserTheme.checked = settings.pauseUserTheme !== false;
     appearance.value = settings.appearance;
     nitro.value = settings.nitroTheme;
     aside.checked = settings.aside;
@@ -389,7 +411,16 @@ async function renderSettingsPanel() {
             after?.();
         });
     };
-    bind(enabled, 'enabled', () => enabled.checked, () => { renderAllParts(); embedAll(); });
+    bind(enabled, 'enabled', () => enabled.checked, () => {
+        renderAllParts();
+        embedAll();
+        if (enabled.checked) {
+            exclusive.activated();
+        } else {
+            exclusive.changed();
+        }
+    });
+    bind(pauseUserTheme, 'pauseUserTheme', () => pauseUserTheme.checked, () => exclusive.changed());
     bind(appearance, 'appearance', () => appearance.value, () => setTheme(appearance.value));
     bind(nitro, 'nitroTheme', () => nitro.value, () => syncThemeFields());
     bind(aside, 'aside', () => aside.checked);
@@ -422,6 +453,16 @@ async function renderSettingsPanel() {
 
 async function init() {
     applySettings();
+    exclusive = registerTheme({
+        id: 'discord',
+        name: 'Discord',
+        folder: 'SillyTavern-Discord',
+        settingsKey: MODULE_NAME,
+        bodyClass: BODY_CLASS,
+        isEnabled: () => !!getSettings().enabled,
+        disable: () => setEnabled(false),
+        pauseUserTheme: () => getSettings().pauseUserTheme !== false,
+    });
     darkQuery.addEventListener('change', applySettings);
     initTooltips();
 
@@ -461,6 +502,7 @@ async function init() {
     initMessageTools();
     initReactions();
     initExtras();
+    initAttachments();
     initOverlays({ connections: () => openSettings('sys-settings-button') });
     initEmbeds({ enabled: () => !!getSettings().enabled && !!getSettings().showImageLinks });
     initSplit({
