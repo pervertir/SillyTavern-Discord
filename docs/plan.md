@@ -34,7 +34,7 @@ update Deep's install after every push.
 12. **Member roles:** group members shown by role (talking now, muted, others).
 
 ### Settings and controls
-13. **AI Config, Context and Instruct templates,** rebuilt as Discord forms: plain labels, sliders with markers, advanced options folded away.
+13. ◐ **AI Config as Discord forms** (sliders done). Every slider (Kobold, Text Completion, Chat Completion) is a Discord row: name and its explanation (SillyTavern's tooltip text, now visible) on the left, value box on the right, full-width slider below; section labels left-aligned. Still to do: Context and Instruct templates, and folding advanced samplers away.
 14. **Connections** as Discord's connection cards: pick a provider, enter the key, test.
 15. **Notifications settings page** in the settings sidebar, so the sound options sit where Discord keeps them (they're in the extension panel today).
 16. **Keybinds page** with every shortcut, including mute (Ctrl/⌘+Shift+M) and deafen (Ctrl/⌘+Shift+D), which are new.

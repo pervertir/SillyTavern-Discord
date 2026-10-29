@@ -1,0 +1,226 @@
+/* AI Config as Discord's settings forms: each slider is a row with its name and explanation on
+   the left, its value in a box on the right and the slider full width underneath, one per
+   line. The explanation is SillyTavern's own (i) tooltip text, shown instead of hidden. Covers
+   both of SillyTavern's slider layouts: the Kobold / Text Completion columns and the
+   Chat Completion .range-block. */
+
+/* ---------- Kobold and Text Completion: label, slider, number in a column ---------- */
+
+body.discord-theme #left-nav-panel .flex-container:has(> .flex-container.flexFlowColumn > .neo-range-slider) {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+body.discord-theme #left-nav-panel .flex-container.flexFlowColumn:has(> .neo-range-slider) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 84px;
+    grid-template-areas: "label value" "slider slider";
+    align-items: start;
+    column-gap: 16px;
+    width: 100%;
+    flex-basis: auto !important;
+    margin: 0;
+    padding: 14px 0 16px;
+    border-bottom: 1px solid var(--dsc-divider);
+    text-align: left;
+}
+
+body.discord-theme #left-nav-panel .flex-container.flexFlowColumn:has(> .neo-range-slider) > small {
+    grid-area: label;
+    display: block;
+    color: var(--dsc-header);
+    font: 500 16px/20px var(--dsc-font);
+    text-align: left;
+}
+
+body.discord-theme #left-nav-panel .flex-container.flexFlowColumn:has(> .neo-range-slider) > .neo-range-slider {
+    grid-area: slider;
+    width: 100% !important;
+    margin-top: 12px !important;
+}
+
+body.discord-theme #left-nav-panel .flex-container.flexFlowColumn:has(> .neo-range-slider) > .neo-range-input {
+    grid-area: value;
+    width: 84px;
+    height: 32px;
+    margin: 0;
+    border: 1px solid var(--dsc-border-muted, var(--dsc-divider));
+    border-radius: var(--dsc-radius-input, 8px);
+    background: var(--dsc-field);
+    color: var(--dsc-text);
+    line-height: 30px;
+    text-align: center;
+}
+
+/* ---------- Chat Completion: .range-block ---------- */
+
+body.discord-theme #left-nav-panel .range-block:has(input[type="range"]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 84px;
+    grid-template-areas: "label value" "slider slider";
+    align-items: start;
+    column-gap: 16px;
+    margin: 0;
+    padding: 14px 0 16px;
+    border-bottom: 1px solid var(--dsc-divider);
+}
+
+body.discord-theme #left-nav-panel .range-block:has(input[type="range"]) > .range-block-title {
+    grid-area: label;
+    margin: 0;
+    color: var(--dsc-header);
+    font: 500 16px/20px var(--dsc-font);
+    letter-spacing: 0;
+    text-align: left;
+    text-transform: none;
+}
+
+body.discord-theme #left-nav-panel .range-block:has(input[type="range"]) > .range-block-range-and-counter {
+    display: contents;
+}
+
+body.discord-theme #left-nav-panel .range-block:has(input[type="range"]) .range-block-range {
+    grid-area: slider;
+    width: 100%;
+    margin-top: 12px;
+}
+
+body.discord-theme #left-nav-panel .range-block:has(input[type="range"]) .range-block-range input[type="range"] {
+    width: 100%;
+}
+
+body.discord-theme #left-nav-panel .range-block:has(input[type="range"]) .range-block-counter {
+    grid-area: value;
+    width: 84px;
+    margin: 0;
+}
+
+body.discord-theme #left-nav-panel .range-block:has(input[type="range"]) .range-block-counter input {
+    width: 100%;
+    height: 32px;
+    margin: 0;
+    border: 1px solid var(--dsc-border-muted, var(--dsc-divider));
+    border-radius: var(--dsc-radius-input, 8px);
+    background: var(--dsc-field);
+    color: var(--dsc-text);
+    text-align: center;
+}
+
+/* ---------- the explanation under each name, from its (i) tooltip ---------- */
+
+body.discord-theme #left-nav-panel :is(.flex-container.flexFlowColumn:has(> .neo-range-slider) > small, .range-block:has(input[type="range"]) > .range-block-title) .fa-circle-info[title] {
+    display: block;
+    width: auto;
+    margin: 4px 0 0;
+    color: var(--dsc-muted);
+    font: 400 13px/17px var(--dsc-font);
+    white-space: pre-line;
+    opacity: 1;
+    cursor: default;
+}
+
+/* the (i) glyph itself goes; its text takes its place */
+body.discord-theme #left-nav-panel :is(.flex-container.flexFlowColumn:has(> .neo-range-slider) > small, .range-block:has(input[type="range"]) > .range-block-title) .fa-circle-info[title]::before {
+    display: none;
+}
+
+body.discord-theme #left-nav-panel :is(.flex-container.flexFlowColumn:has(> .neo-range-slider) > small, .range-block:has(input[type="range"]) > .range-block-title) .fa-circle-info[title]::after {
+    content: attr(title);
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font: inherit;
+}
+
+/* group headings inside the panel (Mirostat, DRY, …) as Discord's section labels */
+body.discord-theme #left-nav-panel :is(h4, .range-block-title):not(:has(+ .range-block-range-and-counter)):not(.range-block > .range-block-title) {
+    margin-top: 20px;
+}
+
+/* ---------- Response and Context (tokens): the number sits in its own wrapper ---------- */
+
+body.discord-theme #left-nav-panel #pro-settings-block {
+    flex-direction: column;
+    gap: 0;
+}
+
+body.discord-theme #left-nav-panel .range-block-range-and-counter.flexFlowColumn:has(> .neo-range-slider) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 84px;
+    grid-template-areas: "label value" "slider slider" "extra extra";
+    align-items: start;
+    column-gap: 16px;
+    width: 100%;
+    flex-basis: auto !important;
+    margin: 0;
+    padding: 14px 0 16px;
+    border-bottom: 1px solid var(--dsc-divider);
+}
+
+body.discord-theme #left-nav-panel .range-block-range-and-counter.flexFlowColumn:has(> .neo-range-slider) > small {
+    grid-area: label;
+    color: var(--dsc-header);
+    font: 500 16px/20px var(--dsc-font);
+    text-align: left;
+}
+
+body.discord-theme #left-nav-panel .range-block-range-and-counter.flexFlowColumn:has(> .neo-range-slider) > .neo-range-slider {
+    grid-area: slider;
+    width: 100% !important;
+    margin-top: 12px !important;
+}
+
+body.discord-theme #left-nav-panel .range-block-range-and-counter.flexFlowColumn:has(> .neo-range-slider) > div:has(> .neo-range-input) {
+    grid-area: value;
+    width: 84px;
+}
+
+body.discord-theme #left-nav-panel .range-block-range-and-counter.flexFlowColumn:has(> .neo-range-slider) > div:has(> .neo-range-input) .neo-range-input {
+    width: 100%;
+    height: 32px;
+    margin: 0;
+    border: 1px solid var(--dsc-border-muted, var(--dsc-divider));
+    border-radius: var(--dsc-radius-input, 8px);
+    background: var(--dsc-field);
+    color: var(--dsc-text);
+    text-align: center;
+}
+
+/* anything else in the block (Streaming, Unlocked) goes under the slider */
+body.discord-theme #left-nav-panel .range-block-range-and-counter.flexFlowColumn:has(> .neo-range-slider) > :not(small, .neo-range-slider, div:has(> .neo-range-input)) {
+    grid-column: 1 / -1;
+    justify-self: start;
+    justify-content: flex-start;
+    margin-top: 10px;
+    margin-left: 0;
+}
+
+/* the value boxes are plainly editable now: the "click the numbers" hint goes */
+body.discord-theme #left-nav-panel #clickSlidersTips {
+    display: none;
+}
+
+/* group headings (Mirostat, DRY, …): Discord's left-aligned section labels */
+body.discord-theme #left-nav-panel :is(h4, .range-block-title, b):is(.textAlignCenter, [class*="justifyCenter"]),
+body.discord-theme #left-nav-panel .flex-container.justifyCenter > h4 {
+    justify-content: flex-start;
+    text-align: left;
+}
+
+/* the sampler docs link floats over the sliders while they scroll */
+body.discord-theme #left-nav-panel > a.topRightInset {
+    display: none;
+}
+
+/* fields without a slider (Max Response Length, Multiple swipes, …): the name over the field */
+body.discord-theme #left-nav-panel .range-block:not(:has(input[type="range"])) > .range-block-title {
+    margin: 12px 0 6px;
+    color: var(--dsc-header);
+    font: 500 16px/20px var(--dsc-font);
+    letter-spacing: 0;
+    text-align: left;
+    text-transform: none;
+    justify-content: flex-start;
+}
