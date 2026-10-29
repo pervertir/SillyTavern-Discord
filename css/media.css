@@ -275,3 +275,12 @@ body.discord-theme #dsc-viewer .dsc-viewer-count {
         right: 8px;
     }
 }
+
+/* sharp.js: a copy of the full picture where a thumbnail would be drawn larger than it is */
+body.discord-theme img.dsc-sharp {
+    content: var(--dsc-sharp);
+}
+
+body.discord-theme .thumbnail-clipper.dsc-sharp {
+    background-image: var(--dsc-sharp) !important;
+}

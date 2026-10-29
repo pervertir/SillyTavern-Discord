@@ -29,6 +29,7 @@ import { initMessages, labelMessages, setClock } from './messages.js';
 import { initMessageTools } from './msgtools.js';
 import { initMonograms } from './monograms.js';
 import { initSettings, openSettings, refreshSettings, SETTINGS_DRAWERS } from './settings.js';
+import { initSharp } from './sharp.js';
 import { formatKeys, initShortcuts, SHORTCUTS } from './shortcuts.js';
 import { initSidebar, markCurrent, openCharacterPanel, refreshPersona, stepConversation, stepServer } from './sidebar.js';
 import { initSwitcher, openSwitcher } from './switcher.js';
@@ -624,6 +625,7 @@ async function start() {
         changed: refreshPresenceViews,
     });
     initMonograms();
+    initSharp();
     initShortcuts({
         enabled: () => !!getSettings().enabled,
         switcher: () => openSwitcher(''),
