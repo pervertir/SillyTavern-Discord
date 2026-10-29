@@ -121,7 +121,22 @@ function createHeader() {
     input.setAttribute('aria-label', withShortcut(t('Search'), SHORTCUTS.search));
     initSearch(input);
     search.append(input, icon('search', 16));
-    tools.append(search);
+    // phones: a magnifier that opens the search box across the header
+    const phoneSearch = headButton('dsc-for-chat dsc-tool-search-phone', t('Search'), 'search', () => {
+        document.body.classList.add('dsc-m-search');
+        input.focus();
+    });
+    input.addEventListener('blur', () => {
+        if (!input.value) {
+            document.body.classList.remove('dsc-m-search');
+        }
+    });
+    input.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            document.body.classList.remove('dsc-m-search');
+        }
+    });
+    tools.append(search, phoneSearch);
 
     head.append(back, title, tabs, tools);
     sheld.prepend(head);

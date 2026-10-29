@@ -1243,3 +1243,4 @@ body.discord-theme.dsc-light #chat .mes .mes_text pre :is(.hljs-number, .hljs-at
 body.discord-theme.dsc-light #chat .mes .mes_text pre :is(.hljs-title, .hljs-function, .hljs-class .hljs-title, .hljs-section) { color: #6f42c1; }
 body.discord-theme.dsc-light #chat .mes .mes_text pre :is(.hljs-comment, .hljs-quote) { color: #6a737d; }
 body.discord-theme.dsc-light #chat .mes .mes_text pre :is(.hljs-built_in, .hljs-type, .hljs-params) { color: #b35900; }
+body.discord-theme .dsc-head-tools > .dsc-tool-search-phone { display: none; }

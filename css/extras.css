@@ -38,3 +38,13 @@ body.discord-theme #chat .dsc-subtext {
     font-size: 0.8125em;
     line-height: 1.3;
 }
+
+/* "(edited)" after an edited message */
+body.discord-theme #chat .dsc-edited {
+    color: var(--dsc-muted);
+    font-size: 10px;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: default;
+    user-select: none;
+}

@@ -1,6 +1,10 @@
 // Discord's markdown extras on top of SillyTavern's formatting: ||spoilers|| (hidden until
-// clicked) and "-# " subtext lines (small, muted). SillyTavern leaves both as plain text, so
-// they're found in the formatted message's text, never inside code.
+// clicked), "-# " subtext lines (small, muted), and "(edited)" after a message whose text was
+// changed (kept in the message's extra data, never in the prompt). SillyTavern leaves
+// spoilers and subtext as plain text, so they're found in the formatted message's text,
+// never inside code.
+
+import { t } from './ui.js';
 
 const SPOILER = /\|\|([^|\n](?:[^\n]*?[^|\n])?)\|\|/g;
 
@@ -104,9 +108,66 @@ export function applyExtras(container) {
     }
     makeSpoilers(container);
     makeSubtext(container);
+    markEdited(container);
 }
 
+/** "(edited)" at the end of an edited message (its last part, when split), as Discord shows it. */
+function markEdited(container) {
+    container.querySelectorAll(':scope .dsc-edited').forEach(x => x.remove());
+    const mes = container.closest('.mes');
+    const message = mes && SillyTavern.getContext().chat[Number(mes.getAttribute('mesid'))];
+    const when = message?.extra?.dsc_edited;
+    if (!when) {
+        return;
+    }
+    // a split reply: only its last part
+    if (container.classList.contains('dsc-part') && container.nextElementSibling?.classList.contains('dsc-part')) {
+        return;
+    }
+    if (!container.classList.contains('dsc-part') && container.querySelector(':scope > .dsc-part')) {
+        return;
+    }
+    const tag = document.createElement('span');
+    tag.className = 'dsc-edited';
+    tag.textContent = `(${t('edited')})`;
+    const { timestampToMoment } = SillyTavern.getContext();
+    const moment = timestampToMoment(when);
+    if (moment?.isValid?.()) {
+        tag.dataset.dscTip = moment.format('LLLL');
+    }
+    // inside the last paragraph, so it sits on the same line as the words
+    const blocks = [...container.children].filter(x => !x.matches('.dsc-embeds, .dsc-reactions, .dsc-empty'));
+    const last = blocks.at(-1);
+    const into = last && /^(P|DIV|BLOCKQUOTE|LI)$/.test(last.tagName) ? (last.tagName === 'DIV' && last.lastElementChild?.tagName === 'P' ? last.lastElementChild : last) : container;
+    into.append(/\s$/.test(into.textContent) ? '' : ' ', tag);
+}
+
+/** The text a message had when editing began, to tell a real change from an unchanged save. */
+const editingFrom = new Map();
+
 export function initExtras() {
+    // an edit starts with SillyTavern's pencil (the theme's Edit Message clicks it too)
+    document.addEventListener('click', (event) => {
+        const mes = /** @type {HTMLElement} */ (event.target).closest?.('#chat .mes');
+        if (mes && /** @type {HTMLElement} */ (event.target).closest('.mes_edit')) {
+            const id = Number(mes.getAttribute('mesid'));
+            editingFrom.set(id, SillyTavern.getContext().chat[id]?.mes ?? '');
+        }
+    }, true);
+    const { eventSource, eventTypes } = SillyTavern.getContext();
+    eventSource.on(eventTypes.MESSAGE_EDITED, (mesId) => {
+        const id = Number(mesId);
+        const message = SillyTavern.getContext().chat[id];
+        if (!message || !editingFrom.has(id)) {
+            return;
+        }
+        const before = editingFrom.get(id);
+        editingFrom.delete(id);
+        if (before !== message.mes) {
+            message.extra ??= {};
+            message.extra.dsc_edited = Date.now();
+        }
+    });
     const reveal = (target) => {
         const element = /** @type {HTMLElement} */ (target).closest?.('#chat .dsc-spoiler');
         if (element && !element.classList.contains('dsc-revealed')) {

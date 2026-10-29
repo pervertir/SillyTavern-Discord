@@ -9,8 +9,9 @@ import { initCustomize } from './customize.js';
 import { registerTheme } from './lib/theme-exclusive.js';
 import { initExtras } from './extras.js';
 import { initForms } from './forms.js';
+import { buildGated, teardown } from './life.js';
 import { initPages } from './pages.js';
-import { embedAll, initEmbeds } from './embeds.js';
+import { initEmbeds } from './embeds.js';
 import { initAppearance, renderAppearance } from './appearance.js';
 import { hideDiscover, initDiscover, showDiscover } from './discover.js';
 import { applyNitroTheme, getNitroTheme, NITRO_THEMES } from './nitro.js';
@@ -31,7 +32,7 @@ import { initSettings, openSettings, refreshSettings, SETTINGS_DRAWERS } from '.
 import { formatKeys, initShortcuts, SHORTCUTS } from './shortcuts.js';
 import { initSidebar, markCurrent, openCharacterPanel, refreshPersona, stepConversation, stepServer } from './sidebar.js';
 import { initSwitcher, openSwitcher } from './switcher.js';
-import { clickOption, closeDrawers, initTooltips, isPhone } from './ui.js';
+import { clickOption, closeDrawers, initTooltips, isPhone, t } from './ui.js';
 
 const MODULE_NAME = 'discordTheme';
 /** Folder path under scripts/extensions/, e.g. third-party/SillyTavern-Discord */
@@ -92,6 +93,30 @@ const defaultSettings = Object.freeze({
 /** One theme at a time (lib/theme-exclusive.js, shared with the other themes) */
 let exclusive = { activated: () => {}, changed: () => {} };
 
+/** The theme was built on this page, and taken down again since */
+let started = false;
+let tornDown = false;
+
+/** Builds the theme (the first time), or brings it back after it was taken down. */
+function turnOn() {
+    if (!started) {
+        start();
+    } else if (tornDown) {
+        // its handlers are already registered on this page: a reload builds it cleanly, once
+        // the setting is saved
+        toastr.info(t('Turning the Discord theme on…'));
+        setTimeout(() => location.reload(), 1500);
+    }
+}
+
+/** Takes everything of the theme out of SillyTavern's page. */
+function turnOff() {
+    if (started && !tornDown) {
+        tornDown = true;
+        teardown();
+    }
+}
+
 /** Turns the theme on or off live, as its toggle does. */
 function setEnabled(on) {
     getSettings().enabled = on;
@@ -101,8 +126,11 @@ function setEnabled(on) {
     if (toggle) {
         toggle.checked = on;
     }
-    renderAllParts();
-    embedAll();
+    if (on) {
+        turnOn();
+    } else {
+        turnOff();
+    }
 }
 
 const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -152,8 +180,13 @@ function applySettings() {
     body.toggle('dsc-presence', on && !!settings.presence);
     body.toggle('dsc-times', on && !!settings.discordTimes);
     body.toggle('dsc-show-bg', on && !!settings.showBackground);
-    document.body.style.setProperty('--dsc-chat-font', `${Number(settings.chatFont) || 16}px`);
-    document.body.style.setProperty('--dsc-group-gap', `${Number.isFinite(Number(settings.groupGap)) ? Number(settings.groupGap) : 16}px`);
+    if (on) {
+        document.body.style.setProperty('--dsc-chat-font', `${Number(settings.chatFont) || 16}px`);
+        document.body.style.setProperty('--dsc-group-gap', `${Number.isFinite(Number(settings.groupGap)) ? Number(settings.groupGap) : 16}px`);
+    } else {
+        document.body.style.removeProperty('--dsc-chat-font');
+        document.body.style.removeProperty('--dsc-group-gap');
+    }
     setDisguise(on);
     refreshHeader();
 }
@@ -415,12 +448,12 @@ async function renderSettingsPanel() {
         });
     };
     bind(enabled, 'enabled', () => enabled.checked, () => {
-        renderAllParts();
-        embedAll();
         if (enabled.checked) {
             exclusive.activated();
+            turnOn();
         } else {
             exclusive.changed();
+            turnOff();
         }
     });
     bind(pauseUserTheme, 'pauseUserTheme', () => pauseUserTheme.checked, () => exclusive.changed());
@@ -466,95 +499,109 @@ async function init() {
         disable: () => setEnabled(false),
         pauseUserTheme: () => getSettings().pauseUserTheme !== false,
     });
-    darkQuery.addEventListener('change', applySettings);
-    initTooltips();
-
-    const listLoaded = initData({ max: () => getSettings().recentMax, opened: showChat });
-    initSidebar({ showFriends, openSwitcher, openSettings, showChat, showDiscover: openDiscover });
-    initHeader({ showAside, toggleAside, openSwitcher, back });
-    initCustomize({ settings: getSettings, save: saveSettings });
-    initPages({ settings: getSettings, save: saveSettings, play, enableDesktop: enableDesktopNotifications });
-    initSettings({ setTheme, isDark: () => isDark(), drawersChanged: () => trackDrawers.update?.() });
-    initSwitcher({ picked: () => document.body.classList.remove('dsc-friends') });
-    initCompose();
-    initEditor();
-    initAppearance({
-        current: () => ({ appearance: getSettings().appearance, nitroTheme: getSettings().nitroTheme }),
-        setBase: setTheme,
-        setNitro: setNitroTheme,
-        get: key => getSettings()[key],
-        set: (key, value) => {
-            getSettings()[key] = value;
-            applySettings();
-            saveSettings();
-            if (key === 'clock24') {
-                labelMessages();
-            }
-            if (key === 'messageDisplay') {
-                const select = /** @type {HTMLSelectElement} */ (document.getElementById('dsc_message_display'));
-                if (select) {
-                    select.value = value;
-                }
-            }
-        },
-    });
-    initDiscover({ shown: () => { refreshHeader(); refreshTitle(); markCurrent(); } });
-    createPhoneTabs();
-    trackDrawers();
-    setClock(() => !!getSettings().clock24);
-    initMessages();
-    initMessageTools();
-    initReactions();
-    initExtras();
-    initAttachments();
-    initForms();
-    initConnections();
-    initOverlays({ connections: () => openSettings('sys-settings-button') });
-    initEmbeds({ enabled: () => !!getSettings().enabled && !!getSettings().showImageLinks });
-    initSplit({
-        enabled: () => !!getSettings().enabled && !!getSettings().splitReplies,
-        paced: () => !!getSettings().presenceSim,
-    });
-    initSounds({ settings: getSettings, save: saveSettings });
-    initNotify({ settings: getSettings, save: saveSettings, openSettings });
-    initPresence({
-        enabled: () => !!getSettings().enabled && !!getSettings().presenceSim,
-        delay: () => getSettings().wakeDelay,
-        changed: refreshPresenceViews,
-    });
-    initMonograms();
-    initShortcuts({
-        enabled: () => !!getSettings().enabled,
-        switcher: () => openSwitcher(''),
-        settings: () => openSettings(''),
-        conversation: stepConversation,
-        server: stepServer,
-        newChat: () => getCurrentPlace() && clickOption('option_start_new_chat'),
-        newGroup: () => openCharacterPanel('rm_button_group_chats'),
-        pin: togglePinCurrent,
-        members: toggleAside,
-        inbox: () => openInbox(),
-        emoji: openEmojiFromShortcut,
-    });
-    applySettings();
-
-    const { eventSource, eventTypes } = SillyTavern.getContext();
-    eventSource.on(eventTypes.CHAT_CHANGED, onChatChanged);
-    eventSource.on(eventTypes.GROUP_UPDATED, () => { refreshHeader(); refreshTitle(); });
-    eventSource.on(eventTypes.CHARACTER_EDITED, refreshHeader);
-    eventSource.on(eventTypes.CHARACTER_RENAMED, () => { refreshHeader(); refreshTitle(); });
-    eventSource.on(eventTypes.PERSONA_CHANGED, refreshPersona);
-    eventSource.on(eventTypes.PERSONA_RENAMED, () => refreshPersona());
-    eventSource.on(eventTypes.SETTINGS_UPDATED, () => refreshPersona());
-    onChatChanged(SillyTavern.getContext().getCurrentChatId());
-    await Promise.race([listLoaded, delay(3000)]);
-    endBoot();
+    if (getSettings().enabled) {
+        await start();
+    }
 
     try {
         await renderSettingsPanel();
     } catch (error) {
         console.error('[Discord] Could not render the settings panel', error);
     }
+}
+
+/** Builds the theme: every handler registered here does nothing while it's off (life.js). */
+async function start() {
+    if (started) {
+        return;
+    }
+    started = true;
+    let listLoaded = Promise.resolve();
+    buildGated(() => !!getSettings().enabled, () => {
+        darkQuery.addEventListener('change', applySettings);
+        initTooltips();
+
+        listLoaded = initData({ max: () => getSettings().recentMax, opened: showChat });
+        initSidebar({ showFriends, openSwitcher, openSettings, showChat, showDiscover: openDiscover });
+        initHeader({ showAside, toggleAside, openSwitcher, back });
+        initCustomize({ settings: getSettings, save: saveSettings });
+        initPages({ settings: getSettings, save: saveSettings, play, enableDesktop: enableDesktopNotifications });
+        initSettings({ setTheme, isDark: () => isDark(), drawersChanged: () => trackDrawers.update?.() });
+        initSwitcher({ picked: () => document.body.classList.remove('dsc-friends') });
+        initCompose();
+        initEditor();
+        initAppearance({
+            current: () => ({ appearance: getSettings().appearance, nitroTheme: getSettings().nitroTheme }),
+            setBase: setTheme,
+            setNitro: setNitroTheme,
+            get: key => getSettings()[key],
+            set: (key, value) => {
+                getSettings()[key] = value;
+                applySettings();
+                saveSettings();
+                if (key === 'clock24') {
+                    labelMessages();
+                }
+                if (key === 'messageDisplay') {
+                    const select = /** @type {HTMLSelectElement} */ (document.getElementById('dsc_message_display'));
+                    if (select) {
+                        select.value = value;
+                    }
+                }
+            },
+        });
+        initDiscover({ shown: () => { refreshHeader(); refreshTitle(); markCurrent(); } });
+        createPhoneTabs();
+        trackDrawers();
+        setClock(() => !!getSettings().clock24);
+        initMessages();
+        initMessageTools();
+        initReactions();
+        initExtras();
+        initAttachments();
+        initForms();
+        initConnections();
+        initOverlays({ connections: () => openSettings('sys-settings-button') });
+        initEmbeds({ enabled: () => !!getSettings().enabled && !!getSettings().showImageLinks });
+        initSplit({
+            enabled: () => !!getSettings().enabled && !!getSettings().splitReplies,
+            paced: () => !!getSettings().presenceSim,
+        });
+        initSounds({ settings: getSettings, save: saveSettings });
+        initNotify({ settings: getSettings, save: saveSettings, openSettings });
+        initPresence({
+            enabled: () => !!getSettings().enabled && !!getSettings().presenceSim,
+            delay: () => getSettings().wakeDelay,
+            changed: refreshPresenceViews,
+        });
+        initMonograms();
+        initShortcuts({
+            enabled: () => !!getSettings().enabled,
+            switcher: () => openSwitcher(''),
+            settings: () => openSettings(''),
+            conversation: stepConversation,
+            server: stepServer,
+            newChat: () => getCurrentPlace() && clickOption('option_start_new_chat'),
+            newGroup: () => openCharacterPanel('rm_button_group_chats'),
+            pin: togglePinCurrent,
+            members: toggleAside,
+            inbox: () => openInbox(),
+            emoji: openEmojiFromShortcut,
+        });
+        applySettings();
+
+        const { eventSource, eventTypes } = SillyTavern.getContext();
+        eventSource.on(eventTypes.CHAT_CHANGED, onChatChanged);
+        eventSource.on(eventTypes.GROUP_UPDATED, () => { refreshHeader(); refreshTitle(); });
+        eventSource.on(eventTypes.CHARACTER_EDITED, refreshHeader);
+        eventSource.on(eventTypes.CHARACTER_RENAMED, () => { refreshHeader(); refreshTitle(); });
+        eventSource.on(eventTypes.PERSONA_CHANGED, refreshPersona);
+        eventSource.on(eventTypes.PERSONA_RENAMED, () => refreshPersona());
+        eventSource.on(eventTypes.SETTINGS_UPDATED, () => refreshPersona());
+    });
+    onChatChanged(SillyTavern.getContext().getCurrentChatId());
+    await Promise.race([listLoaded, delay(3000)]);
+    endBoot();
 }
 
 function delay(ms) {

@@ -62,8 +62,9 @@ function logo(key, name) {
         if (svg) {
             box.innerHTML = svg;
             const element = box.querySelector('svg');
-            element?.removeAttribute('width');
-            element?.removeAttribute('height');
+            // a size of its own, so it can never draw huge, whatever the styles
+            element?.setAttribute('width', '24');
+            element?.setAttribute('height', '24');
         }
     });
     return box;

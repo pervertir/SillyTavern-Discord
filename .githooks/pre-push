@@ -1,0 +1,5 @@
+#!/bin/sh
+# Runs the full check (unit tests, zero traces while off, regression scripts) before a push.
+# It starts its own test server and stops it afterwards. Turn the hook on once per clone with
+# `git config core.hooksPath .githooks`. Skip only in an emergency: git push --no-verify
+exec node tools/check.mjs

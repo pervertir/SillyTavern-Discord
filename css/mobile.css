@@ -172,7 +172,30 @@
         padding-right: 4px;
     }
 
-    /* only the essentials in the header on a phone */
+    /* search: a magnifier; tapped, the box spans the header */
+    body.discord-theme .dsc-head-tools > .dsc-tool-search-phone {
+        display: flex;
+    }
+
+    body.discord-theme.dsc-m-search #dsc-head .dsc-head-tools > .dsc-head-search {
+        display: flex !important;
+        position: absolute;
+        left: 8px;
+        right: 8px;
+        top: 50%;
+        z-index: 5;
+        width: auto;
+        height: 36px;
+        transform: translateY(-50%);
+        background: var(--dsc-input);
+    }
+
+    body.discord-theme.dsc-m-search #dsc-head .dsc-head-search input {
+        width: 100%;
+        font-size: 16px;
+    }
+
+        /* only the essentials in the header on a phone */
     body.discord-theme .dsc-head-tools > :is(.dsc-head-search, .dsc-aside-tool, .dsc-convert),
     body.discord-theme .dsc-head-topic {
         display: none !important;
