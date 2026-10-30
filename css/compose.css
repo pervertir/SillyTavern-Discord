@@ -170,8 +170,16 @@ body.discord-theme #send_but {
     display: none !important;
 }
 
-body.discord-theme #mes_stop {
+/* (the #rightSendForm prefix outranks the icon colour above; SillyTavern leaves the stop
+   button's alignment to its display: flex, so it's centred here) */
+body.discord-theme #rightSendForm > div#mes_stop {
+    align-items: center;
+    justify-content: center;
     color: var(--dsc-red);
+}
+
+body.discord-theme #rightSendForm > div#mes_stop:hover {
+    color: var(--dsc-red-hover);
 }
 
 body.discord-theme #mes_stop i::before {
@@ -200,6 +208,35 @@ body.discord-theme #file_form .file_attached {
 body.discord-theme #dialogue_del_mes {
     gap: 8px;
     padding: 0 0 8px;
+}
+
+body.discord-theme #dialogue_del_mes .menu_button {
+    min-width: 96px;
+    height: 38px;
+    margin: 8px 4px 0;
+    padding: 2px 16px;
+    border: none;
+    border-radius: 8px;
+    background: var(--dsc-secondary-button);
+    color: var(--dsc-text);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 34px;
+    filter: none;
+    opacity: 1;
+}
+
+body.discord-theme #dialogue_del_mes .menu_button:hover {
+    background: var(--dsc-secondary-button-hover);
+}
+
+body.discord-theme #dialogue_del_mes #dialogue_del_mes_ok {
+    background: var(--dsc-red);
+    color: #ffffff;
+}
+
+body.discord-theme #dialogue_del_mes #dialogue_del_mes_ok:hover {
+    background: var(--dsc-red-hover);
 }
 
 /* Chat options (+) and extensions menus open above the box, like Discord's upload menu */

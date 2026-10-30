@@ -334,7 +334,8 @@
     }
 
     /* SillyTavern keeps the button hidden while it's busy; so does Discord's send */
-    body.discord-theme #send_but.displayNone {
+    body.discord-theme #send_but.displayNone,
+    body.discord-theme:is([data-generating="true"], [data-swiping="true"]) #send_but {
         display: none !important;
     }
 

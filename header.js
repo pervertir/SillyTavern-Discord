@@ -92,8 +92,9 @@ function createHeader() {
     // Friends page tabs
     const tabs = document.createElement('nav');
     tabs.className = 'dsc-head-tabs';
-    // Discord's Pending and Blocked have no meaning for characters; Favorites does
-    for (const [key, label] of [['online', 'Online'], ['all', 'All'], ['favorites', 'Favorites'], ['add', 'Add Friend']]) {
+    // Discord's Pending and Blocked have no meaning for characters; Favorites does. Recent (no chat
+    // open only) brings back SillyTavern's own home: recent chats, temporary chat, its links.
+    for (const [key, label] of [['online', 'Online'], ['all', 'All'], ['favorites', 'Favorites'], ['recent', 'Recent'], ['add', 'Add Friend']]) {
         const tab = document.createElement('button');
         tab.type = 'button';
         tab.className = 'dsc-head-tab';
@@ -209,6 +210,10 @@ export function refreshHeader() {
     body.toggle('dsc-channel', !!group);
     const friends = !body.contains('dsc-discover') && (body.contains('dsc-friends') || !hasChat);
     body.toggle('dsc-friends-mode', friends);
+    if (hasChat && friendsTab === 'recent') {
+        friendsTab = 'online';
+    }
+    body.toggle('dsc-home', friends && friendsTab === 'recent');
 
     const glyph = head.querySelector('.dsc-head-glyph');
     const name = head.querySelector('.dsc-head-name');

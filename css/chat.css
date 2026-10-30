@@ -569,6 +569,28 @@ body.discord-theme #chat .mes :is(.mes_reasoning, .mes_reasoning_header_title) {
     font-size: 14px;
 }
 
+/* "Thought for …": a quiet pill, like Discord's thread starter */
+body.discord-theme #chat .mes .mes_reasoning_header {
+    margin: 4px 0;
+    padding: 4px 28px 4px 10px;
+    border-radius: 8px;
+    background: var(--dsc-secondary-button);
+    align-items: center;
+}
+
+body.discord-theme #chat .mes .mes_reasoning_header:hover {
+    background: var(--dsc-secondary-button-hover);
+}
+
+body.discord-theme #chat .mes .mes_reasoning_header .mes_reasoning_header_title {
+    color: var(--dsc-text);
+    line-height: 20px;
+}
+
+body.discord-theme #chat .mes .mes_reasoning_arrow {
+    color: var(--dsc-icon);
+}
+
 /* SillyTavern's message display modes all take Discord's look */
 body.discord-theme:is(.bubblechat, .documentstyle) #chat .mes {
     background: none;
@@ -778,13 +800,50 @@ body.discord-theme:not(.swipeAllMessages) #chat .mes:not(.last_mes) :is(.swipe_l
     display: none;
 }
 
-/* Delete mode */
+/* Swipes on all messages gives every message a pager; one with nothing to swipe shows an empty
+   one, which would leave a blank row under it */
+body.discord-theme #chat .mes:not(.swipes_visible, .last_swipe) .swipeRightBlock:has(.swipes-counter:empty) {
+    display: none;
+}
+
+/* Delete mode: a checkbox at the message's right edge, picked messages tinted red like a
+   message Discord is about to delete */
 body.discord-theme #chat .mes .del_checkbox {
     position: absolute;
-    left: 24px;
-    top: 10px;
-    margin: 0;
+    right: 16px;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0;
+    opacity: 1;
+    cursor: pointer;
     z-index: 3;
+}
+
+body.discord-theme #chat .mes .del_checkbox {
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    border: 2px solid var(--dsc-icon);
+    border-radius: 4px;
+    background: transparent;
+}
+
+body.discord-theme #chat .mes:is(.selected) .del_checkbox,
+body.discord-theme #chat .mes .del_checkbox:checked {
+    border-color: var(--dsc-red);
+    background: var(--dsc-red);
+    box-shadow: inset 0 0 0 3px var(--dsc-paint-chat);
+}
+
+/* the hover toolbar has nothing to offer while picking messages to delete */
+body.discord-theme:has(#dialogue_del_mes[style*="block"]) #chat .mes .mes_buttons {
+    display: none;
+}
+
+body.discord-theme #chat .mes.selected {
+    background: color-mix(in srgb, var(--dsc-red) 12%, transparent);
+    box-shadow: inset 2px 0 0 var(--dsc-red);
 }
 
 body.discord-theme #chat .mes .for_checkbox {
@@ -864,14 +923,160 @@ body.discord-theme.dsc-compact #chat .mes :is(.mes_text, .mes_reasoning_details,
 
 /* ---------- no chat open: the Friends page ---------- */
 
-body.discord-theme.dsc-friends-mode :is(#chat, #form_sheld) {
+body.discord-theme.dsc-friends-mode:not(.dsc-home) :is(#chat, #form_sheld) {
     display: none;
 }
 
-body.discord-theme.dsc-friends-mode #dsc-friends {
+body.discord-theme.dsc-friends-mode:not(.dsc-home) #dsc-friends {
     display: flex;
     flex: 1;
     min-height: 0;
+}
+
+/* Recent shows only while no chat is open (SillyTavern's home lives in #chat then) */
+body.discord-theme:not(.dsc-no-chat) .dsc-head-tab[data-tab="recent"] {
+    display: none;
+}
+
+/* SillyTavern's home under Recent: rows like Discord's DM list, quiet icon buttons */
+body.discord-theme.dsc-home #chat {
+    padding: 8px 20px 16px 20px;
+}
+
+body.discord-theme #chat .welcomePanel {
+    gap: 8px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--dsc-text);
+}
+
+body.discord-theme #chat .welcomePanel :is(.welcomeHeaderVersionDisplay, .recentChatsTitle) {
+    color: var(--dsc-header);
+    font: 600 16px/20px var(--dsc-font-display);
+}
+
+body.discord-theme #chat .welcomePanel .welcomeHeaderVersionDisplay {
+    font-size: 20px;
+    line-height: 24px;
+}
+
+body.discord-theme #chat .welcomePanel .recentChatsTitle {
+    color: var(--dsc-header-2);
+    font: 600 12px/16px var(--dsc-font);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+body.discord-theme #chat .welcomePanel .welcomeShortcuts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+body.discord-theme #chat .welcomePanel .welcomeShortcuts .menu_button {
+    height: 32px;
+    margin: 0;
+    padding: 2px 12px;
+    border: none;
+    border-radius: 8px;
+    background: var(--dsc-secondary-button);
+    color: var(--dsc-text);
+    font-size: 14px;
+    font-weight: 500;
+    filter: none;
+}
+
+body.discord-theme #chat .welcomePanel .welcomeShortcuts .menu_button:hover {
+    background: var(--dsc-secondary-button-hover);
+}
+
+body.discord-theme #chat .welcomePanel .welcomeShortcuts .openTemporaryChat {
+    background: var(--dsc-blurple);
+    color: var(--dsc-on-blurple);
+}
+
+body.discord-theme #chat .welcomePanel .welcomeShortcuts .openTemporaryChat:hover {
+    background: var(--dsc-blurple-hover);
+}
+
+body.discord-theme #chat .welcomePanel .welcomeShortcutsSeparator {
+    color: var(--dsc-divider);
+}
+
+body.discord-theme #chat .welcomeRecent .recentChatList {
+    gap: 2px;
+}
+
+body.discord-theme #chat .welcomeRecent .recentChatList .recentChat {
+    gap: 12px;
+    padding: 8px 12px;
+    border: none;
+    border-top: 1px solid var(--dsc-divider);
+    border-radius: 8px;
+    background: none;
+}
+
+body.discord-theme #chat .welcomeRecent .recentChatList .recentChat:hover {
+    border-top-color: transparent;
+    background: var(--dsc-hover);
+}
+
+body.discord-theme #chat .welcomeRecent .recentChatList .recentChat:hover + .recentChat {
+    border-top-color: transparent;
+}
+
+body.discord-theme #chat .welcomeRecent .recentChat .avatar {
+    flex: none;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+body.discord-theme #chat .welcomeRecent .recentChat .chatName {
+    color: var(--dsc-muted);
+}
+
+body.discord-theme #chat .welcomeRecent .recentChat .characterName {
+    color: var(--dsc-header);
+    font-weight: 600;
+}
+
+body.discord-theme #chat .welcomeRecent .recentChat :is(.chatDate, .chatStats, .chatMessage) {
+    color: var(--dsc-muted);
+}
+
+body.discord-theme #chat .welcomeRecent .recentChat .chatActions .menu_button {
+    width: 32px;
+    height: 32px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    background: var(--dsc-paint-side);
+    color: var(--dsc-icon);
+    filter: none;
+}
+
+body.discord-theme #chat .welcomeRecent .recentChat .chatActions .menu_button:hover {
+    color: var(--dsc-icon-hover);
+}
+
+body.discord-theme #chat .welcomeRecent .recentChat .chatActions .deleteChat:hover {
+    color: var(--dsc-red);
+}
+
+body.discord-theme #chat .welcomeRecent .recentChat .chatActions .pinChat.active {
+    color: var(--dsc-blurple);
+}
+
+body.discord-theme #chat .welcomeRecent .showMoreChats {
+    color: var(--dsc-link);
 }
 
 body.discord-theme .dsc-fr-main {
