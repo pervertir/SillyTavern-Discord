@@ -636,6 +636,21 @@ body.discord-theme #chat .mes :is(.mes_button, .extraMesButtons > div):hover {
     color: var(--dsc-icon-hover);
 }
 
+/* SillyTavern shows some message buttons only when they apply (a checkpoint, a hidden message,
+   media, the extension turned on); the display set above would show them on every message */
+body.discord-theme #chat .mes[bookmark_link=''] .mes_bookmark,
+body.discord-theme #chat .mes:not([bookmark_link='']) .mes_create_bookmark,
+body.discord-theme #chat .mes[is_system="true"] .mes_hide,
+body.discord-theme #chat .mes[is_system="false"] .mes_unhide,
+body.discord-theme #chat .mes:not([data-media-display="gallery"]) .mes_media_gallery,
+body.discord-theme #chat .mes:not([data-media-display="list"]) .mes_media_list,
+body.discord-theme:not(.translate) #chat .mes .mes_translate,
+body.discord-theme:not(.sd) #chat .mes .sd_message_gen,
+body.discord-theme:not(.tts) #chat .mes .mes_narrate,
+body.discord-theme #chat .mes[is_system="true"] .mes_narrate {
+    display: none;
+}
+
 body.discord-theme #chat .mes .mes_buttons > :first-child {
     border-radius: 3px 0 0 3px;
 }
