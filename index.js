@@ -100,13 +100,12 @@ let exclusive = { activated: () => {}, changed: () => {} };
 let started = false;
 let tornDown = false;
 
-/** Builds the theme (the first time), or brings it back after it was taken down. */
+/**
+ * Turning the theme on (a user's action) reloads the page once the setting is saved, as the
+ * other themes do: the theme always starts from a fresh page, and a theme it turned off is gone.
+ */
 function turnOn() {
-    if (!started) {
-        start();
-    } else if (tornDown) {
-        // its handlers are already registered on this page: a reload builds it cleanly, once
-        // the setting is saved
+    if (!started || tornDown) {
         reloadWhenOn(t('The Discord theme is on.'));
     }
 }
