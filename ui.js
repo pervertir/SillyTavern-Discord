@@ -167,6 +167,38 @@ export function fullPictureUrl(type, file) {
     return `${type === 'persona' ? 'User Avatars' : 'characters'}/${encodeURIComponent(file)}`;
 }
 
+/**
+ * A server's picture: the group's own picture if it has one, otherwise up to four of its
+ * members side by side, as the Yodayo theme's group cards do. null when it has neither,
+ * so the caller falls back to the acronym.
+ */
+export function serverPicture(group) {
+    const { characters, getThumbnailUrl } = SillyTavern.getContext();
+    if (group?.avatar_url && !String(group.avatar_url).includes('img/')) {
+        const img = document.createElement('img');
+        img.alt = '';
+        img.src = group.avatar_url;
+        img.loading = 'lazy';
+        return img;
+    }
+    const known = new Set(characters.map(character => character.avatar));
+    const members = (group?.members ?? []).filter(avatar => known.has(avatar)).slice(0, 4);
+    if (!members.length) {
+        return null;
+    }
+    const collage = document.createElement('span');
+    collage.className = `dsc-collage dsc-collage-${members.length}`;
+    for (const avatar of members) {
+        const img = document.createElement('img');
+        img.alt = '';
+        img.src = getThumbnailUrl('avatar', avatar);
+        img.loading = 'lazy';
+        img.draggable = false;
+        collage.append(img);
+    }
+    return collage;
+}
+
 /** Discord's default avatar colors; a name always gets the same one */
 const AVATAR_COLORS = 6;
 

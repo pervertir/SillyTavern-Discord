@@ -29,7 +29,7 @@ update Deep's install after every push.
 
 ### People and servers
 9. ✅ **Profile popout** (done). Clicking a picture or name in the chat, or a member in the list, opens Discord's card beside it (banner, picture, status, About Me, Member Since, Mutual Servers, View Full Profile, and a Message box that sends in their DM); your own messages open your persona card with Edit Profile. Phones keep the profile sheet.
-10. ✅ **Server icons, folders and order** (done). Group pictures as icons; drag servers to reorder, onto each other to make a folder (2×2 icons closed, tinted strip open), folders rename/recolor/ungroup from their menu; Move Up/Down and folder options in each server's menu for keyboard use. DMs stay in recency order, as in Discord.
+10. ✅ **Server icons, folders and order** (done). Group pictures as icons (a collage of up to four members when a group has no picture of its own, also in Discover and the quick switcher); drag servers to reorder, onto each other to make a folder (2×2 icons closed, tinted strip open), folders rename/recolor/ungroup from their menu; Move Up/Down and folder options in each server's menu for keyboard use. DMs stay in recency order, as in Discord.
 11. **Channels:** rename a channel (rename the chat) and delete it with confirmation from its menu; a "Create Channel" dialog in Discord style.
 12. ✅ **Member roles** (done): Online, Muted (SillyTavern's disabled members, red mic) and Offline.
 

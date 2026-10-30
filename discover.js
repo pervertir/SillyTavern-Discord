@@ -7,7 +7,7 @@ import { getDirectMessages, getServers, latestChannel, openCharacter, openPlace 
 import { isPlaceholder, monogramizeAll } from './monograms.js';
 import { paintPresence } from './presence.js';
 import { openCharacterPanel, selectServer } from './sidebar.js';
-import { fullPictureUrl, getAcronym, getColorIndex, icon, iconButton, openMenu, t } from './ui.js';
+import { fullPictureUrl, getAcronym, getColorIndex, icon, iconButton, openMenu, serverPicture, t } from './ui.js';
 import { onEvent } from './life.js';
 
 const ID = 'dsc-discover';
@@ -47,6 +47,7 @@ function items() {
         name: group.name,
         about: plain(group.description || ''),
         members: (group.members ?? []).length,
+        group,
         fav: !!group.fav,
         recent: false,
     }));
@@ -87,10 +88,15 @@ function card(item) {
         iconBox.append(holder);
     } else {
         banner.classList.add('dsc-dv-banner-server');
-        const acronym = document.createElement('span');
-        acronym.className = 'dsc-dv-acronym';
-        acronym.textContent = getAcronym(item.name);
-        iconBox.append(acronym);
+        const picture = serverPicture(item.group);
+        if (picture) {
+            iconBox.append(picture);
+        } else {
+            const acronym = document.createElement('span');
+            acronym.className = 'dsc-dv-acronym';
+            acronym.textContent = getAcronym(item.name);
+            iconBox.append(acronym);
+        }
     }
 
     const body = document.createElement('div');

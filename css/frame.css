@@ -370,6 +370,42 @@ body.discord-theme .dsc-guild-icon > img {
     object-fit: cover;
 }
 
+/* A server without its own picture shows up to four members side by side, filling its icon
+   wherever it's drawn (rail, folder, Discover, quick switcher) */
+body.discord-theme .dsc-collage {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    width: 100%;
+    height: 100%;
+}
+
+body.discord-theme .dsc-collage img {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    object-fit: cover;
+    object-position: center 20%;
+}
+
+body.discord-theme .dsc-collage-1 img {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+}
+
+body.discord-theme .dsc-collage-2 img,
+body.discord-theme .dsc-collage-3 img:first-child {
+    grid-row: 1 / -1;
+}
+
+body.discord-theme .dsc-sw-acronym > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 body.discord-theme .dsc-guild:is(:hover, .dsc-selected) .dsc-guild-icon {
     border-radius: 16px;
 }

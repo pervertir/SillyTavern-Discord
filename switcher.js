@@ -4,7 +4,7 @@
 import { getChannels, getDirectMessages, getServers, openCharacter, openPlace } from './data.js';
 import { monogramizeAll } from './monograms.js';
 import { selectServer } from './sidebar.js';
-import { closeDrawers, getAcronym, icon, shieldFromOutsideClose, t, toChannelName } from './ui.js';
+import { closeDrawers, getAcronym, icon, serverPicture, shieldFromOutsideClose, t, toChannelName } from './ui.js';
 
 const ID = 'dsc-switcher';
 const LIMIT = 12;
@@ -90,7 +90,7 @@ function everything() {
         });
     }
     for (const group of getServers()) {
-        items.push({ kind: '*', name: group.name, hint: '', rank: 5000, acronym: getAcronym(group.name), run: () => selectServer(String(group.id), true) });
+        items.push({ kind: '*', name: group.name, hint: '', rank: 5000, acronym: getAcronym(group.name), group, run: () => selectServer(String(group.id), true) });
         for (const channel of getChannels(group)) {
             items.push({ kind: '#', name: toChannelName(channel.name), hint: group.name, rank: 6000, run: () => openPlace(channel) });
         }
@@ -149,7 +149,12 @@ function render(heading) {
         } else if (item.kind === '*') {
             const acronym = document.createElement('span');
             acronym.className = 'dsc-sw-acronym';
-            acronym.textContent = item.acronym;
+            const picture = serverPicture(item.group);
+            if (picture) {
+                acronym.append(picture);
+            } else {
+                acronym.textContent = item.acronym;
+            }
             row.append(acronym);
         } else {
             row.append(icon('hash', 20));

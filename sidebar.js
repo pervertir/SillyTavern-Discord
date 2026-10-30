@@ -6,7 +6,7 @@ import { getChannels, getCurrentPlace, getDirectMessages, getGroup, getServers, 
 import { isPlaceholder, monogramizeAll } from './monograms.js';
 import { repaintUnread } from './notify.js';
 import { paintPresence } from './presence.js';
-import { clickOption, closeDrawers, getAcronym, getColorIndex, getInitials, icon, iconButton, isDrawerOpen, openDrawer, openMenu, t, toChannelName } from './ui.js';
+import { clickOption, closeDrawers, getAcronym, getColorIndex, getInitials, icon, iconButton, isDrawerOpen, openDrawer, openMenu, serverPicture, t, toChannelName } from './ui.js';
 import { formatKeys, SHORTCUTS } from './shortcuts.js';
 import { isFolder, leaveFolder, locate, move, moveFolder, normalize, step, ungroup, updateFolder } from './lib/server-layout.js';
 import { onEvent } from './life.js';
@@ -54,12 +54,9 @@ function buildServer(group) {
     item.draggable = true;
     item.dataset.group = String(group.id);
     const button = item.querySelector('button');
-    if (group.avatar_url && !String(group.avatar_url).includes('img/')) {
-        const img = document.createElement('img');
-        img.alt = '';
-        img.src = group.avatar_url;
-        img.loading = 'lazy';
-        button.append(img);
+    const picture = serverPicture(group);
+    if (picture) {
+        button.append(picture);
     } else {
         const acronym = document.createElement('span');
         acronym.className = 'dsc-acronym';
@@ -281,7 +278,7 @@ function renderRail() {
     const current = getCurrentPlace();
     const layout = currentLayout();
     // rebuild only when the servers, their names or the order and folders changed
-    const signature = `${servers.map(group => `${group.id}:${group.name}:${group.avatar_url ?? ''}`).join('|')}#${JSON.stringify(layout)}`;
+    const signature = `${servers.map(group => `${group.id}:${group.name}:${group.avatar_url ?? ''}:${(group.members ?? []).slice(0, 4).join(',')}`).join('|')}#${JSON.stringify(layout)}`;
     if (list.dataset.signature !== signature) {
         list.dataset.signature = signature;
         const byId = new Map(servers.map(group => [String(group.id), group]));
