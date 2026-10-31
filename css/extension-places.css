@@ -56,6 +56,26 @@ body.discord-theme #gg-action-button-container {
     padding: 2px 4px;
 }
 
+/* It moves Quick Replies into this row: they scroll inside the room between its buttons */
+body.discord-theme #gg-qr-container {
+    flex: 1 1 0;
+    min-width: 0;
+    margin-inline: 4px;
+    overflow: hidden;
+}
+
+body.discord-theme #gg-qr-container > #qr--bar {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding-block: 0;
+}
+
+body.discord-theme #gg-qr-container #qr--popoutTrigger {
+    background: var(--dsc-floating);
+}
+
 body.discord-theme .gg-action-button,
 body.discord-theme .gg-menu-button {
     box-sizing: border-box;
@@ -88,6 +108,33 @@ body.discord-theme .gg-tools-menu {
 body.discord-theme .gg-tools-menu > .interactable:hover,
 body.discord-theme .gg-tools-menu .list-group-item:hover {
     background: rgba(var(--dsc-mod), 0.16);
+    color: var(--dsc-text);
+}
+
+/* Prompt Inspector adds its row twice */
+body.discord-theme #inspectNextPromptButton ~ #inspectNextPromptButton {
+    display: none;
+}
+
+/* Notebook: opens at the top right, clear of the theme's title bar, until it is dragged */
+body.discord-theme #notebookPanel {
+    left: auto;
+    right: 16px;
+    top: 72px;
+    width: min(420px, calc(100vw - 32px));
+    max-height: calc(100dvh - 160px);
+    background: var(--dsc-floating);
+    color: var(--dsc-text);
+}
+
+body.discord-theme #notebookPanel .react-tabs__tab {
+    color: var(--dsc-muted);
+    background: transparent;
+}
+
+body.discord-theme #notebookPanel .react-tabs__tab--selected {
+    background: rgba(var(--dsc-mod), 0.16);
+    border-color: rgba(var(--dsc-mod), 0.2);
     color: var(--dsc-text);
 }
 
