@@ -103,6 +103,8 @@
     "Direct Messages": "ข้อความส่วนตัว",
     "Discord": "Discord",
     "Discord Theme": "ธีม Discord",
+    "Discord theme installed.": "ติดตั้งธีม Discord แล้ว",
+    "Discord theme updated.": "อัปเดตธีม Discord แล้ว",
     "Discord's sounds for messages, people coming online, and mute and deafen.": "เสียงของ Discord สำหรับข้อความ คนที่เข้ามาออนไลน์ และการปิดไมค์และปิดเสียงลำโพง",
     "Discord-style message times": "เวลาข้อความแบบ Discord",
     "Discover": "ค้นพบ",
@@ -276,6 +278,7 @@
     "Red": "แดง",
     "Reduced": "ลดลง",
     "Regenerate": "สร้างใหม่",
+    "Reloading…": "กำลังโหลดใหม่…",
     "Remove from Folder": "นำออกจากโฟลเดอร์",
     "Rename Folder": "เปลี่ยนชื่อโฟลเดอร์",
     "Reply": "ตอบกลับ",
@@ -314,6 +317,7 @@
     "Show User Profile": "แสดงโปรไฟล์ผู้ใช้",
     "Show all samplers": "แสดงตัวสุ่มตัวอย่างทั้งหมด",
     "Show characters as online": "แสดงตัวละครเป็นออนไลน์",
+    "Show chat names in direct messages": "แสดงชื่อแชทในข้อความส่วนตัว",
     "Show fewer samplers": "แสดงตัวสุ่มตัวอย่างน้อยลง",
     "Show image links as pictures": "แสดงลิงก์รูปภาพเป็นรูป",
     "Show or hide parts of the screen.": "แสดงหรือซ่อนส่วนต่างๆ ของหน้าจอ",
@@ -344,6 +348,7 @@
     "Text Channels": "ช่องข้อความ",
     "Text Completion Backend": "แบ็กเอนด์ Text Completion",
     "That isn't a theme file.": "นั่นไม่ใช่ไฟล์ธีม",
+    "The Discord theme is on.": "เปิดธีม Discord แล้ว",
     "Theme": "ธีม",
     "Theme colour": "สีธีม",
     "Theme default": "ค่าเริ่มต้นของธีม",
@@ -394,9 +399,5 @@
     "https://… or /backgrounds/…": "https://… หรือ /backgrounds/…",
     "is typing…": "กำลังพิมพ์…",
     "name color": "สีชื่อ",
-    "pick a color": "เลือกสี",
-    "The Discord theme is on.": "เปิดธีม Discord แล้ว",
-    "Discord theme installed.": "ติดตั้งธีม Discord แล้ว",
-    "Discord theme updated.": "อัปเดตธีม Discord แล้ว",
-    "Reloading…": "กำลังโหลดใหม่…"
+    "pick a color": "เลือกสี"
 }

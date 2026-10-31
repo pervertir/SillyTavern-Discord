@@ -103,6 +103,8 @@
     "Direct Messages": "Mensajes directos",
     "Discord": "Discord",
     "Discord Theme": "Tema Discord",
+    "Discord theme installed.": "Tema Discord instalado.",
+    "Discord theme updated.": "Tema Discord actualizado.",
     "Discord's sounds for messages, people coming online, and mute and deafen.": "Los sonidos de Discord para mensajes, gente que se conecta, y silenciar y ensordecer.",
     "Discord-style message times": "Horas de mensaje al estilo Discord",
     "Discover": "Descubrir",
@@ -276,6 +278,7 @@
     "Red": "Rojo",
     "Reduced": "Reducido",
     "Regenerate": "Regenerar",
+    "Reloading…": "Recargando…",
     "Remove from Folder": "Quitar de la carpeta",
     "Rename Folder": "Renombrar carpeta",
     "Reply": "Responder",
@@ -314,6 +317,7 @@
     "Show User Profile": "Mostrar perfil de usuario",
     "Show all samplers": "Mostrar todos los samplers",
     "Show characters as online": "Mostrar personajes como en línea",
+    "Show chat names in direct messages": "Mostrar nombres de chat en mensajes directos",
     "Show fewer samplers": "Mostrar menos samplers",
     "Show image links as pictures": "Mostrar enlaces de imágenes como imágenes",
     "Show or hide parts of the screen.": "Muestra u oculta partes de la pantalla.",
@@ -344,6 +348,7 @@
     "Text Channels": "Canales de texto",
     "Text Completion Backend": "Backend de Text Completion",
     "That isn't a theme file.": "Eso no es un archivo de tema.",
+    "The Discord theme is on.": "El tema Discord está activado.",
     "Theme": "Tema",
     "Theme colour": "Color del tema",
     "Theme default": "Predeterminado del tema",
@@ -394,9 +399,5 @@
     "https://… or /backgrounds/…": "https://… o /backgrounds/…",
     "is typing…": "está escribiendo…",
     "name color": "color del nombre",
-    "pick a color": "elige un color",
-    "The Discord theme is on.": "El tema Discord está activado.",
-    "Discord theme installed.": "Tema Discord instalado.",
-    "Discord theme updated.": "Tema Discord actualizado.",
-    "Reloading…": "Recargando…"
+    "pick a color": "elige un color"
 }

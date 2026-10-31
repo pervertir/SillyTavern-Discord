@@ -103,6 +103,8 @@
     "Direct Messages": "私人訊息",
     "Discord": "Discord",
     "Discord Theme": "Discord 主題",
+    "Discord theme installed.": "Discord 主題已安裝。",
+    "Discord theme updated.": "Discord 主題已更新。",
     "Discord's sounds for messages, people coming online, and mute and deafen.": "Discord 的訊息、有人上線以及靜音和拒聽音效。",
     "Discord-style message times": "Discord 風格的訊息時間",
     "Discover": "探索",
@@ -276,6 +278,7 @@
     "Red": "紅色",
     "Reduced": "減少",
     "Regenerate": "重新生成",
+    "Reloading…": "正在重新載入…",
     "Remove from Folder": "從資料夾移除",
     "Rename Folder": "重新命名資料夾",
     "Reply": "回覆",
@@ -314,6 +317,7 @@
     "Show User Profile": "顯示使用者個人檔案",
     "Show all samplers": "顯示所有取樣器",
     "Show characters as online": "將角色顯示為線上",
+    "Show chat names in direct messages": "在私訊中顯示聊天名稱",
     "Show fewer samplers": "顯示較少取樣器",
     "Show image links as pictures": "將圖片連結顯示為圖片",
     "Show or hide parts of the screen.": "顯示或隱藏畫面的各個部分。",
@@ -344,6 +348,7 @@
     "Text Channels": "文字頻道",
     "Text Completion Backend": "文字補全後端",
     "That isn't a theme file.": "這不是主題檔案。",
+    "The Discord theme is on.": "Discord 主題已開啟。",
     "Theme": "主題",
     "Theme colour": "主題顏色",
     "Theme default": "主題預設",
@@ -394,9 +399,5 @@
     "https://… or /backgrounds/…": "https://… 或 /backgrounds/…",
     "is typing…": "正在輸入…",
     "name color": "名稱顏色",
-    "pick a color": "選擇顏色",
-    "The Discord theme is on.": "Discord 主題已開啟。",
-    "Discord theme installed.": "Discord 主題已安裝。",
-    "Discord theme updated.": "Discord 主題已更新。",
-    "Reloading…": "正在重新載入…"
+    "pick a color": "選擇顏色"
 }

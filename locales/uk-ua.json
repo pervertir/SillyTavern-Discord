@@ -103,6 +103,8 @@
     "Direct Messages": "Особисті повідомлення",
     "Discord": "Discord",
     "Discord Theme": "Тема Discord",
+    "Discord theme installed.": "Тему Discord встановлено.",
+    "Discord theme updated.": "Тему Discord оновлено.",
     "Discord's sounds for messages, people coming online, and mute and deafen.": "Звуки Discord для повідомлень, появи людей у мережі, вимкнення мікрофона і звуку.",
     "Discord-style message times": "Час повідомлень у стилі Discord",
     "Discover": "Огляд",
@@ -276,6 +278,7 @@
     "Red": "Червоний",
     "Reduced": "Зменшений",
     "Regenerate": "Згенерувати знову",
+    "Reloading…": "Перезавантажуємо…",
     "Remove from Folder": "Прибрати з теки",
     "Rename Folder": "Перейменувати теку",
     "Reply": "Відповісти",
@@ -314,6 +317,7 @@
     "Show User Profile": "Показати профіль користувача",
     "Show all samplers": "Показати всі семплери",
     "Show characters as online": "Показувати персонажів у мережі",
+    "Show chat names in direct messages": "Показувати назви чатів в особистих повідомленнях",
     "Show fewer samplers": "Показати менше семплерів",
     "Show image links as pictures": "Показувати посилання на зображення як картинки",
     "Show or hide parts of the screen.": "Показати або приховати частини екрана.",
@@ -344,6 +348,7 @@
     "Text Channels": "Текстові канали",
     "Text Completion Backend": "Бекенд Text Completion",
     "That isn't a theme file.": "Це не файл теми.",
+    "The Discord theme is on.": "Тему Discord увімкнено.",
     "Theme": "Тема",
     "Theme colour": "Колір теми",
     "Theme default": "За замовчуванням теми",
@@ -394,9 +399,5 @@
     "https://… or /backgrounds/…": "https://… або /backgrounds/…",
     "is typing…": "пише…",
     "name color": "колір імені",
-    "pick a color": "виберіть колір",
-    "The Discord theme is on.": "Тему Discord увімкнено.",
-    "Discord theme installed.": "Тему Discord встановлено.",
-    "Discord theme updated.": "Тему Discord оновлено.",
-    "Reloading…": "Перезавантажуємо…"
+    "pick a color": "виберіть колір"
 }

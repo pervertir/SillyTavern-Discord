@@ -103,6 +103,8 @@
     "Direct Messages": "Tin Nhắn Trực Tiếp",
     "Discord": "Discord",
     "Discord Theme": "Chủ đề Discord",
+    "Discord theme installed.": "Đã cài đặt chủ đề Discord.",
+    "Discord theme updated.": "Đã cập nhật chủ đề Discord.",
     "Discord's sounds for messages, people coming online, and mute and deafen.": "Âm thanh của Discord cho tin nhắn, khi có người trực tuyến, và tắt tiếng, tắt âm thanh.",
     "Discord-style message times": "Thời gian tin nhắn kiểu Discord",
     "Discover": "Khám phá",
@@ -276,6 +278,7 @@
     "Red": "Đỏ",
     "Reduced": "Giảm bớt",
     "Regenerate": "Tạo lại",
+    "Reloading…": "Đang tải lại…",
     "Remove from Folder": "Xóa khỏi thư mục",
     "Rename Folder": "Đổi tên thư mục",
     "Reply": "Trả lời",
@@ -314,6 +317,7 @@
     "Show User Profile": "Hiện hồ sơ người dùng",
     "Show all samplers": "Hiện tất cả sampler",
     "Show characters as online": "Hiện nhân vật là trực tuyến",
+    "Show chat names in direct messages": "Hiển thị tên trò chuyện trong tin nhắn trực tiếp",
     "Show fewer samplers": "Hiện ít sampler hơn",
     "Show image links as pictures": "Hiện liên kết hình ảnh thành hình",
     "Show or hide parts of the screen.": "Hiện hoặc ẩn các phần của màn hình.",
@@ -344,6 +348,7 @@
     "Text Channels": "Kênh Chat",
     "Text Completion Backend": "Backend Text Completion",
     "That isn't a theme file.": "Đó không phải tệp chủ đề.",
+    "The Discord theme is on.": "Đã bật chủ đề Discord.",
     "Theme": "Chủ đề",
     "Theme colour": "Màu chủ đề",
     "Theme default": "Mặc định của chủ đề",
@@ -394,9 +399,5 @@
     "https://… or /backgrounds/…": "https://… hoặc /backgrounds/…",
     "is typing…": "đang nhập…",
     "name color": "màu tên",
-    "pick a color": "chọn một màu",
-    "The Discord theme is on.": "Đã bật chủ đề Discord.",
-    "Discord theme installed.": "Đã cài đặt chủ đề Discord.",
-    "Discord theme updated.": "Đã cập nhật chủ đề Discord.",
-    "Reloading…": "Đang tải lại…"
+    "pick a color": "chọn một màu"
 }

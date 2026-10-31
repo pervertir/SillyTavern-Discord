@@ -103,6 +103,8 @@
     "Direct Messages": "Directe berichten",
     "Discord": "Discord",
     "Discord Theme": "Discord-thema",
+    "Discord theme installed.": "Discord-thema geïnstalleerd.",
+    "Discord theme updated.": "Discord-thema bijgewerkt.",
     "Discord's sounds for messages, people coming online, and mute and deafen.": "De geluiden van Discord voor berichten, mensen die online komen, en dempen.",
     "Discord-style message times": "Berichttijden in Discord-stijl",
     "Discover": "Ontdekken",
@@ -276,6 +278,7 @@
     "Red": "Rood",
     "Reduced": "Beperkt",
     "Regenerate": "Opnieuw genereren",
+    "Reloading…": "Opnieuw laden…",
     "Remove from Folder": "Uit map verwijderen",
     "Rename Folder": "Map hernoemen",
     "Reply": "Beantwoorden",
@@ -314,6 +317,7 @@
     "Show User Profile": "Gebruikersprofiel tonen",
     "Show all samplers": "Alle samplers tonen",
     "Show characters as online": "Personages als online tonen",
+    "Show chat names in direct messages": "Chatnamen tonen in directe berichten",
     "Show fewer samplers": "Minder samplers tonen",
     "Show image links as pictures": "Afbeeldingslinks als afbeeldingen tonen",
     "Show or hide parts of the screen.": "Delen van het scherm tonen of verbergen.",
@@ -344,6 +348,7 @@
     "Text Channels": "Tekstkanalen",
     "Text Completion Backend": "Text Completion-backend",
     "That isn't a theme file.": "Dat is geen themabestand.",
+    "The Discord theme is on.": "Het Discord-thema staat aan.",
     "Theme": "Thema",
     "Theme colour": "Themakleur",
     "Theme default": "Themastandaard",
@@ -394,9 +399,5 @@
     "https://… or /backgrounds/…": "https://… of /backgrounds/…",
     "is typing…": "is aan het typen…",
     "name color": "naamkleur",
-    "pick a color": "kies een kleur",
-    "The Discord theme is on.": "Het Discord-thema staat aan.",
-    "Discord theme installed.": "Discord-thema geïnstalleerd.",
-    "Discord theme updated.": "Discord-thema bijgewerkt.",
-    "Reloading…": "Opnieuw laden…"
+    "pick a color": "kies een kleur"
 }

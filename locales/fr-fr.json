@@ -103,6 +103,8 @@
     "Direct Messages": "Messages privés",
     "Discord": "Discord",
     "Discord Theme": "Thème Discord",
+    "Discord theme installed.": "Thème Discord installé.",
+    "Discord theme updated.": "Thème Discord mis à jour.",
     "Discord's sounds for messages, people coming online, and mute and deafen.": "Les sons de Discord pour les messages, les connexions, la coupure du micro et la mise en sourdine.",
     "Discord-style message times": "Heures des messages façon Discord",
     "Discover": "Découvrir",
@@ -276,6 +278,7 @@
     "Red": "Rouge",
     "Reduced": "Réduit",
     "Regenerate": "Régénérer",
+    "Reloading…": "Rechargement…",
     "Remove from Folder": "Retirer du dossier",
     "Rename Folder": "Renommer le dossier",
     "Reply": "Répondre",
@@ -314,6 +317,7 @@
     "Show User Profile": "Afficher le profil utilisateur",
     "Show all samplers": "Afficher tous les samplers",
     "Show characters as online": "Afficher les personnages en ligne",
+    "Show chat names in direct messages": "Afficher les noms de discussion dans les messages privés",
     "Show fewer samplers": "Afficher moins de samplers",
     "Show image links as pictures": "Afficher les liens d'images comme des images",
     "Show or hide parts of the screen.": "Affiche ou masque des parties de l'écran.",
@@ -344,6 +348,7 @@
     "Text Channels": "Salons textuels",
     "Text Completion Backend": "Backend Text Completion",
     "That isn't a theme file.": "Ce n'est pas un fichier de thème.",
+    "The Discord theme is on.": "Le thème Discord est activé.",
     "Theme": "Thème",
     "Theme colour": "Couleur du thème",
     "Theme default": "Par défaut du thème",
@@ -394,9 +399,5 @@
     "https://… or /backgrounds/…": "https://… ou /backgrounds/…",
     "is typing…": "est en train d'écrire…",
     "name color": "couleur du nom",
-    "pick a color": "choisis une couleur",
-    "The Discord theme is on.": "Le thème Discord est activé.",
-    "Discord theme installed.": "Thème Discord installé.",
-    "Discord theme updated.": "Thème Discord mis à jour.",
-    "Reloading…": "Rechargement…"
+    "pick a color": "choisis une couleur"
 }

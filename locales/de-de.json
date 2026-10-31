@@ -103,6 +103,8 @@
     "Direct Messages": "Direktnachrichten",
     "Discord": "Discord",
     "Discord Theme": "Discord-Design",
+    "Discord theme installed.": "Discord-Design installiert.",
+    "Discord theme updated.": "Discord-Design aktualisiert.",
     "Discord's sounds for messages, people coming online, and mute and deafen.": "Discords Sounds für Nachrichten, Leute, die online kommen, sowie Stummschalten und Ein-/Ausgabe deaktivieren.",
     "Discord-style message times": "Nachrichtenzeiten im Discord-Stil",
     "Discover": "Entdecken",
@@ -276,6 +278,7 @@
     "Red": "Rot",
     "Reduced": "Reduziert",
     "Regenerate": "Neu generieren",
+    "Reloading…": "Wird neu geladen …",
     "Remove from Folder": "Aus Ordner entfernen",
     "Rename Folder": "Ordner umbenennen",
     "Reply": "Antworten",
@@ -314,6 +317,7 @@
     "Show User Profile": "Nutzerprofil anzeigen",
     "Show all samplers": "Alle Sampler anzeigen",
     "Show characters as online": "Charaktere als online anzeigen",
+    "Show chat names in direct messages": "Chatnamen in Direktnachrichten anzeigen",
     "Show fewer samplers": "Weniger Sampler anzeigen",
     "Show image links as pictures": "Bildlinks als Bilder anzeigen",
     "Show or hide parts of the screen.": "Bereiche des Bildschirms ein- oder ausblenden.",
@@ -344,6 +348,7 @@
     "Text Channels": "Textkanäle",
     "Text Completion Backend": "Text-Completion-Backend",
     "That isn't a theme file.": "Das ist keine Design-Datei.",
+    "The Discord theme is on.": "Das Discord-Design ist eingeschaltet.",
     "Theme": "Design",
     "Theme colour": "Designfarbe",
     "Theme default": "Design-Standard",
@@ -394,9 +399,5 @@
     "https://… or /backgrounds/…": "https://… oder /backgrounds/…",
     "is typing…": "schreibt …",
     "name color": "Namensfarbe",
-    "pick a color": "Farbe wählen",
-    "The Discord theme is on.": "Das Discord-Design ist eingeschaltet.",
-    "Discord theme installed.": "Discord-Design installiert.",
-    "Discord theme updated.": "Discord-Design aktualisiert.",
-    "Reloading…": "Wird neu geladen …"
+    "pick a color": "Farbe wählen"
 }

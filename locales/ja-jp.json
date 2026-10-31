@@ -103,6 +103,8 @@
     "Direct Messages": "ダイレクトメッセージ",
     "Discord": "Discord",
     "Discord Theme": "Discordテーマ",
+    "Discord theme installed.": "Discordテーマをインストールしました。",
+    "Discord theme updated.": "Discordテーマを更新しました。",
     "Discord's sounds for messages, people coming online, and mute and deafen.": "メッセージ、誰かのオンライン、ミュートとスピーカーミュートのDiscordサウンド。",
     "Discord-style message times": "Discord風のメッセージ時刻",
     "Discover": "見つける",
@@ -276,6 +278,7 @@
     "Red": "レッド",
     "Reduced": "控えめ",
     "Regenerate": "再生成",
+    "Reloading…": "再読み込みしています…",
     "Remove from Folder": "フォルダから削除",
     "Rename Folder": "フォルダ名を変更",
     "Reply": "返信",
@@ -314,6 +317,7 @@
     "Show User Profile": "ユーザープロフィールを表示",
     "Show all samplers": "全てのサンプラーを表示",
     "Show characters as online": "キャラクターをオンライン表示",
+    "Show chat names in direct messages": "ダイレクトメッセージにチャット名を表示",
     "Show fewer samplers": "サンプラーを減らして表示",
     "Show image links as pictures": "画像リンクを画像として表示",
     "Show or hide parts of the screen.": "画面の各部分を表示・非表示にします。",
@@ -344,6 +348,7 @@
     "Text Channels": "テキストチャンネル",
     "Text Completion Backend": "テキスト補完バックエンド",
     "That isn't a theme file.": "テーマファイルではありません。",
+    "The Discord theme is on.": "Discordテーマをオンにしました。",
     "Theme": "テーマ",
     "Theme colour": "テーマカラー",
     "Theme default": "テーマのデフォルト",
@@ -394,9 +399,5 @@
     "https://… or /backgrounds/…": "https://… または /backgrounds/…",
     "is typing…": "が入力中…",
     "name color": "名前の色",
-    "pick a color": "色を選択",
-    "The Discord theme is on.": "Discordテーマをオンにしました。",
-    "Discord theme installed.": "Discordテーマをインストールしました。",
-    "Discord theme updated.": "Discordテーマを更新しました。",
-    "Reloading…": "再読み込みしています…"
+    "pick a color": "色を選択"
 }

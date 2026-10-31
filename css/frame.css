@@ -930,3 +930,12 @@ body.discord-theme .dsc-dm.dsc-unread::before {
     border-radius: 0 4px 4px 0;
     background: var(--dsc-header);
 }
+
+/* the setting shows each DM's chat name under its character */
+body.discord-theme.dsc-chat-names .dsc-dm-preview {
+    display: block;
+    overflow: hidden;
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

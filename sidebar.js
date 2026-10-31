@@ -510,7 +510,7 @@ function buildDm(dm) {
     name.textContent = dm.character.name;
     const preview = document.createElement('span');
     preview.className = 'dsc-dm-preview';
-    preview.textContent = dm.preview;
+    preview.textContent = document.body.classList.contains('dsc-chat-names') ? dm.fileId : dm.preview;
     text.append(name, preview);
     const close = document.createElement('button');
     close.type = 'button';

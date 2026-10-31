@@ -103,6 +103,8 @@
     "Direct Messages": "Mensagens diretas",
     "Discord": "Discord",
     "Discord Theme": "Tema Discord",
+    "Discord theme installed.": "Tema Discord instalado.",
+    "Discord theme updated.": "Tema Discord atualizado.",
     "Discord's sounds for messages, people coming online, and mute and deafen.": "Os sons do Discord para mensagens, pessoas a ficar online, e silenciar e ensurdecer.",
     "Discord-style message times": "Horas das mensagens ao estilo Discord",
     "Discover": "Descobrir",
@@ -276,6 +278,7 @@
     "Red": "Vermelho",
     "Reduced": "Reduzido",
     "Regenerate": "Regenerar",
+    "Reloading…": "A recarregar…",
     "Remove from Folder": "Remover da pasta",
     "Rename Folder": "Mudar o nome da pasta",
     "Reply": "Responder",
@@ -314,6 +317,7 @@
     "Show User Profile": "Mostrar perfil do utilizador",
     "Show all samplers": "Mostrar todos os samplers",
     "Show characters as online": "Mostrar personagens como online",
+    "Show chat names in direct messages": "Mostrar nomes de conversas nas mensagens diretas",
     "Show fewer samplers": "Mostrar menos samplers",
     "Show image links as pictures": "Mostrar ligações de imagens como imagens",
     "Show or hide parts of the screen.": "Mostra ou oculta partes do ecrã.",
@@ -344,6 +348,7 @@
     "Text Channels": "Canais de texto",
     "Text Completion Backend": "Backend de Text Completion",
     "That isn't a theme file.": "Isso não é um ficheiro de tema.",
+    "The Discord theme is on.": "O tema Discord está ativado.",
     "Theme": "Tema",
     "Theme colour": "Cor do tema",
     "Theme default": "Predefinição do tema",
@@ -394,9 +399,5 @@
     "https://… or /backgrounds/…": "https://… ou /backgrounds/…",
     "is typing…": "está a escrever…",
     "name color": "cor do nome",
-    "pick a color": "escolhe uma cor",
-    "The Discord theme is on.": "O tema Discord está ativado.",
-    "Discord theme installed.": "Tema Discord instalado.",
-    "Discord theme updated.": "Tema Discord atualizado.",
-    "Reloading…": "A recarregar…"
+    "pick a color": "escolhe uma cor"
 }

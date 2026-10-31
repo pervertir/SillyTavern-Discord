@@ -103,6 +103,8 @@
     "Direct Messages": "Личные сообщения",
     "Discord": "Discord",
     "Discord Theme": "Тема Discord",
+    "Discord theme installed.": "Тема Discord установлена.",
+    "Discord theme updated.": "Тема Discord обновлена.",
     "Discord's sounds for messages, people coming online, and mute and deafen.": "Звуки Discord для сообщений, появления людей в сети, отключения микрофона и звука.",
     "Discord-style message times": "Время сообщений в стиле Discord",
     "Discover": "Обзор",
@@ -276,6 +278,7 @@
     "Red": "Красный",
     "Reduced": "Уменьшенное",
     "Regenerate": "Сгенерировать заново",
+    "Reloading…": "Перезагружаем…",
     "Remove from Folder": "Убрать из папки",
     "Rename Folder": "Переименовать папку",
     "Reply": "Ответить",
@@ -314,6 +317,7 @@
     "Show User Profile": "Показать профиль пользователя",
     "Show all samplers": "Показать все сэмплеры",
     "Show characters as online": "Показывать персонажей в сети",
+    "Show chat names in direct messages": "Показывать названия чатов в личных сообщениях",
     "Show fewer samplers": "Показать меньше сэмплеров",
     "Show image links as pictures": "Показывать ссылки на изображения как картинки",
     "Show or hide parts of the screen.": "Показать или скрыть части экрана.",
@@ -344,6 +348,7 @@
     "Text Channels": "Текстовые каналы",
     "Text Completion Backend": "Бэкенд Text Completion",
     "That isn't a theme file.": "Это не файл темы.",
+    "The Discord theme is on.": "Тема Discord включена.",
     "Theme": "Тема",
     "Theme colour": "Цвет темы",
     "Theme default": "По умолчанию темы",
@@ -394,9 +399,5 @@
     "https://… or /backgrounds/…": "https://… или /backgrounds/…",
     "is typing…": "печатает…",
     "name color": "цвет имени",
-    "pick a color": "выберите цвет",
-    "The Discord theme is on.": "Тема Discord включена.",
-    "Discord theme installed.": "Тема Discord установлена.",
-    "Discord theme updated.": "Тема Discord обновлена.",
-    "Reloading…": "Перезагружаем…"
+    "pick a color": "выберите цвет"
 }

@@ -103,6 +103,8 @@
     "Direct Messages": "Messaggi diretti",
     "Discord": "Discord",
     "Discord Theme": "Tema Discord",
+    "Discord theme installed.": "Tema Discord installato.",
+    "Discord theme updated.": "Tema Discord aggiornato.",
     "Discord's sounds for messages, people coming online, and mute and deafen.": "I suoni di Discord per i messaggi, le persone che si connettono, e la disattivazione di microfono e audio.",
     "Discord-style message times": "Orari dei messaggi in stile Discord",
     "Discover": "Esplora",
@@ -276,6 +278,7 @@
     "Red": "Rosso",
     "Reduced": "Ridotto",
     "Regenerate": "Rigenera",
+    "Reloading…": "Ricaricamento…",
     "Remove from Folder": "Rimuovi dalla cartella",
     "Rename Folder": "Rinomina cartella",
     "Reply": "Rispondi",
@@ -314,6 +317,7 @@
     "Show User Profile": "Mostra profilo utente",
     "Show all samplers": "Mostra tutti i sampler",
     "Show characters as online": "Mostra i personaggi online",
+    "Show chat names in direct messages": "Mostra i nomi delle chat nei messaggi diretti",
     "Show fewer samplers": "Mostra meno sampler",
     "Show image links as pictures": "Mostra i link alle immagini come immagini",
     "Show or hide parts of the screen.": "Mostra o nascondi parti dello schermo.",
@@ -344,6 +348,7 @@
     "Text Channels": "Canali testuali",
     "Text Completion Backend": "Backend Text Completion",
     "That isn't a theme file.": "Questo non è un file del tema.",
+    "The Discord theme is on.": "Il tema Discord è attivo.",
     "Theme": "Tema",
     "Theme colour": "Colore del tema",
     "Theme default": "Predefinito del tema",
@@ -394,9 +399,5 @@
     "https://… or /backgrounds/…": "https://… o /backgrounds/…",
     "is typing…": "sta scrivendo…",
     "name color": "colore del nome",
-    "pick a color": "scegli un colore",
-    "The Discord theme is on.": "Il tema Discord è attivo.",
-    "Discord theme installed.": "Tema Discord installato.",
-    "Discord theme updated.": "Tema Discord aggiornato.",
-    "Reloading…": "Ricaricamento…"
+    "pick a color": "scegli un colore"
 }

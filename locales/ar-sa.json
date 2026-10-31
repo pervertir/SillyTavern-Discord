@@ -103,6 +103,8 @@
     "Direct Messages": "الرسائل المباشرة",
     "Discord": "Discord",
     "Discord Theme": "سمة Discord",
+    "Discord theme installed.": "تم تثبيت سمة Discord.",
+    "Discord theme updated.": "تم تحديث سمة Discord.",
     "Discord's sounds for messages, people coming online, and mute and deafen.": "أصوات Discord للرسائل، واتصال الأشخاص، وكتم الصوت وكتم الصوت الوارد.",
     "Discord-style message times": "أوقات الرسائل بأسلوب Discord",
     "Discover": "استكشاف",
@@ -276,6 +278,7 @@
     "Red": "أحمر",
     "Reduced": "مخفّض",
     "Regenerate": "إعادة التوليد",
+    "Reloading…": "جارٍ إعادة التحميل…",
     "Remove from Folder": "إزالة من المجلد",
     "Rename Folder": "إعادة تسمية المجلد",
     "Reply": "رد",
@@ -314,6 +317,7 @@
     "Show User Profile": "إظهار ملف المستخدم الشخصي",
     "Show all samplers": "إظهار كل أدوات أخذ العينات",
     "Show characters as online": "إظهار الشخصيات كمتصلة",
+    "Show chat names in direct messages": "إظهار أسماء الدردشات في الرسائل الخاصة",
     "Show fewer samplers": "إظهار أدوات أخذ عينات أقل",
     "Show image links as pictures": "عرض روابط الصور كصور",
     "Show or hide parts of the screen.": "إظهار أجزاء من الشاشة أو إخفاؤها.",
@@ -344,6 +348,7 @@
     "Text Channels": "القنوات النصية",
     "Text Completion Backend": "خلفية إكمال النص",
     "That isn't a theme file.": "هذا ليس ملف سمة.",
+    "The Discord theme is on.": "سمة Discord قيد التشغيل.",
     "Theme": "السمة",
     "Theme colour": "لون السمة",
     "Theme default": "افتراضي السمة",
@@ -394,9 +399,5 @@
     "https://… or /backgrounds/…": "https://… أو /backgrounds/…",
     "is typing…": "يكتب…",
     "name color": "لون الاسم",
-    "pick a color": "اختر لونًا",
-    "The Discord theme is on.": "سمة Discord قيد التشغيل.",
-    "Discord theme installed.": "تم تثبيت سمة Discord.",
-    "Discord theme updated.": "تم تحديث سمة Discord.",
-    "Reloading…": "جارٍ إعادة التحميل…"
+    "pick a color": "اختر لونًا"
 }

@@ -6,6 +6,7 @@ import { initAttachments } from './attachments.js';
 import { initCompose, openEmojiFromShortcut } from './compose.js';
 import { initConnections } from './connections.js';
 import { initCustomize } from './customize.js';
+import { registerExtensionSwitch } from './lib/theme-extensions.js';
 import { registerTheme, reloadPage } from './lib/theme-exclusive.js';
 import { watchExtensionDrawers } from './lib/extension-drawers.js';
 import { initExtras } from './extras.js';
@@ -88,6 +89,11 @@ const defaultSettings = Object.freeze({
     /** Desktop notifications for replies that arrive while the window isn't in front */
     desktopNotifications: false,
     recentMax: 50,
+    /** Each DM's chat name under its character */
+    chatNames: false,
+    /** Extensions picked to turn off with the theme, and the ones it has turned off */
+    switchExtensions: [],
+    switchedExtensions: [],
     /** The server rail's order and folders (lib/server-layout.js) */
     serverLayout: [],
     /** SillyTavern's UI theme preset and Custom CSS are paused while the theme is on */
@@ -144,6 +150,12 @@ function turnOff() {
 }
 
 /** Turns the theme on or off live, as its toggle does. */
+const extensionSwitch = registerExtensionSwitch({
+    settings: getSettings,
+    isEnabled: () => !!getSettings().enabled,
+    reload: message => reloadPage(message),
+});
+
 function setEnabled(on) {
     getSettings().enabled = on;
     applySettings();
@@ -156,6 +168,9 @@ function setEnabled(on) {
         turnOn();
     } else {
         turnOff();
+    }
+    if (extensionSwitch.sync()) {
+        reloadPage(SillyTavern.getContext().translate('Extensions updated.'));
     }
 }
 
@@ -243,6 +258,7 @@ function applySettings() {
     body.toggle('dsc-aside-on', on && !!settings.aside);
     body.toggle('dsc-compact', on && settings.messageDisplay === 'compact');
     body.toggle('dsc-presence', on && !!settings.presence);
+    body.toggle('dsc-chat-names', on && !!settings.chatNames);
     body.toggle('dsc-times', on && !!settings.discordTimes);
     body.toggle('dsc-show-bg', on && !!settings.showBackground);
     if (on) {
@@ -463,6 +479,7 @@ const PANEL_FIELDS = [
     { id: 'dsc_aside', key: 'aside' },
     { id: 'dsc_message_display', key: 'messageDisplay' },
     { id: 'dsc_presence', key: 'presence' },
+    { id: 'dsc_chat_names', key: 'chatNames', after: () => scheduleRefresh(0) },
     { id: 'dsc_times', key: 'discordTimes', after: () => labelMessages() },
     { id: 'dsc_sounds', key: 'sounds' },
     { id: 'dsc_show_bg', key: 'showBackground' },
@@ -491,6 +508,7 @@ async function renderSettingsPanel() {
         return;
     }
     container.insertAdjacentHTML('beforeend', html);
+    extensionSwitch.renderPicker(document.getElementById('dsc_extension_switch'));
     translateTree(container.querySelector('.dsc-settings-panel'));
 
     const settings = getSettings();
@@ -525,10 +543,14 @@ async function renderSettingsPanel() {
     enabled.addEventListener('input', () => update('enabled', enabled.checked, (on) => {
         if (on) {
             exclusive.activated();
+            extensionSwitch.sync();
             turnOn();
         } else {
             exclusive.changed();
             turnOff();
+            if (extensionSwitch.sync()) {
+                reloadPage(SillyTavern.getContext().translate('Extensions updated.'));
+            }
         }
     }));
 

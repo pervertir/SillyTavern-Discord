@@ -103,6 +103,8 @@
     "Direct Messages": "Bein skilaboð",
     "Discord": "Discord",
     "Discord Theme": "Discord-þema",
+    "Discord theme installed.": "Discord-þemað sett upp.",
+    "Discord theme updated.": "Discord-þemað uppfært.",
     "Discord's sounds for messages, people coming online, and mute and deafen.": "Hljóð Discord fyrir skilaboð, þegar fólk kemur inn og þöggun og slökkt hljóð.",
     "Discord-style message times": "Tímar skilaboða í Discord-stíl",
     "Discover": "Uppgötva",
@@ -276,6 +278,7 @@
     "Red": "Rauður",
     "Reduced": "Minnkað",
     "Regenerate": "Endurgera",
+    "Reloading…": "Endurhleð…",
     "Remove from Folder": "Fjarlægja úr möppu",
     "Rename Folder": "Endurnefna möppu",
     "Reply": "Svara",
@@ -314,6 +317,7 @@
     "Show User Profile": "Sýna notandaprófíl",
     "Show all samplers": "Sýna alla úrtakara",
     "Show characters as online": "Sýna persónur sem tengdar",
+    "Show chat names in direct messages": "Sýna spjallheiti í beinum skilaboðum",
     "Show fewer samplers": "Sýna færri úrtakara",
     "Show image links as pictures": "Sýna myndhlekki sem myndir",
     "Show or hide parts of the screen.": "Sýna eða fela hluta skjásins.",
@@ -344,6 +348,7 @@
     "Text Channels": "Textarásir",
     "Text Completion Backend": "Text Completion-bakendi",
     "That isn't a theme file.": "Þetta er ekki þemaskrá.",
+    "The Discord theme is on.": "Kveikt er á Discord-þemanu.",
     "Theme": "Þema",
     "Theme colour": "Litur þema",
     "Theme default": "Sjálfgefið í þema",
@@ -394,9 +399,5 @@
     "https://… or /backgrounds/…": "https://… eða /backgrounds/…",
     "is typing…": "er að skrifa…",
     "name color": "litur nafns",
-    "pick a color": "veldu lit",
-    "The Discord theme is on.": "Kveikt er á Discord-þemanu.",
-    "Discord theme installed.": "Discord-þemað sett upp.",
-    "Discord theme updated.": "Discord-þemað uppfært.",
-    "Reloading…": "Endurhleð…"
+    "pick a color": "veldu lit"
 }

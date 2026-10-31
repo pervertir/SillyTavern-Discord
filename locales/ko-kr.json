@@ -103,6 +103,8 @@
     "Direct Messages": "다이렉트 메시지",
     "Discord": "Discord",
     "Discord Theme": "Discord 테마",
+    "Discord theme installed.": "Discord 테마가 설치되었습니다.",
+    "Discord theme updated.": "Discord 테마가 업데이트되었습니다.",
     "Discord's sounds for messages, people coming online, and mute and deafen.": "메시지, 누군가 온라인이 될 때, 마이크 음소거와 헤드셋 음소거에 대한 Discord 소리.",
     "Discord-style message times": "Discord 스타일 메시지 시간",
     "Discover": "찾기",
@@ -276,6 +278,7 @@
     "Red": "빨간색",
     "Reduced": "줄이기",
     "Regenerate": "다시 생성하기",
+    "Reloading…": "다시 불러오는 중…",
     "Remove from Folder": "폴더에서 제거하기",
     "Rename Folder": "폴더 이름 바꾸기",
     "Reply": "답장",
@@ -314,6 +317,7 @@
     "Show User Profile": "사용자 프로필 표시하기",
     "Show all samplers": "모든 샘플러 표시",
     "Show characters as online": "캐릭터를 온라인으로 표시",
+    "Show chat names in direct messages": "다이렉트 메시지에 채팅 이름 표시",
     "Show fewer samplers": "샘플러 적게 표시",
     "Show image links as pictures": "이미지 링크를 사진으로 표시",
     "Show or hide parts of the screen.": "화면의 각 부분을 표시하거나 숨겨요.",
@@ -344,6 +348,7 @@
     "Text Channels": "채팅 채널",
     "Text Completion Backend": "텍스트 완성 백엔드",
     "That isn't a theme file.": "테마 파일이 아니에요.",
+    "The Discord theme is on.": "Discord 테마가 켜졌습니다.",
     "Theme": "테마",
     "Theme colour": "테마 색상",
     "Theme default": "테마 기본값",
@@ -394,9 +399,5 @@
     "https://… or /backgrounds/…": "https://… 또는 /backgrounds/…",
     "is typing…": "님이 입력하고 있어요…",
     "name color": "이름 색상",
-    "pick a color": "색상 선택",
-    "The Discord theme is on.": "Discord 테마가 켜졌습니다.",
-    "Discord theme installed.": "Discord 테마가 설치되었습니다.",
-    "Discord theme updated.": "Discord 테마가 업데이트되었습니다.",
-    "Reloading…": "다시 불러오는 중…"
+    "pick a color": "색상 선택"
 }
