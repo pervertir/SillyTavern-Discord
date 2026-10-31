@@ -7,6 +7,7 @@ import { initCompose, openEmojiFromShortcut } from './compose.js';
 import { initConnections } from './connections.js';
 import { initCustomize } from './customize.js';
 import { registerTheme, reloadPage } from './lib/theme-exclusive.js';
+import { watchExtensionDrawers } from './lib/extension-drawers.js';
 import { initExtras } from './extras.js';
 import { initForms } from './forms.js';
 import { GatedObserver, listen, onEvent, setGate, teardown } from './life.js';
@@ -229,6 +230,9 @@ function applyThemeClasses(settings, on) {
     applyNitroTheme(nitro);
 }
 
+/** Set on first use: keeps other extensions' top-bar drawers reachable */
+let updateExtensionDrawers;
+
 function applySettings() {
     const settings = getSettings();
     const on = !!settings.enabled;
@@ -257,6 +261,8 @@ function applySettings() {
     }
     setDisguise(on);
     refreshHeader();
+    updateExtensionDrawers ??= watchExtensionDrawers('discord', () => !!getSettings().enabled);
+    updateExtensionDrawers();
 }
 
 /** Picks a base theme (Light, Ash, Dark, Onyx, Sync); a Nitro color theme gives way to it. */
