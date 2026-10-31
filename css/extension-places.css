@@ -1,0 +1,152 @@
+/* Where popular extensions' pieces sit in this theme: Quick Persona, Typing Indicator, Inject Manager,
+   Guided Generations, Message Summarize, WTracker and floating panels (Objective, Notebook).
+   Their menus and message buttons already land in the theme's own wand menu and message bar. */
+
+/* Quick Persona: a small picture among the message box's buttons */
+body.discord-theme #leftSendForm > #quickPersona {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    margin: auto 4px;
+    align-self: center;
+}
+
+body.discord-theme #quickPersona #quickPersonaImg {
+    display: block;
+    border: none;
+    box-shadow: none;
+}
+
+body.discord-theme #quickPersonaCaret {
+    display: none;
+}
+
+body.discord-theme #quickPersonaMenu {
+    background: var(--dsc-floating);
+    border: 1px solid rgba(var(--dsc-mod), 0.2);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+}
+
+body.discord-theme .quickPersonaMenuImg.selected {
+    outline-color: var(--dsc-blurple);
+}
+
+/* Inject Manager: a small chip in the chat's corner */
+body.discord-theme #chat .injectsElement {
+    gap: 4px;
+    margin: 4px 8px;
+    padding: 2px 8px;
+    background: var(--dsc-floating);
+    border: 1px solid rgba(var(--dsc-mod), 0.2);
+    border-radius: 999px;
+    color: var(--dsc-muted);
+    font-size: 12px;
+    opacity: 1;
+}
+
+body.discord-theme #chat .injectsElement:hover {
+    color: var(--dsc-text);
+}
+
+/* Guided Generations: quiet icon buttons instead of outlined boxes */
+body.discord-theme #gg-action-button-container {
+    box-sizing: border-box;
+    align-items: center;
+    padding: 2px 4px;
+}
+
+body.discord-theme .gg-action-button,
+body.discord-theme .gg-menu-button {
+    box-sizing: border-box;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 6px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--dsc-muted);
+    font-size: 14px;
+}
+
+body.discord-theme .gg-action-button:hover,
+body.discord-theme .gg-menu-button:hover {
+    background: rgba(var(--dsc-mod), 0.16);
+    color: var(--dsc-text);
+}
+
+body.discord-theme .gg-tools-menu {
+    background: var(--dsc-floating);
+    border: 1px solid rgba(var(--dsc-mod), 0.2);
+    border-radius: 8px;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+}
+
+body.discord-theme .gg-tools-menu > .interactable:hover,
+body.discord-theme .gg-tools-menu .list-group-item:hover {
+    background: rgba(var(--dsc-mod), 0.16);
+    color: var(--dsc-text);
+}
+
+/* Message Summarize: a quiet note under the message, keeping the colour that tells its kind */
+body.discord-theme #chat .qvink_memory_display {
+    margin-top: 4px;
+    padding-left: 8px;
+    border-left: 2px solid rgba(var(--dsc-mod), 0.2);
+    font-size: 0.86em;
+    font-style: normal;
+    line-height: 1.35;
+}
+
+body.discord-theme {
+    --qm-default: var(--dsc-muted);
+}
+
+/* WTracker: a card at the head of the message */
+body.discord-theme #chat .mes_wtracker {
+    margin: 4px 0;
+    padding: 6px 10px;
+    background: var(--dsc-surface);
+    border: 1px solid rgba(var(--dsc-mod), 0.2);
+    border-radius: 6px;
+    font-size: 0.9em;
+}
+
+body.discord-theme #chat .mes_wtracker .wtracker-controls > div {
+    color: var(--dsc-muted);
+}
+
+/* Floating panels: the theme's own window look, below the theme's menus */
+body.discord-theme #movingDivs > .draggable {
+    background: var(--dsc-floating);
+    border: 1px solid rgba(var(--dsc-mod), 0.2);
+    border-radius: 8px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+    color: var(--dsc-text);
+    /* room for the panel's move and close buttons above its content */
+    padding-top: 34px;
+}
+
+/* Typing Indicator: Discord's thin line at the foot of the chat, bold-looking dots first */
+body.discord-theme #chat .typing_indicator {
+    bottom: 0;
+    margin: 2px 16px 0;
+    padding: 2px 0;
+    background: var(--dsc-chat);
+    color: var(--dsc-text);
+    font-size: 12px;
+    font-weight: 500;
+    text-shadow: none;
+    opacity: 1;
+}
+
+body.discord-theme #chat .typing_indicator .svg_dots {
+    margin: 0 6px 0 0;
+    transform: scale(0.7);
+    transform-origin: left center;
+    width: 22px;
+    fill: var(--dsc-text);
+}
